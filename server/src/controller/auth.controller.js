@@ -8,6 +8,8 @@ import { sendOTPEmail } from "../utils/email.service.js";
 
 export const RegisterUser = async (req, res, next) => {
   try {
+    console.log(req.body);
+
     const { fullName, email, password, phone, gender, dob, userType } =
       req.body;
 
@@ -55,7 +57,7 @@ export const RegisterUser = async (req, res, next) => {
     res.status(201).json({ message: "User Created Successfully" });
   } catch (error) {
     console.log(error.message);
-    next();
+    next(error);
   }
 };
 
@@ -149,7 +151,7 @@ export const SendOtp = async (req, res, next) => {
 export const VerifyOtp = async (req, res, next) => {
   try {
     const { email, otp } = req.body;
-t
+    t;
     if (!email || !otp) {
       const error = new Error("Email and OTP are required");
       error.statusCode = 400;

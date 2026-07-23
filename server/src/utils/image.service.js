@@ -38,7 +38,7 @@ export const deleteMultipleImages = async (Images) => {
   }
 };
 
-const deleteSingleImage = async (image) => {
+export const deleteSingleImage = async (image) => {
   try {
     await cloudinary.uploader.destroy(image.publicId);
   } catch (error) {
@@ -47,7 +47,7 @@ const deleteSingleImage = async (image) => {
   }
 };
 
-const UploadSingleImage = async (image, storageLocation) => {
+export const UploadSingleImage = async (image, storageLocation) => {
   try {
     const b64 = Buffer.from(image.buffer).toString("base64");
     const dataURI = `data:${image.mimetype};base64,${b64}`;

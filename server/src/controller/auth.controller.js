@@ -145,13 +145,12 @@ export const SendOtp = async (req, res, next) => {
     res.status(200).json({ message: `OTP sent on '${email}'` });
   } catch (error) {
     console.log(error.message);
-    next();
+    next(error);
   }
 };
 export const VerifyOtp = async (req, res, next) => {
   try {
     const { email, otp } = req.body;
-    t;
     if (!email || !otp) {
       const error = new Error("Email and OTP are required");
       error.statusCode = 400;
@@ -186,8 +185,8 @@ export const VerifyOtp = async (req, res, next) => {
       .status(200)
       .json({ message: "OTP verified. Create You New Password Now" });
   } catch (error) {
-    console.log(error.message);
-    next();
+    console.log(error);
+    next(error);
   }
 };
 export const ResetPassword = async (req, res, next) => {
@@ -206,6 +205,6 @@ export const ResetPassword = async (req, res, next) => {
     res.status(200).json({ message: "Password Changed" });
   } catch (error) {
     console.log(error.message);
-    next();
+    next(error);
   }
 };

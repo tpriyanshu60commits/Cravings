@@ -259,7 +259,7 @@ const Register = () => {
                 I agree to the{" "}
                 <span className="text-(--color-primary) hover:underline">
                   terms and conditions.
-                </span>
+                </span>z
               </span>
               {errors.agreeTerms && (
                 <span className="text-(--color-error) text-xs mt-1 block ml-7">

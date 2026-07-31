@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import PasswordChangeModal from "./components/commonModals/PasswordChangeModal";
 import ForgotPasswordModal from "./components/commonModals/ForgotPasswordModal";
+import RestaurantDashboard from "./pages/dashboard/RestaurantDashboard";
 const App = () => {
   return (
     <>
@@ -14,6 +15,7 @@ const App = () => {
         <Route path="/login" element={<Login/>}/>
         <Route path="/passwordChangeModal" element={<PasswordChangeModal/>}/>
         <Route path="/forgotPasswordModal" element={<ForgotPasswordModal/>}/>
+        <Route path="/restaurant-dashboard" element={<RestaurantDashboard/>}/>
       </Routes>
     </>
   );

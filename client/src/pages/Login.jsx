@@ -55,7 +55,7 @@ const Login = () => {
       console.log(res);
       //   console.log(res.data);
       toast.success(res.data.message);
-      sessionStorage.setItem("cravingUSer", JSON.stringify(res.data.data));
+      sessionStorage.setItem("cravingUser", JSON.stringify(res.data.data));
       setUser(res.data.data);
       setIsLogin(true);
       setRole(res.data.data.userType);

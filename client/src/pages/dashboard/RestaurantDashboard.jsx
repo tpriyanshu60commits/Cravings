@@ -12,7 +12,7 @@ const RestaurantDashboard = () => {
   if (!isLogin || role !== "restaurant") {
     return (
       <>
-        <div className="h-[100vh] bg-gray-500 bg-cover bg-center">
+        <div className="h-screen bg-gray-500 bg-cover bg-center">
           <div className="h-full backdrop-blur-lg flex flex-col items-center justify-center ">
             <h1 className="text-2xl font-bold text-(--color-neutral-content)">
               Access Denied. Please log in as a Restaurant Manager to view this

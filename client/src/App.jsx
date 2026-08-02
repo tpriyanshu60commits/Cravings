@@ -6,8 +6,9 @@ import Login from "./pages/Login";
 import PasswordChangeModal from "./components/commonModals/PasswordChangeModal";
 import ForgotPasswordModal from "./components/commonModals/ForgotPasswordModal";
 import RestaurantDashboard from "./pages/dashboard/RestaurantDashboard";
-import CustomerSetting from "./components/customerDashboard/CustomerSetting";
 import RiderDashboard from "./pages/dashboard/RiderDashboard";
+import CustomerDashboard from "./pages/dashboard/CustomerDashboard";
+import AdminDashboard from "./pages/dashboard/AdminDashboard";
 
 const App = () => {
   return (
@@ -19,8 +20,9 @@ const App = () => {
         <Route path="/passwordChangeModal" element={<PasswordChangeModal />} />
         <Route path="/forgotPasswordModal" element={<ForgotPasswordModal />} />
         <Route path="/restaurant-dashboard" element={<RestaurantDashboard />} />
-        <Route path="/customer-settings" element={<CustomerSetting />} />
+        <Route path="/customer-dashboard" element={<CustomerDashboard />} />
         <Route path="/rider-dashboard" element={<RiderDashboard />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
       </Routes>
     </>
   );

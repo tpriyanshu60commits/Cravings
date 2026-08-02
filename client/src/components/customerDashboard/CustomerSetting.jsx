@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import api from "../../config/ApiConfig";
 import { useState } from "react";
 import { MdLinkedCamera } from "react-icons/md";
-
+import PasswordChangeModal from "../../components/commonModals/PasswordChangeModal"
 const CustomerSetting = () => {
   const { user, setUser } = useAuth();
   const [isloading, setIsLoading] = useState(false);
@@ -56,9 +56,9 @@ const CustomerSetting = () => {
       payload.append("displayPic", profilePic);
 
       const res = await api.put("/common/edit-profile", payload);
-      console.log(res);
-      console.log(res.data);
-      console.log(res.data.data);
+      // console.log(res);
+      // console.log(res.data);
+      // console.log(res.data.data);
 
       setUser(res.data.data);
       sessionStorage.setItem("cravingUser", JSON.stringify(res.data.data));
@@ -200,6 +200,11 @@ const CustomerSetting = () => {
           </div>
         </div>
       </div>
+      {isPasswordChangeModalOpen && (
+        <PasswordChangeModal
+        open={isPasswordChangeModalOpen}
+        onClose={()=>setIsPasswordChangeModalOpen(false)}/>
+      )}
     </>
   );
 };

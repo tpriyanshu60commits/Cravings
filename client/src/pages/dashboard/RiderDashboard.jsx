@@ -36,10 +36,10 @@ const RiderDashboard = () => {
   return (
     <>
       <div className="h-screen flex">
-        <div className="w-3/10 border">
+        <div className="w-1/5 border">
           <RiderSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>
-        <div className="w-7/4 border">
+        <div className="w-4/5 border">
           {activeTab === "overview" && <RiderOverview />}
           {activeTab === "orders" && <RiderOrders />}
           {activeTab === "settings" && <RiderSettings />}

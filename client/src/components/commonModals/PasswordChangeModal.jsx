@@ -5,7 +5,7 @@ import { useState } from "react";
 import { MdCancel } from "react-icons/md";
 import { LuLoaderCircle } from "react-icons/lu";
 
-const PasswordChangeModal = ({ open = true, onClose = () => {} }) => {
+const PasswordChangeModal = ({ open, onClose }) => {
   const [formData, setFormData] = useState({
     oldPassword: "",
     newPassword: "",
@@ -41,7 +41,7 @@ const PasswordChangeModal = ({ open = true, onClose = () => {} }) => {
         isLoading(false);
       }
       const res = await api.patch("/common/change-password", payload);
-      console.log(res);
+      // console.log(res);
       toast.success(res.data.message);
       handleCloseModal();
     } catch (error) {
@@ -56,12 +56,12 @@ const PasswordChangeModal = ({ open = true, onClose = () => {} }) => {
   if (!open) return null;
   return (
     <>
-      <div className="flex bg-(--color-base-300) w-screen h-screen justify-center items-center">
-        <div className="z-999 w-xl rounded shadow max-h-[80vh] p-5">
+      <div className="fixed inset-0 z-999 bg-black/60 backdrop-blur-xs flex justify-center items-center">
+        <div className="bg-white w-xl rounded shadow max-h-[80vh] overflow-y-auto relative p-4">
           <header className="flex justify-between p-4 border-b border-(--color-secondary)">
             <div className="font-bold text-xl text-(--color-primary)">
               Change Password
-            </div>
+            </div>  
             <button className="text-2xl" onClick={handleCloseModal}>
               <MdCancel className=" hover:text-red-700 text-2xl" />
             </button>

@@ -4,10 +4,11 @@ import { useAuth } from "../../context/AuthContext";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { MdLinkedCamera } from "react-icons/md";
+import PasswordChangeModal from "../commonModals/PasswordChangeModal";
 
 const RiderSettings = () => {
   const { user, setUser } = useAuth();
-  // console.log(user);
+  console.log(user);
   const [isloading, setIsLoading] = useState(false);
   const [editingProfile, setEditingProfile] = useState(false);
   const [profilePicPreview, setProfilePicPreview] = useState(null);
@@ -184,6 +185,12 @@ const RiderSettings = () => {
           </div>
         </div>
       </div>
+      {isPasswordChangeModalOpen && (
+        <PasswordChangeModal
+          open={isPasswordChangeModalOpen}
+          onClose={() => setIsPasswordChangeModalOpen(false)}
+        />
+      )}
     </>
   );
 };

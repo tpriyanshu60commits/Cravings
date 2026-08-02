@@ -1,16 +1,17 @@
 import React from "react";
-import { useAuth } from "../../context/AuthContext";
-import toast from "react-hot-toast";
 import api from "../../config/ApiConfig";
+import { useAuth } from "../../context/AuthContext";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { MdLinkedCamera } from "react-icons/md";
 
-const CustomerSetting = () => {
+const RiderSettings = () => {
   const { user, setUser } = useAuth();
+  // console.log(user);
   const [isloading, setIsLoading] = useState(false);
-  const [profilePic, setProfilePic] = useState(null);
-  const [profilePicPreview, setProfilePicPreview] = useState(null);
   const [editingProfile, setEditingProfile] = useState(false);
+  const [profilePicPreview, setProfilePicPreview] = useState(null);
+  const [profilePic, setProfilePic] = useState(null);
   const [isPasswordChangeModalOpen, setIsPasswordChangeModalOpen] =
     useState(false);
 
@@ -19,6 +20,7 @@ const CustomerSetting = () => {
     email: user?.email || "",
     phone: user?.phone || "",
   });
+
   const handleInputData = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -36,17 +38,14 @@ const CustomerSetting = () => {
     setProfilePicPreview(null);
     setProfilePic(null);
   };
+
   const handleProfilePicChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
-    console.time("preview");
     setProfilePicPreview(URL.createObjectURL(file));
     setProfilePic(file);
-    console.timeEnd("preview");
   };
-
-  const handelSaveProfile = async () => {
+  const handleSaveProfile = async () => {
     try {
       setIsLoading(true);
       const payload = new FormData();
@@ -54,18 +53,16 @@ const CustomerSetting = () => {
       payload.append("email", formData.email);
       payload.append("phone", formData.phone);
       payload.append("displayPic", profilePic);
-
       const res = await api.put("/common/edit-profile", payload);
-      console.log(res);
-      console.log(res.data);
-      console.log(res.data.data);
-
-      setUser(res.data.data);
+      // console.log(res);
+      // console.log(res.data);
+      // console.log(res.data.data);
+      // setUser(res.data.data);
       sessionStorage.setItem("cravingUser", JSON.stringify(res.data.data));
       setEditingProfile(false);
-      toast.success("profile updated successfully");
+      toast.success("Profile Updated Successfully");
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to update profile");
+      toast.error(error?.response?.data?.message || "Failed to update profile");
     } finally {
       setIsLoading(false);
     }
@@ -89,20 +86,20 @@ const CustomerSetting = () => {
                   className="flex items-center gap-2 bg-(--color-primary) text-(--color-primary-content) px-3 py-1 rounded text-sm"
                   onClick={() => setIsPasswordChangeModalOpen(true)}
                 >
-                  PasswordChange
+                  Change Password
                 </button>
               </div>
             ) : (
               <div className="flex gap-3">
                 <button
                   className="flex items-center gap-2 bg-(--color-secondary) text-(--color-secondary-content) px-3 py-1 rounded text-sm hover:bg-amber-700"
-                  onClick={handelSaveProfile}
+                  onClick={handleSaveProfile}
                   disabled={isloading}
                 >
-                  {isloading ? "Saving changes..." : "Save"}
+                  {isloading ? "Saving..." : "Save"}
                 </button>
                 <button
-                  className="flex items-center gap-2 bg-(--color-secondary) text-(--color-secondary-content) px-3 py-1 rounded text-sm  hover:bg-amber-700"
+                  className="flex items-center gap-2 bg-(--color-secondary) text-(--color-secondary-content) px-3 py-1 rounded text-sm hover:bg-amber-700"
                   onClick={handleCancelProfile}
                   disabled={isloading}
                 >
@@ -111,10 +108,11 @@ const CustomerSetting = () => {
               </div>
             )}
           </div>
+
           {/* camera and edit profile */}
           <div>
-            <div className="flex items-center gap-6 p-3">
-              <div className="relative">
+            <div className="flex gap-5">
+              <div className="relative ">
                 <div className="w-36 h-36 ">
                   <img
                     src={profilePicPreview || user?.photo?.url}
@@ -123,77 +121,63 @@ const CustomerSetting = () => {
                   />
                 </div>
                 {editingProfile && (
-                  <div
-                    className="absolute cursor-pointer right-3 bottom-3.5 border rounded-2xl p-1 bg-(--color-base-200)"
-                    title="Change Photo"
-                  >
+                  <div className="absolute cursor-pointer right-3 bottom-3.5 border rounded-2xl p-1 bg-(--color-base-200)">
                     <label htmlFor="profilePic" className="cursor-pointer">
                       <MdLinkedCamera className="text-xl" />
                     </label>
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={handleProfilePicChange}
                       id="profilePic"
                       className="hidden"
+                      onChange={handleProfilePicChange}
                     />
                   </div>
                 )}
               </div>
               {/* editing names */}
-              <div className=" space-y-4 w-full">
-                <div className="grid grid-cols-1 gap-3 justify-center items-center">
-                  {/* fullName */}
-                  <div className="flex gap-2 items-center mt-3">
-                    <label
-                      htmlFor=""
-                      className="block text-sm font-semibold mb-2"
-                    >
-                      fullName
-                    </label>
-                    <input
-                      type="text"
-                      onChange={handleInputData}
-                      className={`w-full px-3 py-2 border ${editingProfile ? "border-(--color-secondary)" : "border-gray-300"} rounded col-span-4`}
-                      name="fullName"
-                      value={formData.fullName}
-                      disabled={!editingProfile}
-                    />
-                  </div>
-                  {/* email */}
-                  <div className="flex gap-2 items-center mt-3">
-                    <label
-                      htmlFor=""
-                      className="block text-sm font-semibold mb-2"
-                    >
-                      email
-                    </label>
-                    <input
-                      type="email"
-                      onChange={handleInputData}
-                      className={`w-full px-3 py-2 border ${editingProfile ? "border-(--color-secondary) text-(--color-secondary) disabled:bg-(--color-secondary)/50e cursor-not-allowed" : "border-gray-300"} rounded col-span-4`}
-                      name="email"
-                      value={formData.email}
-                      disabled
-                    />
-                  </div>
-                  {/* phone */}
-                  <div className="flex gap-2 items-center mt-3">
-                    <label
-                      htmlFor=""
-                      className="block text-sm font-semibold mb-2"
-                    >
-                      phone
-                    </label>
-                    <input
-                      type="number"
-                      onChange={handleInputData}
-                      className={`w-full px-3 py-2 border ${editingProfile ? "border-(--color-secondary)" : "border-gray-300"} rounded col-span-4`}
-                      name="phone"
-                      value={formData.phone}
-                      disabled={!editingProfile}
-                    />
-                  </div>
+              <div className="w-full space-y-4">
+                <div className="grid grid-cols-[100px_1fr] items-center gap-4">
+                  <label className="font-medium">Full Name</label>
+
+                  <input
+                    type="text"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleInputData}
+                    disabled={!editingProfile}
+                    className="w-full px-3 py-2 border rounded"
+                  />
+                </div>
+
+                <div className="grid grid-cols-[100px_1fr] items-center gap-4">
+                  <label className="font-medium">Email</label>
+
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputData}
+                    disabled
+                    className={`w-full px-3 py-2 border rounded ${
+                      editingProfile
+                        ? "border-(--color-secondary) text-(--color-secondary) disabled:bg-(--color-secondary)/50 cursor-not-allowed"
+                        : "border-gray-300"
+                    }`}
+                  />
+                </div>
+
+                <div className="grid grid-cols-[100px_1fr] items-center gap-4">
+                  <label className="font-medium">Phone</label>
+
+                  <input
+                    type="text"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputData}
+                    disabled={!editingProfile}
+                    className="w-full px-3 py-2 border rounded"
+                  />
                 </div>
               </div>
             </div>
@@ -204,4 +188,4 @@ const CustomerSetting = () => {
   );
 };
 
-export default CustomerSetting;
+export default RiderSettings;

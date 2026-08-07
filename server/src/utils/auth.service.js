@@ -8,14 +8,14 @@ export const genToken = async (user, res) => {
       expiresIn: "1d",
     });
 
-    res.cookie("Oreo", token, {
+    res.cookie("oreo", token, {
       maxAge: 1000 * 60 * 60 * 24,
       httpOnly: true,
       secure: false,
       sameSite: "lax",
     });
 
-    console.log(token);
+    console.log("TOKEN CREATED:", token);
   } catch (error) {
     throw next(error);
   }

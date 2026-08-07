@@ -117,7 +117,7 @@ const RestaurantSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
-    cuisinesType: {
+    cuisinesTypes: {
       type: [String],
       required: true,
     },

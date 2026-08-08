@@ -167,3 +167,130 @@ export const RestaurantUpdateInfo = async (req, res, next) => {
     next(error);
   }
 };
+
+export const RestaurantGetData = async (req, res, next) => {
+  try {
+    const currentUser = req.user;
+    const managerId = req.query.id;
+    console.log("currentUser : ", currentUser);
+    console.log("managerId : ", managerId);
+
+    if (currentUser._id.toString() !== managerId) {
+      const error = new Error("Unauthorized access");
+      error.statusCode = 401;
+      return next(error);
+    }
+
+    const restaurantData = await Restaurant.findOne({ managerId });
+    if (restaurantData) {
+      res.status(200).json({
+        message: "Restaurant Fetched Successfully",
+        data: restaurantData,
+      });
+    } else {
+      res.status(200).json({
+        message: "Restaurant data not found",
+        data: {},
+      });
+    }
+  } catch (error) {
+    console.log(error.message);
+    return next(error);
+  }
+};
+
+export const OpenRestaurant = async (req, res, next) => {
+  try {
+    const currentUser = req.user;
+    const openStatus = req.params.openStatus;
+
+    console.log("openStatus : ", openStatus);
+    const managerId = currentUser._id;
+    const existingRestaurant = await Restaurant.findOne({
+      managerId,
+    });
+    if (!existingRestaurant) {
+      const error = new Error("Restaurant not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+    existingRestaurant.isOpen = openStatus;
+    await existingRestaurant.save();
+    return res.status(200).json({
+      message: `${openStatus === "true" ? "Restaurant is live now" : "Restaurant is offline"}`,
+      data: existingRestaurant,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return next(error);
+  }
+};
+
+export const RestaurantUpdateLegalInfo = async (req, res, next) => {
+  try {
+    const currentUser = req.user;
+    const { legalName, companyName } = req.body;
+
+    if (!legalName || !companyName) {
+      const error = new Error("All fields required");
+      error.statusCode = 400;
+      return next(error);
+    }
+
+    const existingRestaurant = await Restaurant.findOne({
+      managerId: currentUser._id,
+    });
+    if (!existingRestaurant) {
+      const error = new Error("Restaurant Not Found");
+      error.statusCode = 404;
+      return next(error);
+    }
+    existingRestaurant.legal = {
+      legalName,
+      companyName,
+    };
+    await existingRestaurant.save();
+    res.status(200).json({
+      message: "Legal information updated successfully",
+      data: existingRestaurant,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return next(error);
+  }
+};
+
+export const RestaurantUpdateAddress = async (req, res, next) => {
+  try {
+    const currentUser = req.user;
+    const { address, city, state, pinCode, country, geoLat, geoLon } = req.body;
+
+    const existingRestaurant = await Restaurant.findOne({
+      managerId: currentUser._id,
+    });
+    if (!existingRestaurant) {
+      const error = new Error("Restaurant Not Found");
+      error.statusCode = 404;
+      return next(error);
+    }
+    existingRestaurant.address = address ?? existingRestaurant.address;
+    existingRestaurant.city = city ?? existingRestaurant.city;
+    existingRestaurant.state = state ?? existingRestaurant.state;
+    existingRestaurant.pinCode = pinCode ?? existingRestaurant.pinCode;
+    existingRestaurant.country = country ?? existingRestaurant.country;
+    if (geoLat && geoLon) {
+      existingRestaurant.geoLocation = {
+        lat: String(geoLat),
+        lon: String(geoLon),
+      };
+    }
+    await existingRestaurant.save();
+    res.status(200).json({
+      message: "Address updated successfully",
+      data: existingRestaurant,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return next(error);
+  }
+};

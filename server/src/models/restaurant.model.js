@@ -14,6 +14,10 @@ const RestaurantSchema = mongoose.Schema(
       type: String,
       default: "",
     },
+    state: {
+      type: String,
+      default: "",
+    },
     city: {
       type: String,
       default: "",

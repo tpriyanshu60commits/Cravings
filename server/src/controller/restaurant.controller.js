@@ -294,3 +294,76 @@ export const RestaurantUpdateAddress = async (req, res, next) => {
     return next(error);
   }
 };
+
+export const RestaurantUpdateBankingDocuments = async (req, res, next) => {
+  try {
+    const currentUser = req.user;
+    const {
+      bankName,
+      accountNumber,
+      ifscCode,
+      gstCertificate,
+      fssaiCertificate,
+      panCard,
+    } = req.body;
+
+    const existingRestaurant = await Restaurant.findOne({
+      managerId: currentUser._id,
+    });
+    if (!existingRestaurant) {
+      const error = new Error("Restaurant Not Found");
+      error.statusCode = 404;
+      return next(error);
+    }
+    existingRestaurant.financialDetails = {
+      bankName: bankName ?? existingRestaurant.financialDetails?.bankName ?? "",
+      accountNumber:
+        accountNumber ??
+        existingRestaurant.financialDetails?.accountNumber ??
+        "",
+      ifscCode: ifscCode ?? existingRestaurant.financialDetails?.ifscCode ?? "",
+    };
+    existingRestaurant.documents = {
+      gstCertificate:
+        gstCertificate ?? existingRestaurant.documents?.gstCertificate ?? "",
+      fssaiCertificate:
+        fssaiCertificate ??
+        existingRestaurant.documents?.fssaiCertificate ??
+        "",
+      panCard: panCard ?? existingRestaurant.documents?.panCard ?? "",
+    };
+    await existingRestaurant.save();
+    res.status(200).json({
+      message: "Banking & Documents updated successfully",
+      data: existingRestaurant,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return next(error);
+  }
+};
+
+export const RestaurantUpdateSocialMediaLinks = async (req, res, next) => {
+  try {
+    const currentUser = req.user;
+    const { socialMediaLinks } = req.body;
+
+    if (!Array.isArray(socialMediaLinks)) {
+      const error = new Error("socialMediaLinks must be an array");
+      error.statusCode = 400;
+      return next(error);
+    }
+    const existingRestaurant = await Restaurant.findOne({
+      managerId: currentUser._id,
+    });
+    existingRestaurant.socialMediaLinks = socialMediaLinks;
+    await existingRestaurant.save();
+    res.status(200).json({
+      message: "Social media links updated successfully",
+      data: existingRestaurant,
+    });
+  } catch (error) {
+    console.log(error.message);
+    next(error);
+  }
+};

@@ -155,16 +155,12 @@ const RestaurantSchema = mongoose.Schema(
       required: true,
     },
     socialMediaLinks: {
-      type: {
-        platform: {
-          type: String,
-          required: true,
+      type: [
+        {
+          platform: { type: String, required: true },
+          url: { type: String, required: true },
         },
-        url: {
-          type: String,
-          required: true,
-        },
-      },
+      ],
     },
   },
   { timestamps: true },

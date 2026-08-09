@@ -367,3 +367,41 @@ export const RestaurantUpdateSocialMediaLinks = async (req, res, next) => {
     next(error);
   }
 };
+
+export const RestaurantUpdateCoverPhoto = async (req, res, next) => {
+  try {
+    const currentUser = req.user;
+    const coverImageFromFE = req.file;
+
+    if (!coverImageFromFE) {
+      const error = new Error("Cover image is required");
+      error.statusCode = 400;
+      return next(error);
+    }
+    const existingRestaurant = await Restaurant.findOne({
+      managerId: currentUser._id,
+    });
+
+    if (!existingRestaurant) {
+      const error = new Error("Restaurant Not Found");
+      error.statusCode = 404;
+      return next(error);
+    }
+    if (existingRestaurant.coverImage?.publicId) {
+      await deleteSingleImage(existingRestaurant.coverImage.publicId);
+    }
+    const coverImage = await UploadSingleImage(
+      coverImageFromFE,
+      `restaurant/${currentUser.phone}/coverPhoto`,
+    );
+    existingRestaurant.coverImage = coverImage;
+    await existingRestaurant.save();
+    return res.status(200).json({
+      message: "Cover photo updated successfully",
+      data: existingRestaurant,
+    });
+  } catch (error) {
+    console.log(error.message);
+    next(error);
+  }
+};

@@ -447,4 +447,4 @@ export const RestaurantUpdateRestaurantImages = async (req, res, next) => {
     console.log(error.message);
     next(error);
   }
-};
+}

@@ -8,6 +8,7 @@ import { RestaurantUpdateLegalInfo } from "../controller/restaurant.controller.j
 import { RestaurantUpdateAddress } from "../controller/restaurant.controller.js";
 import { RestaurantUpdateBankingDocuments } from "../controller/restaurant.controller.js";
 import { RestaurantUpdateSocialMediaLinks } from "../controller/restaurant.controller.js";
+import { RestaurantAddMenuItems } from "../controller/restaurant.controller.js";
 const upload = multer();
 const router = express.Router();
 
@@ -44,6 +45,13 @@ router.put(
   "/update-social-media-links",
   RestaurantAuthProtect,
   RestaurantUpdateSocialMediaLinks,
+);
+
+router.post(
+  "/add-menu-item",
+  RestaurantAuthProtect,
+  upload.single("itemImage"),
+  RestaurantAddMenuItems,
 );
 
 export default router;

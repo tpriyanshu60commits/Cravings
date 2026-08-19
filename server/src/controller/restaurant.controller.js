@@ -1,4 +1,5 @@
 import Restaurant from "../models/restaurant.model.js";
+import Menu from "../models/menu.model.js";
 import {
   uploadMultipleImages,
   deleteMultipleImages,
@@ -406,7 +407,6 @@ export const RestaurantUpdateCoverPhoto = async (req, res, next) => {
   }
 };
 
-
 export const RestaurantUpdateRestaurantImages = async (req, res, next) => {
   try {
     const currentUser = req.user;
@@ -447,4 +447,102 @@ export const RestaurantUpdateRestaurantImages = async (req, res, next) => {
     console.log(error.message);
     next(error);
   }
-}
+};
+
+// menu controller
+
+export const RestaurantAddMenuItems = async (req, res, next) => {
+  try {
+    const currentUser = req.user;
+    const {
+      itemName,
+      itemPrice,
+      description,
+      category,
+      foodType,
+      status,
+      isTopRated,
+      isRecommended,
+      isNew,
+      isDeleted,
+    } = req.body;
+    const itemImageFromFE = req.file;
+    if (!itemPrice || !description || !category || !foodType || !status) {
+      const error = new Error("All fields required");
+      error.statusCode = 400;
+      return next(error);
+    }
+    if (!itemImageFromFE) {
+      const error = new Error("Item image is required");
+      error.statusCode = 400;
+      return next(error);
+    }
+    const existingRestaurant = await Restaurant.findOne({
+      managerId: currentUser._id,
+    });
+
+    if (!existingRestaurant) {
+      const error = new Error("Restaurant not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+    console.log("Lets UploadImage");
+
+    const itemImage = await UploadSingleImage(
+      itemImageFromFE,
+      `restaurant/${currentUser.phone}/menuitems`,
+    );
+    console.log("itemImage after upload:", itemImage);
+    const existingMenuItem = await Menu.findOne({
+      restaurantId: existingRestaurant._id,
+    });
+    if (existingRestaurant) {
+      existingMenuItem.menuItems.push({
+        itemName,
+        description,
+        itemPrice,
+        category,
+        foodType,
+        status,
+        isTopRated,
+        isRecommended,
+        isNew,
+        isDeleted,
+        image: itemImage,
+      });
+      console.log("Existing Menu Item after push");
+      await existingRestaurant.save();
+      return res.status(200).json({
+        message: "Menu item added successfully",
+        data: existingMenuItem,
+      });
+    } else {
+      const newItem = {
+        itemName,
+        description,
+        itemPrice,
+        category,
+        foodType,
+        status,
+        isTopRated,
+        isRecommended,
+        isNew,
+        isDeleted,
+        image: itemImage,
+      };
+      const newMenuItem = await Menu.create({
+        restaurantId: existingRestaurant._id,
+        menuItems: [newItem],
+      });
+      return res.status(200).json({
+        message: "Menu item added successfully",
+        data: newMenuItem,
+      });
+    }
+  } catch (error) {
+    console.log(error.message);
+    next(error);
+  }
+};
+
+

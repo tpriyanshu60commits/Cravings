@@ -203,7 +203,7 @@ export const RestaurantGetData = async (req, res, next) => {
 export const OpenRestaurant = async (req, res, next) => {
   try {
     const currentUser = req.user;
-    const openStatus = req.params.openStatus;
+    const openStatus = req.params.openStatus === "true";
 
     console.log("openStatus : ", openStatus);
     const managerId = currentUser._id;
@@ -215,14 +215,15 @@ export const OpenRestaurant = async (req, res, next) => {
       error.statusCode = 404;
       return next(error);
     }
+    await Restaurant.updateOne({ managerId }, { $set: { isOpen: openStatus } });
     existingRestaurant.isOpen = openStatus;
-    await existingRestaurant.save();
+    // await existingRestaurant.save();
     return res.status(200).json({
-      message: `${openStatus === "true" ? "Restaurant is live now" : "Restaurant is offline"}`,
+      message: `${openStatus === true ? "Restaurant is live now" : "Restaurant is offline"}`,
       data: existingRestaurant,
     });
   } catch (error) {
-    console.log(error.message);
+    console.error("OpenRestaurant ERROR:", error);
     return next(error);
   }
 };
@@ -611,7 +612,7 @@ const getMenuContext = async (currentUser, itemId, next) => {
   return (existingMenu, menuItem, existingRestaurant);
 };
 
-export default RestaurantUpdateMenuItem = async (req, res, next) => {
+export const RestaurantUpdateMenuItem = async (req, res, next) => {
   try {
     const currentUser = req.user;
     const { itemId } = req.params;

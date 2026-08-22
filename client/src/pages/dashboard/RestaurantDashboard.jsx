@@ -33,14 +33,14 @@ const RestaurantDashboard = () => {
   return (
     <>
       <div className="h-screen flex">
-        <div className="w-1/4 border">
+        <div className="w-3/20 border">
           <RestaurantSidebar
             activeTab={activeTab}
             setActiveTab={setActiveTab}
           />
         </div>
 
-        <div className="w-3/4 border">
+        <div className="w-17/20 border p-3">
           {activeTab === "overview" && <RestaurantOverview />}
           {activeTab === "orders" && <RestaurantOrders />}
           {activeTab === "settings" && <RestaurantSettings />}

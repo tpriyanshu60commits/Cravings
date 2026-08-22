@@ -94,14 +94,12 @@ import {
 
 export const RestaurantUpdateInfo = async (req, res, next) => {
   try {
-    console.log("CONTROLLER REACHED");
-    console.log("REQ.BODY:", req.body);
     const currentUser = req.user;
     const {
       restaurantName,
       description,
       restaurantType,
-      cuisinesTypes,
+      cuisineTypes,
       contactEmail,
       contactPhone,
       openingTime,
@@ -112,59 +110,93 @@ export const RestaurantUpdateInfo = async (req, res, next) => {
       !restaurantName ||
       !description ||
       !restaurantType ||
-      !cuisinesTypes ||
+      !cuisineTypes ||
       !contactEmail ||
       !contactPhone ||
       !openingTime ||
       !closingTime
     ) {
-      const error = new Error("All fields are required");
+      const error = new Error("All restaurant information fields are required");
+
       error.statusCode = 400;
       return next(error);
     }
-    const cuisinesTypeArray = cuisinesTypes
+    const cuisineTypesArray = cuisineTypes
       .split(",")
       .map((type) => type.trim());
     const existingRestaurant = await Restaurant.findOne({
       managerId: currentUser._id,
     });
+
     if (!existingRestaurant) {
       const newRestaurant = await Restaurant.create({
         managerId: currentUser._id,
         restaurantName,
         description,
-        cuisinesTypes: cuisinesTypeArray,
         restaurantType,
+        cuisinesTypes: cuisineTypesArray,
         contactDetails: {
           email: contactEmail,
           phone: contactPhone,
         },
         servingHours: {
-          openingTime: openingTime,
-          closingTime: closingTime,
+          openingTime,
+          closingTime,
         },
       });
+
       return res.status(201).json({
-        message: "Restaurant Profile Created",
+        success: true,
+        message: "Restaurant information created successfully",
         data: newRestaurant,
       });
     } else {
       existingRestaurant.restaurantName = restaurantName;
       existingRestaurant.description = description;
-      existingRestaurant.cuisinesTypes = cuisinesTypeArray;
       existingRestaurant.restaurantType = restaurantType;
+
+      existingRestaurant.cuisinesTypes = cuisineTypesArray;
+
       existingRestaurant.contactDetails.email = contactEmail;
       existingRestaurant.contactDetails.phone = contactPhone;
+
       existingRestaurant.servingHours.openingTime = openingTime;
       existingRestaurant.servingHours.closingTime = closingTime;
-      await existingRestaurant.save();
+
+      // Update ONLY these fields
+      await Restaurant.updateOne(
+        {
+          _id: existingRestaurant._id,
+        },
+        {
+          $set: {
+            restaurantName: restaurantName,
+            description: description,
+            restaurantType: restaurantType,
+            cuisinesTypes: cuisineTypesArray,
+
+            "contactDetails.email": contactEmail,
+            "contactDetails.phone": contactPhone,
+
+            "servingHours.openingTime": openingTime,
+            "servingHours.closingTime": closingTime,
+          },
+        },
+      );
+
+      // Get updated restaurant
+      const updatedRestaurant = await Restaurant.findById(
+        existingRestaurant._id,
+      );
+
       return res.status(200).json({
-        message: "Restaurant profile updated successfully",
-        data: existingRestaurant,
+        success: true,
+        message: "Restaurant information updated successfully",
+        data: updatedRestaurant,
       });
     }
   } catch (error) {
-    console.log(error.message);
+    console.log("RestaurantUpdateInfo ERROR:", error);
     next(error);
   }
 };

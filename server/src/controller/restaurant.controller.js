@@ -357,27 +357,26 @@ export const RestaurantUpdateBankingDocuments = async (req, res, next) => {
       error.statusCode = 404;
       return next(error);
     }
-    existingRestaurant.financialDetails = {
-      bankName: bankName ?? existingRestaurant.financialDetails?.bankName ?? "",
-      accountNumber:
-        accountNumber ??
-        existingRestaurant.financialDetails?.accountNumber ??
-        "",
-      ifscCode: ifscCode ?? existingRestaurant.financialDetails?.ifscCode ?? "",
-    };
-    existingRestaurant.documents = {
-      gstCertificate:
-        gstCertificate ?? existingRestaurant.documents?.gstCertificate ?? "",
-      fssaiCertificate:
-        fssaiCertificate ??
-        existingRestaurant.documents?.fssaiCertificate ??
-        "",
-      panCard: panCard ?? existingRestaurant.documents?.panCard ?? "",
-    };
-    await existingRestaurant.save();
+    await Restaurant.updateOne(
+      {
+        _id: existingRestaurant._id,
+      },
+      {
+        $set: {
+          "documents.gstCertificate": gstCertificate,
+          "documents.fssaiCertificate": fssaiCertificate,
+          "documents.panCard": panCard,
+          "financialDetails.bankName": bankName,
+          "financialDetails.accountNumber": accountNumber,
+          "financialDetails.ifscCode": ifscCode,
+        },
+      },
+    );
+    const updatedRestaurant = await Restaurant.findById(existingRestaurant._id);
+
     res.status(200).json({
       message: "Banking & Documents updated successfully",
-      data: existingRestaurant,
+      data: updatedRestaurant,
     });
   } catch (error) {
     console.log(error.message);
@@ -413,7 +412,7 @@ export const RestaurantUpdateSocialMediaLinks = async (req, res, next) => {
 export const RestaurantUpdateCoverPhoto = async (req, res, next) => {
   try {
     const currentUser = req.user;
-    const coverImageFromFE = req.file;
+    const coverImageFromFE = req. file;
 
     if (!coverImageFromFE) {
       const error = new Error("Cover image is required");

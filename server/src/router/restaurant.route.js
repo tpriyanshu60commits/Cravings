@@ -9,6 +9,8 @@ import { RestaurantUpdateAddress } from "../controller/restaurant.controller.js"
 import { RestaurantUpdateBankingDocuments } from "../controller/restaurant.controller.js";
 import { RestaurantUpdateSocialMediaLinks } from "../controller/restaurant.controller.js";
 import { RestaurantAddMenuItems } from "../controller/restaurant.controller.js";
+import { RestaurantUpdateCoverPhoto } from "../controller/restaurant.controller.js";
+import { RestaurantUpdateRestaurantImages } from "../controller/restaurant.controller.js";
 const upload = multer();
 const router = express.Router();
 
@@ -45,6 +47,19 @@ router.put(
   "/update-social-media-links",
   RestaurantAuthProtect,
   RestaurantUpdateSocialMediaLinks,
+);
+
+router.put(
+  "/update-cover-photo",
+  RestaurantAuthProtect,
+  upload.single("coverImage"),
+  RestaurantUpdateCoverPhoto,
+);
+router.put(
+  "/update-restaurant-images",
+  RestaurantAuthProtect,
+  upload.array("restaurantImages", 8),
+  RestaurantUpdateRestaurantImages,
 );
 
 router.post(

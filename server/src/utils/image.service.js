@@ -38,9 +38,13 @@ export const deleteMultipleImages = async (Images) => {
   }
 };
 
-export const deleteSingleImage = async (image) => {
+export const deleteSingleImage = async (publicId) => {
   try {
-    await cloudinary.uploader.destroy(image.publicId);
+    if (!publicId) {
+      throw new Error("Cloudinary publicId is required");
+    }
+
+    await cloudinary.uploader.destroy(publicId);
   } catch (error) {
     console.log(error.message);
     throw error;

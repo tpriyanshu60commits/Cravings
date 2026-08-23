@@ -125,7 +125,7 @@ const RestaurantSchema = mongoose.Schema(
       type: [String],
       required: true,
     },
-    restaurantImages: {
+    restaurantImage: {
       type: [
         {
           url: { type: String, required: true },

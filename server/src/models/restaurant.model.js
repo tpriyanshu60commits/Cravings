@@ -46,7 +46,7 @@ const RestaurantSchema = mongoose.Schema(
           type: String,
           required: true,
         },
-        companyName: {
+        companyType: {
           type: String,
           required: true,
         },

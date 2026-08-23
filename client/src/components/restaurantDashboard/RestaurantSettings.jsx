@@ -7,7 +7,7 @@ import Loader from "../../components/Loader";
 import { IoMdHammer } from "react-icons/io";
 import { RiLoader4Fill } from "react-icons/ri";
 import Information from "./settings/restaurantInformation/Index";
-
+import CoreDetails from "./settings/coreDetails/Index";
 const RestaurantSettings = () => {
   const { user } = useAuth();
   const Tabs = [
@@ -124,8 +124,8 @@ const RestaurantSettings = () => {
             </div>
             <div className="h-full rounded-lg bg-(--color-base-200) p-2">
               {activeTab === "information" && <Information />}
-              {/* {activeTab === "coreDetails" && <CoreDetails />}
-              {activeTab === "photos" && <RestaurantPhotos />} */}
+              {activeTab === "coreDetails" && <CoreDetails />}
+              {/* {activeTab === "photos" && <RestaurantPhotos />} */}
             </div>
           </>
         )}

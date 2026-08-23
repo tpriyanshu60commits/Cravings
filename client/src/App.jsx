@@ -9,7 +9,7 @@ import RestaurantDashboard from "./pages/dashboard/RestaurantDashboard";
 import RiderDashboard from "./pages/dashboard/RiderDashboard";
 import CustomerDashboard from "./pages/dashboard/CustomerDashboard";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
-import RestaurantSettings from "./components/restaurantDashboard/RestaurantSettings";
+// import RestaurantSettings from "./components/restaurantDashboard/RestaurantSettings";
 
 const App = () => {
   return (
@@ -24,7 +24,7 @@ const App = () => {
         <Route path="/customer-dashboard" element={<CustomerDashboard />} />
         <Route path="/rider-dashboard" element={<RiderDashboard />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        <Route path="/restaurant-setting" element={<RestaurantSettings />} />
+        {/* <Route path="/restaurant-setting" element={<RestaurantSettings />} /> */}
       </Routes>
     </>
   );

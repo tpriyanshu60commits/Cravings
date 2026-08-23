@@ -263,9 +263,9 @@ export const OpenRestaurant = async (req, res, next) => {
 export const RestaurantUpdateLegalInfo = async (req, res, next) => {
   try {
     const currentUser = req.user;
-    const { legalName, companyName } = req.body;
+    const { legalName, companyType } = req.body;
 
-    if (!legalName || !companyName) {
+    if (!legalName || !companyType) {
       const error = new Error("All fields required");
       error.statusCode = 400;
       return next(error);
@@ -279,14 +279,22 @@ export const RestaurantUpdateLegalInfo = async (req, res, next) => {
       error.statusCode = 404;
       return next(error);
     }
-    existingRestaurant.legal = {
-      legalName,
-      companyName,
-    };
-    await existingRestaurant.save();
+    await Restaurant.updateOne(
+      {
+        _id: existingRestaurant._id,
+      },
+      {
+        $set: {
+          "legal.legalName": legalName,
+          "legal.companyType": companyType,
+        },
+      },
+    );
+
+    const updatedRestaurant = await Restaurant.findById(existingRestaurant._id);
     res.status(200).json({
       message: "Legal information updated successfully",
-      data: existingRestaurant,
+      data: updatedRestaurant,
     });
   } catch (error) {
     console.log(error.message);

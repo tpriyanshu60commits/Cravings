@@ -412,7 +412,7 @@ export const RestaurantUpdateSocialMediaLinks = async (req, res, next) => {
 export const RestaurantUpdateCoverPhoto = async (req, res, next) => {
   try {
     const currentUser = req.user;
-    const coverImageFromFE = req. file;
+    const coverImageFromFE = req.file;
 
     if (!coverImageFromFE) {
       const error = new Error("Cover image is required");
@@ -536,7 +536,7 @@ export const RestaurantAddMenuItems = async (req, res, next) => {
     const existingMenuItem = await Menu.findOne({
       restaurantId: existingRestaurant._id,
     });
-    if (existingRestaurant) {
+    if (existingMenuItem) {
       existingMenuItem.menuItems.push({
         itemName,
         description,
@@ -551,7 +551,7 @@ export const RestaurantAddMenuItems = async (req, res, next) => {
         image: itemImage,
       });
       console.log("Existing Menu Item after push");
-      await existingRestaurant.save();
+      await existingMenuItem.save();
       return res.status(200).json({
         message: "Menu item added successfully",
         data: existingMenuItem,
@@ -580,7 +580,7 @@ export const RestaurantAddMenuItems = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log(error.message);
+    console.error("RestaurantAddMenuItem ERROR:", error);
     next(error);
   }
 };
@@ -641,14 +641,14 @@ const getMenuContext = async (currentUser, itemId, next) => {
     error.statusCode = 404;
     return next(error);
   }
-  const menuItem = existingMenu.menuItem.id(itemId);
+  const menuItem = existingMenu.menuItems.id(itemId);
   if (!menuItem) {
     const error = new Error("Menu Item Not Found");
     error.statusCode = 404;
     return next(error);
   }
 
-  return (existingMenu, menuItem, existingRestaurant);
+  return { existingMenu, menuItem, existingRestaurant };
 };
 
 export const RestaurantUpdateMenuItem = async (req, res, next) => {

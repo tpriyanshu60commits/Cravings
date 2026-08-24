@@ -9,8 +9,13 @@ import { RestaurantUpdateAddress } from "../controller/restaurant.controller.js"
 import { RestaurantUpdateBankingDocuments } from "../controller/restaurant.controller.js";
 import { RestaurantUpdateSocialMediaLinks } from "../controller/restaurant.controller.js";
 import { RestaurantAddMenuItems } from "../controller/restaurant.controller.js";
+import { RestaurantMenuItems } from "../controller/restaurant.controller.js";
 import { RestaurantUpdateCoverPhoto } from "../controller/restaurant.controller.js";
 import { RestaurantUpdateRestaurantImages } from "../controller/restaurant.controller.js";
+import { RestaurantUpdateMenuItemStatus } from "../controller/restaurant.controller.js";
+import { RestaurantDeleteMenuItem } from "../controller/restaurant.controller.js";
+import { RestaurantToggleMenuItemControl } from "../controller/restaurant.controller.js";
+
 const upload = multer();
 const router = express.Router();
 
@@ -68,5 +73,21 @@ router.post(
   upload.single("itemImage"),
   RestaurantAddMenuItems,
 );
+router.get("/menu-items", RestaurantAuthProtect, RestaurantMenuItems);
+router.patch(
+  "/menu-item/:itemId/status",
+  RestaurantAuthProtect,
+  RestaurantUpdateMenuItemStatus,
+);
+router.delete(
+  "/menu-item/:itemId",
+  RestaurantAuthProtect,
+  RestaurantDeleteMenuItem,
+);
 
+router.patch(
+  "/menu-item/:itemId/control",
+  RestaurantAuthProtect,
+  RestaurantToggleMenuItemControl,
+);
 export default router;

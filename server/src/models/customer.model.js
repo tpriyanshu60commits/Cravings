@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const CustomerSchema = mongoose.Schema(
+const customerSchema = mongoose.Schema(
   {
     customerId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -10,18 +10,39 @@ const CustomerSchema = mongoose.Schema(
     addressBook: {
       type: [
         {
-          name: { type: String, required: true },
-          address: { type: String, required: true },
-          city: { type: String, required: true },
-          state: { type: String, required: true },
-          pinCode: { type: String, required: true },
-          country: { type: String, required: true },
+          name: {
+            type: String,
+            required: true,
+          },
+          address: {
+            type: String,
+            required: true,
+          },
+          city: {
+            type: String,
+            required: true,
+          },
+          state: {
+            type: String,
+            required: true,
+          },
+          pinCode: {
+            type: String,
+            required: true,
+          },
+          country: {
+            type: String,
+            required: true,
+          },
           addressType: {
             type: String,
             enum: ["home", "work", "other"],
             required: true,
           },
-          isDefault: { type: Boolean, default: false },
+          isDefault: {
+            type: Boolean,
+            default: false,
+          },
           geoLocation: {
             type: {
               lat: {
@@ -35,19 +56,20 @@ const CustomerSchema = mongoose.Schema(
         },
       ],
     },
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
     status: {
       type: String,
       enum: ["pending", "verified", "suspended"],
       default: "pending",
     },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+  },
 );
 
-const Customer = mongoose.model("customer", CustomerSchema);
-
+const Customer = mongoose.model("customer", customerSchema);
 export default Customer;

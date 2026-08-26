@@ -1,3 +1,4 @@
+// models/rider.model.js
 import mongoose from "mongoose";
 
 const RiderSchema = mongoose.Schema(
@@ -6,57 +7,55 @@ const RiderSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
       required: true,
+      unique: true,
     },
     vehicleDetails: {
-      type: {
-        vehicleType: { type: String, required: true },
-        vehicleNumber: { type: String, required: true },
-        vehicleModel: { type: String, required: true },
-        vehicleColor: { type: String, required: true },
-      },
+      vehicleType: { type: String, default: "" }, // e.g. "Bike", "Scooter", "EV"
+      vehicleNumber: { type: String, default: "" },
+      vehicleModel: { type: String, default: "" },
+      vehicleColor: { type: String, default: "" },
     },
     documents: {
-      type: {
-        drivingLicense: { type: String, required: true },
-        vehicleRegistrationCertificate: { type: String, required: true },
-        insuranceCertificate: { type: String, required: true },
-        aadharCard: { type: String, required: true },
-        panCard: { type: String, required: true },
-      },
+      drivingLicense: { type: String, default: "" }, // Cloudinary URL
+      vehicleRegistrationCertificate: { type: String, default: "" },
+      insuranceCertificate: { type: String, default: "" },
+      aadharCard: { type: String, default: "" },
+      panCard: { type: String, default: "" },
     },
     currentAddress: {
-      type: {
-        address: { type: String, required: true },
-        city: { type: String, required: true },
-        state: { type: String, required: true },
-        pinCode: { type: String, required: true },
-        country: { type: String, required: true },
-      },
+      address: { type: String, default: "" },
+      city: { type: String, default: "" },
+      state: { type: String, default: "" },
+      pinCode: { type: String, default: "" },
+      country: { type: String, default: "India" },
     },
     status: {
       type: String,
-      enum: ["active", "inactive", "blocked"],
-      default: "inactive",
+      enum: ["pending", "active", "inactive", "blocked"],
+      default: "pending", // Newly registered rider is pending admin approval
     },
-    averageRating: { type: Number, default: 0 },
-    isAvailable: { type: Boolean, default: false },
+    averageRating: {
+      type: Number,
+      default: 5.0,
+      min: 0,
+      max: 5,
+    },
+    isAvailable: {
+      type: Boolean,
+      default: false, // Default offline
+    },
     financialDetails: {
-      type: {
-        bankName: { type: String, required: true },
-        accountNumber: { type: String, required: true },
-        ifscCode: { type: String, required: true },
-      },
+      bankName: { type: String, default: "" },
+      accountNumber: { type: String, default: "" },
+      ifscCode: { type: String, default: "" },
     },
     currentLocation: {
-      type: {
-        lat: { type: String },
-        lon: { type: String },
-      },
+      lat: { type: String, default: "" },
+      lon: { type: String, default: "" },
     },
   },
   { timestamps: true },
 );
 
 const Rider = mongoose.model("rider", RiderSchema);
-
 export default Rider;

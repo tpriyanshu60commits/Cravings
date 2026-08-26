@@ -1,10 +1,9 @@
 import mongoose from "mongoose";
-
-const OrderSchema = mongoose.Schema(
+const orderSchema = mongoose.Schema(
   {
     restaurantId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "restaurant",
+      ref: "restauarnt",
       required: true,
     },
     customerId: {
@@ -22,13 +21,39 @@ const OrderSchema = mongoose.Schema(
         {
           itemId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "menuItem",
             required: true,
           },
-          quantity: { type: Number, required: true },
+          itemName: {
+            type: String,
+            required: true,
+          },
+          itemPrice: {
+            type: String,
+            required: true,
+          },
+          quantity: {
+            type: String,
+            required: true,
+          },
+          image: {
+            url: {
+              type: String,
+            },
+            publicId: {
+              type: String,
+            },
+          },
         },
       ],
+      required: true,
+      validate: {
+        validator: function (items) {
+          return items.length > 0;
+        },
+        message: "Order must contain at least one item",
+      },
     },
+
     orderStatus: {
       type: String,
       enum: [
@@ -37,7 +62,6 @@ const OrderSchema = mongoose.Schema(
         "preparing",
         "ready",
         "pickedUp",
-        "onTheWay",
         "outForDelivery",
         "undeliverable",
         "delivered",
@@ -54,23 +78,65 @@ const OrderSchema = mongoose.Schema(
     },
     billDetails: {
       type: {
-        totalAmount: { type: Number, required: true },
-        platformFee: { type: Number, required: true },
-        convenienceFee: { type: Number, required: true },
-        taxAmount: { type: Number, required: true },
-        deliveryCharge: { type: Number, required: true },
-        discountAmount: { type: Number, required: true },
-        finalAmount: { type: Number, required: true },
+        totalAmount: {
+          type: Number,
+          required: true,
+          min: 0,
+        },
+
+        platformFee: {
+          type: Number,
+          required: true,
+          min: 0,
+        },
+
+        convenienceFee: {
+          type: Number,
+          required: true,
+          min: 0,
+        },
+
+        taxAmount: {
+          type: Number,
+          required: true,
+          min: 0,
+        },
+
+        deliveryCharge: {
+          type: Number,
+          required: true,
+          min: 0,
+        },
+
+        discountAmount: {
+          type: Number,
+          required: true,
+          min: 0,
+        },
+
+        finalAmount: {
+          type: Number,
+          required: true,
+          min: 0,
+        },
       },
+      required: true,
     },
+
     deliveryAddress: {
       type: {
-        name: { type: String, required: true },
-        address: { type: String, required: true },
-        city: { type: String, required: true },
-        state: { type: String, required: true },
-        pinCode: { type: String, required: true },
-        country: { type: String, required: true },
+        name: {
+          type: String,
+          required: true,
+        },
+        address: {
+          type: String,
+          required: true,
+        },
+        state: {
+          type: String,
+          required: true,
+        },
         geoLocation: {
           type: {
             lat: {
@@ -80,10 +146,18 @@ const OrderSchema = mongoose.Schema(
               type: String,
             },
           },
+          required: true,
+        },
+        city: {
+          type: String,
+          required: true,
+        },
+        pinCode: {
+          type: String,
+          required: true,
         },
       },
     },
-
     paymentDetails: {
       type: {
         paymentMethod: {
@@ -96,7 +170,23 @@ const OrderSchema = mongoose.Schema(
           enum: ["pending", "completed", "failed"],
           default: "pending",
         },
+        razorpayOrderId: {
+          type: String,
+        },
+
+        razorpayPaymentId: {
+          type: String,
+        },
+
+        razorpaySignature: {
+          type: String,
+        },
+
+        paidAt: {
+          type: Date,
+        },
       },
+      required: true,
     },
   },
   {
@@ -104,6 +194,5 @@ const OrderSchema = mongoose.Schema(
   },
 );
 
-const Order = mongoose.model("order", OrderSchema);
-
+const Order = mongoose.model("order", orderSchema);
 export default Order;

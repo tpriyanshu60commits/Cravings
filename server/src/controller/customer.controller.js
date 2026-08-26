@@ -1,5 +1,5 @@
-import Customer from "../models/customer.model";
-
+import Customer from "../models/customer.model.js";
+import Order from "../models/order.model.js";
 export const AddAddress = async (req, res, next) => {
   try {
     const currentUser = req.user;
@@ -109,7 +109,7 @@ export const UpdateAddress = async (req, res, next) => {
     } = req.body;
 
     const customer = await Customer.findOne({
-      managerId: currentUser._id,
+      customerId: currentUser._id,
     });
     if (!customer) {
       const error = new Error("Customer profile not found");
@@ -205,4 +205,20 @@ export const GetAddressBook = async (req, res, next) => {
     next(error);
   }
 };
+export const GetAllOrders = async (req, res, next) => {
+  try {
+    const currentUser = req.user;
+    const customer = await Customer.findOne({ customerId: currentUser._id });
+    if (!customer) {
+      const error = new Error("Customer profile not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+    const allOrder = await Order.find({ customerId: customer._id });
 
+    res.status(200).json({ message: "All Order Fetched", data: allOrder });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};

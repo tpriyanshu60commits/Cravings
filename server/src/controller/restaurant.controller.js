@@ -1,5 +1,6 @@
 import Restaurant from "../models/restaurant.model.js";
 import Menu from "../models/menu.model.js";
+import Order from "../models/order.model.js";
 import {
   uploadMultipleImages,
   deleteMultipleImages,
@@ -659,13 +660,16 @@ export const RestaurantUpdateMenuItem = async (req, res, next) => {
 
     if (!context) return;
     const { existingMenu, menuItem } = context;
-    const { itemName, description, price, category, foodType, status } =
+    const { itemName, description, itemPrice, category, foodType, status } =
       req.body;
+
     const itemImageFromFE = req.file;
     if (itemName !== undefined) menuItem.itemName = itemName;
     if (description !== undefined) menuItem.description = description;
-    if (price !== undefined && price !== "") menuItem.price = Number(price);
-    if (category !== undefined) menuItem.category = category;
+
+    if (itemPrice !== undefined && itemPrice !== "") {
+      menuItem.itemPrice = Number(itemPrice);
+    } if (category !== undefined) menuItem.category = category;
     if (foodType !== undefined) menuItem.foodType = foodType;
     if (status !== undefined) menuItem.status = status;
 
@@ -777,5 +781,192 @@ export const RestaurantDeleteMenuItem = async (req, res, next) => {
   } catch (error) {
     console.log(error.message);
     next(error);
+  }
+};
+
+
+// new controllers of restaurant
+
+export const GetRestaurantOrders = async (req, res, next) => {
+  try {
+    const currentUser = req.user;
+
+    const existingRestaurant = await Restaurant.findOne({
+      managerId: currentUser._id,
+    });
+
+    if (!existingRestaurant) {
+      const error = new Error("Restaurant not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    const orders = await Order.find({
+      restaurantId: existingRestaurant._id,
+    })
+      .populate("customerId", "-password")
+      .populate("riderId", "-password")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      message: "Restaurant orders fetched successfully",
+      data: orders,
+    });
+  } catch (error) {
+    console.log("GetRestaurantOrders ERROR:", error.message);
+    return next(error);
+  }
+};
+
+
+export const AcceptRestaurantOrder = async (req, res, next) => {
+  try {
+    const currentUser = req.user;
+    const { orderId } = req.params;
+
+    // Find restaurant belonging to authenticated manager
+    const existingRestaurant = await Restaurant.findOne({
+      managerId: currentUser._id,
+    });
+
+    if (!existingRestaurant) {
+      const error = new Error("Restaurant not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    // Find order only if it belongs to this restaurant
+    const order = await Order.findOne({
+      _id: orderId,
+      restaurantId: existingRestaurant._id,
+    });
+
+    if (!order) {
+      const error = new Error("Order not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    // Only pending orders can be accepted
+    if (order.orderStatus !== "pending") {
+      const error = new Error(
+        `Order cannot be accepted because its current status is "${order.orderStatus}"`
+      );
+      error.statusCode = 400;
+      return next(error);
+    }
+
+    order.orderStatus = "accepted";
+    await order.save();
+
+    return res.status(200).json({
+      message: "Order accepted successfully",
+      data: order,
+    });
+  } catch (error) {
+    console.log("AcceptRestaurantOrder ERROR:", error.message);
+    return next(error);
+  }
+};
+
+
+export const PrepareRestaurantOrder = async (req, res, next) => {
+  try {
+    const currentUser = req.user;
+    const { orderId } = req.params;
+
+    // Find restaurant belonging to authenticated manager
+    const existingRestaurant = await Restaurant.findOne({
+      managerId: currentUser._id,
+    });
+
+    if (!existingRestaurant) {
+      const error = new Error("Restaurant not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    // Find order only if it belongs to this restaurant
+    const order = await Order.findOne({
+      _id: orderId,
+      restaurantId: existingRestaurant._id,
+    });
+
+    if (!order) {
+      const error = new Error("Order not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    // Only accepted orders can move to preparing
+    if (order.orderStatus !== "accepted") {
+      const error = new Error(
+        `Order cannot be moved to preparing because its current status is "${order.orderStatus}"`
+      );
+      error.statusCode = 400;
+      return next(error);
+    }
+
+    order.orderStatus = "preparing";
+    await order.save();
+
+    return res.status(200).json({
+      message: "Order is now being prepared",
+      data: order,
+    });
+  } catch (error) {
+    console.log("PrepareRestaurantOrder ERROR:", error.message);
+    return next(error);
+  }
+};
+
+
+export const ReadyRestaurantOrder = async (req, res, next) => {
+  try {
+    const currentUser = req.user;
+    const { orderId } = req.params;
+
+    // Find restaurant belonging to authenticated manager
+    const existingRestaurant = await Restaurant.findOne({
+      managerId: currentUser._id,
+    });
+
+    if (!existingRestaurant) {
+      const error = new Error("Restaurant not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    // Find order only if it belongs to this restaurant
+    const order = await Order.findOne({
+      _id: orderId,
+      restaurantId: existingRestaurant._id,
+    });
+
+    if (!order) {
+      const error = new Error("Order not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    // Only preparing orders can be marked ready
+    if (order.orderStatus !== "preparing") {
+      const error = new Error(
+        `Order cannot be marked ready because its current status is "${order.orderStatus}"`
+      );
+      error.statusCode = 400;
+      return next(error);
+    }
+
+    order.orderStatus = "ready";
+    await order.save();
+
+    return res.status(200).json({
+      message: "Order is ready for rider pickup",
+      data: order,
+    });
+  } catch (error) {
+    console.log("ReadyRestaurantOrder ERROR:", error.message);
+    return next(error);
   }
 };

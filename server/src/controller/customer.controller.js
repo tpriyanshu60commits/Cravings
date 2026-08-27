@@ -222,3 +222,51 @@ export const GetAllOrders = async (req, res, next) => {
     next(error);
   }
 };
+
+export const GetCustomerOrderDetails = async (req, res, next) => {
+  try {
+    const currentUser = req.user;
+    const { orderId } = req.params;
+
+    // 1. Find customer profile of logged-in user
+    const customer = await Customer.findOne({
+      customerId: currentUser._id,
+    });
+
+    if (!customer) {
+      const error = new Error("Customer profile not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    // 2. Find order AND verify it belongs to this customer
+    const order = await Order.findOne({
+      _id: orderId,
+      customerId: customer._id,
+    })
+      .populate(
+        "restaurantId",
+        "restaurantName address city contactDetails geoLocation"
+      )
+      .populate({
+        path: "riderId",
+        select: "vehicleDetails currentLocation averageRating isAvailable status",
+      });
+
+    if (!order) {
+      const error = new Error(
+        "Order not found or you are not authorized to view this order"
+      );
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    return res.status(200).json({
+      message: "Order details fetched successfully",
+      data: order,
+    });
+  } catch (error) {
+    console.log("GetCustomerOrderDetails ERROR:", error.message);
+    next(error);
+  }
+};

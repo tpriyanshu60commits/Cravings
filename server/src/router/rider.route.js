@@ -15,6 +15,7 @@ import {
   PickupOrder,
   OutForDeliveryOrder,
   DeliverOrder,
+  MarkOrderUndeliverable,
 } from "../controller/rider.controller.js";
 
 const upload = multer();
@@ -56,6 +57,11 @@ router.patch("/orders/:orderId/accept", AcceptAssignedOrder);
 router.patch("/orders/:orderId/pickup", PickupOrder);
 router.patch("/orders/:orderId/out-for-delivery", OutForDeliveryOrder);
 router.patch("/orders/:orderId/deliver", DeliverOrder);
+
+router.patch(
+  "/orders/:orderId/undeliverable",
+  MarkOrderUndeliverable
+);
 
 export default router;
 

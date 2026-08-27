@@ -660,4 +660,53 @@ export const DeliverOrder = async (req, res, next) => {
     next(error);
   }
 };
+export const MarkOrderUndeliverable = async (req, res, next) => {
+  try {
+    const currentUser = req.user;
+    const { orderId } = req.params;
 
+    const rider = await Rider.findOne({
+      riderId: currentUser._id,
+    });
+
+    if (!rider) {
+      const error = new Error("Rider profile not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+    const order = await Order.findOne({
+      _id: orderId,
+      riderId: rider._id,
+    });
+
+    if (!order) {
+      const error = new Error(
+        "Order not found or not assigned to you"
+      );
+      error.statusCode = 404;
+      return next(error);
+    }
+    if (order.orderStatus !== "outForDelivery") {
+      const error = new Error(
+        `Cannot mark order as undeliverable because current status is '${order.orderStatus}'. Order must be 'outForDelivery'.`
+      );
+      error.statusCode = 400;
+      return next(error);
+    }
+
+    order.orderStatus = "undeliverable";
+
+    await order.save();
+
+    return res.status(200).json({
+      message: "Order marked as undeliverable successfully",
+      data: order,
+    });
+  } catch (error) {
+    console.log(
+      "MarkOrderUndeliverable ERROR:",
+      error.message
+    );
+    next(error);
+  }
+};

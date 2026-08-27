@@ -86,20 +86,22 @@ export const LoginUser = async (req, res, next) => {
     }
 
     await genToken(existingUser, res);
+    const userResponse = existingUser.toObject();
+    delete userResponse.password;
 
     res.status(200).json({
       message: "Welcome Back",
-      data: existingUser,
+      data: userResponse,
     });
   } catch (error) {
     console.log(error.message);
-    next();
+    next(error);
   }
 };
 
 export const LogoutUser = async (req, res, next) => {
   try {
-    res.clearCookie("Oreo", { maxAge: 0 });
+    res.clearCookie("oreo", { maxAge: 0 });
 
     res.status(200).json({ message: "Logout Sucessfully" });
   } catch (error) {
@@ -194,7 +196,7 @@ export const ResetPassword = async (req, res, next) => {
     const { newPassword } = req.body;
 
     const currentUser = req.user;
-    
+
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 

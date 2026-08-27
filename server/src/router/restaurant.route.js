@@ -15,7 +15,13 @@ import { RestaurantUpdateRestaurantImages } from "../controller/restaurant.contr
 import { RestaurantUpdateMenuItemStatus } from "../controller/restaurant.controller.js";
 import { RestaurantDeleteMenuItem } from "../controller/restaurant.controller.js";
 import { RestaurantToggleMenuItemControl } from "../controller/restaurant.controller.js";
-
+import {
+  GetRestaurantOrders,
+  AcceptRestaurantOrder,
+  PrepareRestaurantOrder,
+  ReadyRestaurantOrder,
+  RestaurantUpdateMenuItem
+} from "../controller/restaurant.controller.js";
 const upload = multer();
 const router = express.Router();
 
@@ -89,5 +95,35 @@ router.patch(
   "/menu-item/:itemId/control",
   RestaurantAuthProtect,
   RestaurantToggleMenuItemControl,
+);
+// new routes
+router.get(
+  "/orders",
+  RestaurantAuthProtect,
+  GetRestaurantOrders
+);
+
+router.patch(
+  "/orders/:orderId/accept",
+  RestaurantAuthProtect,
+  AcceptRestaurantOrder
+);
+
+router.patch(
+  "/orders/:orderId/preparing",
+  RestaurantAuthProtect,
+  PrepareRestaurantOrder
+);
+
+router.patch(
+  "/orders/:orderId/ready",
+  RestaurantAuthProtect,
+  ReadyRestaurantOrder
+);
+
+router.put(
+  "/menu-item/:itemId",
+  RestaurantAuthProtect,
+  RestaurantUpdateMenuItem
 );
 export default router;

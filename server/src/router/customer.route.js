@@ -1,18 +1,24 @@
 import express from "express";
-import { AuthProtect } from "../middleware/auth.middelware.js";
+import { CustomerAuthProtect } from "../middleware/auth.middelware.js";
 import {
   GetAddressBook,
   AddAddress,
   UpdateAddress,
   DeleteAddress,
   GetAllOrders,
+  GetCustomerOrderDetails,
 } from "../controller/customer.controller.js";
+
 const router = express.Router();
 
-router.get("/address-book", AuthProtect, GetAddressBook);
-router.post("/address-book", AuthProtect, AddAddress);
-router.put("/address-book/:addressId", AuthProtect, UpdateAddress);
-router.delete("/address-book/:addressId", AuthProtect, DeleteAddress);
+router.use(CustomerAuthProtect);
 
-router.get("/all-orders", AuthProtect, GetAllOrders);
+router.get("/address-book", GetAddressBook);
+router.post("/address-book", AddAddress);
+router.put("/address-book/:addressId", UpdateAddress);
+router.delete("/address-book/:addressId", DeleteAddress);
+
+router.get("/all-orders", GetAllOrders);
+router.get("/orders/:orderId", GetCustomerOrderDetails);
+
 export default router;

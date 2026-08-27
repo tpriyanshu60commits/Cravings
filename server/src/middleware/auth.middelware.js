@@ -197,3 +197,40 @@ export const AdminAuthProtect = async (req, res, next) => {
   }
 };
 
+export const CustomerAuthProtect = async (req, res, next) => {
+  try {
+    const token = req.cookies.oreo;
+    if (!token) {
+      const error = new Error("Session Expired");
+      error.statusCode = 401;
+      return next(error);
+    }
+
+    const decode = await jwt.verify(token, process.env.JWT_SECRET);
+    if (!decode) {
+      const error = new Error("Session Expired");
+      error.statusCode = 401;
+      return next(error);
+    }
+
+    const verifiedUser = await User.findById(decode.id);
+    if (!verifiedUser) {
+      const error = new Error("Session Expired");
+      error.statusCode = 401;
+      return next(error);
+    }
+
+    if (verifiedUser.userType !== "customer") {
+      const error = new Error("Unauthorized Access: Customer role required");
+      error.statusCode = 403;
+      return next(error);
+    }
+
+    req.user = verifiedUser;
+    next();
+  } catch (error) {
+    console.log(error.message);
+    next(error);
+  }
+};
+

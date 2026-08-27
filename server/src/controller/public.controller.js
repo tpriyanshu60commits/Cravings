@@ -47,6 +47,7 @@ export const GetRestaurantDetails = async (req, res, next) => {
       path: "restaurantId",
       populate: {
         path: "managerId",
+        select: "-password",
       },
     });
     if (!restaurantDetails) {

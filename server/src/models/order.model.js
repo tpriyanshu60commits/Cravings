@@ -71,6 +71,10 @@ const orderSchema = mongoose.Schema(
       ],
       default: "pending",
     },
+    cancellationReason: {
+      type: String,
+      default: "",
+    },
     rating: {
       type: Number,
       min: 1,

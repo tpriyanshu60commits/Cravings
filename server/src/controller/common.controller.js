@@ -4,20 +4,21 @@ import bcrypt from "bcrypt";
 
 export const EditUserProfile = async (req, res, next) => {
   try {
-    const { email, fullName, phone } = req.body;
+    const { fullName, phone } = req.body;
     const newPhoto = req.file;
 
     console.log("Req Body :", req.body);
     console.log("Req File :", req.file);
-    if (!email || !fullName || !phone) {
+
+    if (!fullName || !phone) {
       const error = new Error("All fields Required");
       error.statusCode = 400;
       return next(error);
     }
+    const existingUser = await User.findById(req.user._id);
 
-    const existingUser = await User.findOne({ email });
     if (!existingUser) {
-      const error = new Error("Email not registred");
+      const error = new Error("User not found");
       error.statusCode = 404;
       return next(error);
     }
@@ -28,7 +29,6 @@ export const EditUserProfile = async (req, res, next) => {
 
       const b64 = Buffer.from(newPhoto.buffer).toString("base64");
       const dataURI = `data:${newPhoto.mimetype};base64,${b64}`;
-      // console.log(dataURI.slice(0, 100));
 
       const result = await cloudinary.uploader.upload(dataURI, {
         folder: "Cravings678/profile",
@@ -37,7 +37,6 @@ export const EditUserProfile = async (req, res, next) => {
         crop: "fill",
       });
 
-      console.log(result);
       existingUser.photo.url = result.secure_url;
       existingUser.photo.publicId = result.public_id;
     }
@@ -46,13 +45,16 @@ export const EditUserProfile = async (req, res, next) => {
     existingUser.phone = phone;
 
     await existingUser.save();
+    const userResponse = existingUser.toObject();
+    delete userResponse.password;
 
-    res
-      .status(200)
-      .json({ message: "User Updated Sucessfully", data: existingUser });
+    res.status(200).json({
+      message: "User Updated Successfully",
+      data: userResponse,
+    });
   } catch (error) {
     console.log(error.message);
-    next();
+    return next(error);
   }
 };
 

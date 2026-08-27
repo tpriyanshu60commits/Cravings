@@ -7,6 +7,7 @@ import CommonRouter from "./src/router/common.route.js";
 import RestaurantRouter from "./src/router/restaurant.route.js";
 import CustomerRouter from "./src/router/customer.route.js";
 import RiderRouter from "./src/router/rider.route.js";
+import AdminRouter from "./src/router/admin.route.js";
 import OrderRouter from "./src/router/order.route.js";
 import PaymentRouter from "./src/router/payment.route.js";
 import morgan from "morgan";
@@ -27,6 +28,7 @@ app.use("/common", CommonRouter);
 app.use("/restaurant", RestaurantRouter);
 app.use("/customer", CustomerRouter);
 app.use("/rider", RiderRouter);
+app.use("/admin", AdminRouter);
 app.use("/order", OrderRouter);
 
 app.use("/payment", PaymentRouter);

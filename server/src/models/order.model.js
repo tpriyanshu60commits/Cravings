@@ -3,7 +3,7 @@ const orderSchema = mongoose.Schema(
   {
     restaurantId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "restauarnt",
+      ref: "restaurant",
       required: true,
     },
     customerId: {

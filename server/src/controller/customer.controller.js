@@ -132,7 +132,6 @@ export const UpdateAddress = async (req, res, next) => {
 
     if (name !== undefined) existingAddress.name = name;
     if (address !== undefined) existingAddress.address = address;
-    
     if (city !== undefined) existingAddress.city = city;
     if (state !== undefined) existingAddress.state = state;
     if (pinCode !== undefined) existingAddress.pinCode = pinCode;

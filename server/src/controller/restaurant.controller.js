@@ -92,10 +92,10 @@ import {
 //     next(error);
 //   }
 // };
-
 export const RestaurantUpdateInfo = async (req, res, next) => {
   try {
     const currentUser = req.user;
+
     const {
       restaurantName,
       description,
@@ -107,29 +107,33 @@ export const RestaurantUpdateInfo = async (req, res, next) => {
       closingTime,
     } = req.body;
 
-    if (
-      !restaurantName ||
-      !description ||
-      !restaurantType ||
-      !cuisineTypes ||
-      !contactEmail ||
-      !contactPhone ||
-      !openingTime ||
-      !closingTime
-    ) {
-      const error = new Error("All restaurant information fields are required");
-
-      error.statusCode = 400;
-      return next(error);
-    }
-    const cuisineTypesArray = cuisineTypes
-      .split(",")
-      .map((type) => type.trim());
     const existingRestaurant = await Restaurant.findOne({
       managerId: currentUser._id,
     });
 
+    // Restaurant does not exist → creation requires all fields
     if (!existingRestaurant) {
+      if (
+        !restaurantName ||
+        !description ||
+        !restaurantType ||
+        !cuisineTypes ||
+        !contactEmail ||
+        !contactPhone ||
+        !openingTime ||
+        !closingTime
+      ) {
+        const error = new Error(
+          "All restaurant information fields are required",
+        );
+        error.statusCode = 400;
+        return next(error);
+      }
+
+      const cuisineTypesArray = cuisineTypes
+        .split(",")
+        .map((type) => type.trim());
+
       const newRestaurant = await Restaurant.create({
         managerId: currentUser._id,
         restaurantName,
@@ -151,51 +155,63 @@ export const RestaurantUpdateInfo = async (req, res, next) => {
         message: "Restaurant information created successfully",
         data: newRestaurant,
       });
-    } else {
-      existingRestaurant.restaurantName = restaurantName;
-      existingRestaurant.description = description;
-      existingRestaurant.restaurantType = restaurantType;
-
-      existingRestaurant.cuisinesTypes = cuisineTypesArray;
-
-      existingRestaurant.contactDetails.email = contactEmail;
-      existingRestaurant.contactDetails.phone = contactPhone;
-
-      existingRestaurant.servingHours.openingTime = openingTime;
-      existingRestaurant.servingHours.closingTime = closingTime;
-
-      // Update ONLY these fields
-      await Restaurant.updateOne(
-        {
-          _id: existingRestaurant._id,
-        },
-        {
-          $set: {
-            restaurantName: restaurantName,
-            description: description,
-            restaurantType: restaurantType,
-            cuisinesTypes: cuisineTypesArray,
-
-            "contactDetails.email": contactEmail,
-            "contactDetails.phone": contactPhone,
-
-            "servingHours.openingTime": openingTime,
-            "servingHours.closingTime": closingTime,
-          },
-        },
-      );
-
-      // Get updated restaurant
-      const updatedRestaurant = await Restaurant.findById(
-        existingRestaurant._id,
-      );
-
-      return res.status(200).json({
-        success: true,
-        message: "Restaurant information updated successfully",
-        data: updatedRestaurant,
-      });
     }
+
+    // Restaurant already exists → partial update
+    const updateData = {};
+
+    if (restaurantName !== undefined) {
+      updateData.restaurantName = restaurantName;
+    }
+
+    if (description !== undefined) {
+      updateData.description = description;
+    }
+
+    if (restaurantType !== undefined) {
+      updateData.restaurantType = restaurantType;
+    }
+
+    if (cuisineTypes !== undefined) {
+      updateData.cuisinesTypes = cuisineTypes
+        .split(",")
+        .map((type) => type.trim());
+    }
+
+    if (contactEmail !== undefined) {
+      updateData["contactDetails.email"] = contactEmail;
+    }
+
+    if (contactPhone !== undefined) {
+      updateData["contactDetails.phone"] = contactPhone;
+    }
+
+    if (openingTime !== undefined) {
+      updateData["servingHours.openingTime"] = openingTime;
+    }
+
+    if (closingTime !== undefined) {
+      updateData["servingHours.closingTime"] = closingTime;
+    }
+
+    const updatedRestaurant = await Restaurant.findOneAndUpdate(
+      {
+        managerId: currentUser._id,
+      },
+      {
+        $set: updateData,
+      },
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Restaurant information updated successfully",
+      data: updatedRestaurant,
+    });
   } catch (error) {
     console.log("RestaurantUpdateInfo ERROR:", error);
     next(error);
@@ -205,28 +221,26 @@ export const RestaurantUpdateInfo = async (req, res, next) => {
 export const RestaurantGetData = async (req, res, next) => {
   try {
     const currentUser = req.user;
-    const managerId = req.query.id;
-    console.log("currentUser : ", currentUser);
-    console.log("managerId : ", managerId);
+    const managerId = currentUser._id;
 
-    if (currentUser._id.toString() !== managerId) {
-      const error = new Error("Unauthorized access");
-      error.statusCode = 401;
-      return next(error);
-    }
+    console.log("currentUser:", currentUser);
+    console.log("managerId:", managerId);
 
-    const restaurantData = await Restaurant.findOne({ managerId });
+    const restaurantData = await Restaurant.findOne({
+      managerId: managerId,
+    });
+
     if (restaurantData) {
-      res.status(200).json({
+      return res.status(200).json({
         message: "Restaurant Fetched Successfully",
         data: restaurantData,
       });
-    } else {
-      res.status(200).json({
-        message: "Restaurant data not found",
-        data: {},
-      });
     }
+
+    return res.status(200).json({
+      message: "Restaurant data not found",
+      data: {},
+    });
   } catch (error) {
     console.log(error.message);
     return next(error);
@@ -250,7 +264,6 @@ export const OpenRestaurant = async (req, res, next) => {
     }
     await Restaurant.updateOne({ managerId }, { $set: { isOpen: openStatus } });
     existingRestaurant.isOpen = openStatus;
-    // await existingRestaurant.save();
     return res.status(200).json({
       message: `${openStatus === true ? "Restaurant is live now" : "Restaurant is offline"}`,
       data: existingRestaurant,
@@ -307,7 +320,6 @@ export const RestaurantUpdateAddress = async (req, res, next) => {
   try {
     const currentUser = req.user;
     const { address, city, state, pinCode, country, geoLat, geoLon } = req.body;
-
     const existingRestaurant = await Restaurant.findOne({
       managerId: currentUser._id,
     });
@@ -316,21 +328,34 @@ export const RestaurantUpdateAddress = async (req, res, next) => {
       error.statusCode = 404;
       return next(error);
     }
-    existingRestaurant.address = address ?? existingRestaurant.address;
-    existingRestaurant.city = city ?? existingRestaurant.city;
-    existingRestaurant.state = state ?? existingRestaurant.state;
-    existingRestaurant.pinCode = pinCode ?? existingRestaurant.pinCode;
-    existingRestaurant.country = country ?? existingRestaurant.country;
-    if (geoLat && geoLon) {
-      existingRestaurant.geoLocation = {
+    const updateData = {
+      address: address ?? existingRestaurant.address,
+      city: city ?? existingRestaurant.city,
+      state: state ?? existingRestaurant.state,
+      pinCode: pinCode ?? existingRestaurant.pinCode,
+      country: country ?? existingRestaurant.country,
+    };
+    if (geoLat !== undefined && geoLon !== undefined) {
+      updateData.geoLocation = {
         lat: String(geoLat),
         lon: String(geoLon),
       };
     }
-    await existingRestaurant.save();
+    const updatedRestaurant = await Restaurant.findOneAndUpdate(
+      {
+        managerId: currentUser._id,
+      },
+      {
+        $set: updateData,
+      },
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
     res.status(200).json({
       message: "Address updated successfully",
-      data: existingRestaurant,
+      data: updatedRestaurant,
     });
   } catch (error) {
     console.log(error.message);
@@ -388,6 +413,7 @@ export const RestaurantUpdateBankingDocuments = async (req, res, next) => {
 export const RestaurantUpdateSocialMediaLinks = async (req, res, next) => {
   try {
     const currentUser = req.user;
+
     const { socialMediaLinks } = req.body;
 
     if (!Array.isArray(socialMediaLinks)) {
@@ -395,14 +421,33 @@ export const RestaurantUpdateSocialMediaLinks = async (req, res, next) => {
       error.statusCode = 400;
       return next(error);
     }
+
     const existingRestaurant = await Restaurant.findOne({
       managerId: currentUser._id,
     });
-    existingRestaurant.socialMediaLinks = socialMediaLinks;
-    await existingRestaurant.save();
+
+    if (!existingRestaurant) {
+      const error = new Error("Restaurant Not Found");
+      error.statusCode = 404;
+      return next(error);
+    }
+    const updatedRestaurant = await Restaurant.findOneAndUpdate(
+      {
+        managerId: currentUser._id,
+      },
+      {
+        $set: {
+          socialMediaLinks: socialMediaLinks,
+        },
+      },
+      {
+        new: true,
+      },
+    );
+
     res.status(200).json({
       message: "Social media links updated successfully",
-      data: existingRestaurant,
+      data: updatedRestaurant,
     });
   } catch (error) {
     console.log(error.message);
@@ -420,6 +465,7 @@ export const RestaurantUpdateCoverPhoto = async (req, res, next) => {
       error.statusCode = 400;
       return next(error);
     }
+
     const existingRestaurant = await Restaurant.findOne({
       managerId: currentUser._id,
     });
@@ -429,28 +475,46 @@ export const RestaurantUpdateCoverPhoto = async (req, res, next) => {
       error.statusCode = 404;
       return next(error);
     }
+
+    // Delete old image from Cloudinary
     if (existingRestaurant.coverImage?.publicId) {
       await deleteSingleImage(existingRestaurant.coverImage.publicId);
     }
+
+    // Upload new image
     const coverImage = await UploadSingleImage(
       coverImageFromFE,
       `restaurant/${currentUser.phone}/coverPhoto`,
     );
-    existingRestaurant.coverImage = coverImage;
-    await existingRestaurant.save();
+
+    // Update only coverImage
+    const updatedRestaurant = await Restaurant.findOneAndUpdate(
+      {
+        managerId: currentUser._id,
+      },
+      {
+        $set: {
+          coverImage: coverImage,
+        },
+      },
+      {
+        new: true,
+      },
+    );
+
     return res.status(200).json({
       message: "Cover photo updated successfully",
-      data: existingRestaurant,
+      data: updatedRestaurant,
     });
   } catch (error) {
     console.log(error.message);
     next(error);
   }
 };
-
 export const RestaurantUpdateRestaurantImages = async (req, res, next) => {
   try {
     const currentUser = req.user;
+
     const restaurantImagesFromFE = req.files;
 
     if (!restaurantImagesFromFE || restaurantImagesFromFE.length === 0) {
@@ -469,20 +533,35 @@ export const RestaurantUpdateRestaurantImages = async (req, res, next) => {
       return next(error);
     }
 
+    // Delete old images from Cloudinary
     if (existingRestaurant.restaurantImage?.length > 0) {
       await deleteMultipleImages(existingRestaurant.restaurantImage);
     }
 
+    // Upload new images
     const restaurantImages = await uploadMultipleImages(
       restaurantImagesFromFE,
       `restaurant/${currentUser.phone}/restaurantPhotos`,
     );
-    existingRestaurant.restaurantImage = restaurantImages;
 
-    await existingRestaurant.save();
+    // Update only restaurantImage
+    const updatedRestaurant = await Restaurant.findOneAndUpdate(
+      {
+        managerId: currentUser._id,
+      },
+      {
+        $set: {
+          restaurantImage: restaurantImages,
+        },
+      },
+      {
+        new: true,
+      },
+    );
+
     return res.status(200).json({
       message: "Restaurant images updated successfully",
-      data: existingRestaurant,
+      data: updatedRestaurant,
     });
   } catch (error) {
     console.log(error.message);
@@ -669,7 +748,8 @@ export const RestaurantUpdateMenuItem = async (req, res, next) => {
 
     if (itemPrice !== undefined && itemPrice !== "") {
       menuItem.itemPrice = Number(itemPrice);
-    } if (category !== undefined) menuItem.category = category;
+    }
+    if (category !== undefined) menuItem.category = category;
     if (foodType !== undefined) menuItem.foodType = foodType;
     if (status !== undefined) menuItem.status = status;
 
@@ -784,7 +864,6 @@ export const RestaurantDeleteMenuItem = async (req, res, next) => {
   }
 };
 
-
 // new controllers of restaurant
 
 export const GetRestaurantOrders = async (req, res, next) => {
@@ -818,7 +897,6 @@ export const GetRestaurantOrders = async (req, res, next) => {
   }
 };
 
-
 export const AcceptRestaurantOrder = async (req, res, next) => {
   try {
     const currentUser = req.user;
@@ -835,7 +913,7 @@ export const AcceptRestaurantOrder = async (req, res, next) => {
       return next(error);
     }
 
-    // Find order only if it belongs to this restaurant
+    // Find order belonging to this restaurant
     const order = await Order.findOne({
       _id: orderId,
       restaurantId: existingRestaurant._id,
@@ -850,26 +928,39 @@ export const AcceptRestaurantOrder = async (req, res, next) => {
     // Only pending orders can be accepted
     if (order.orderStatus !== "pending") {
       const error = new Error(
-        `Order cannot be accepted because its current status is "${order.orderStatus}"`
+        `Order cannot be accepted because its current status is "${order.orderStatus}"`,
       );
       error.statusCode = 400;
       return next(error);
     }
 
-    order.orderStatus = "accepted";
-    await order.save();
+    // Update only orderStatus
+    const updatedOrder = await Order.findOneAndUpdate(
+      {
+        _id: orderId,
+        restaurantId: existingRestaurant._id,
+        orderStatus: "pending",
+      },
+      {
+        $set: {
+          orderStatus: "accepted",
+        },
+      },
+      {
+        new: true,
+        runValidators: false,
+      },
+    );
 
     return res.status(200).json({
       message: "Order accepted successfully",
-      data: order,
+      data: updatedOrder,
     });
   } catch (error) {
     console.log("AcceptRestaurantOrder ERROR:", error.message);
     return next(error);
   }
 };
-
-
 export const PrepareRestaurantOrder = async (req, res, next) => {
   try {
     const currentUser = req.user;
@@ -886,7 +977,7 @@ export const PrepareRestaurantOrder = async (req, res, next) => {
       return next(error);
     }
 
-    // Find order only if it belongs to this restaurant
+    // Find order belonging to this restaurant
     const order = await Order.findOne({
       _id: orderId,
       restaurantId: existingRestaurant._id,
@@ -901,25 +992,39 @@ export const PrepareRestaurantOrder = async (req, res, next) => {
     // Only accepted orders can move to preparing
     if (order.orderStatus !== "accepted") {
       const error = new Error(
-        `Order cannot be moved to preparing because its current status is "${order.orderStatus}"`
+        `Order cannot be moved to preparing because its current status is "${order.orderStatus}"`,
       );
       error.statusCode = 400;
       return next(error);
     }
 
-    order.orderStatus = "preparing";
-    await order.save();
+    // Update only orderStatus
+    const updatedOrder = await Order.findOneAndUpdate(
+      {
+        _id: orderId,
+        restaurantId: existingRestaurant._id,
+        orderStatus: "accepted",
+      },
+      {
+        $set: {
+          orderStatus: "preparing",
+        },
+      },
+      {
+        new: true,
+        runValidators: false,
+      },
+    );
 
     return res.status(200).json({
       message: "Order is now being prepared",
-      data: order,
+      data: updatedOrder,
     });
   } catch (error) {
     console.log("PrepareRestaurantOrder ERROR:", error.message);
     return next(error);
   }
 };
-
 
 export const ReadyRestaurantOrder = async (req, res, next) => {
   try {
@@ -937,7 +1042,7 @@ export const ReadyRestaurantOrder = async (req, res, next) => {
       return next(error);
     }
 
-    // Find order only if it belongs to this restaurant
+    // Find order belonging to this restaurant
     const order = await Order.findOne({
       _id: orderId,
       restaurantId: existingRestaurant._id,
@@ -952,18 +1057,33 @@ export const ReadyRestaurantOrder = async (req, res, next) => {
     // Only preparing orders can be marked ready
     if (order.orderStatus !== "preparing") {
       const error = new Error(
-        `Order cannot be marked ready because its current status is "${order.orderStatus}"`
+        `Order cannot be marked ready because its current status is "${order.orderStatus}"`,
       );
       error.statusCode = 400;
       return next(error);
     }
 
-    order.orderStatus = "ready";
-    await order.save();
+    // Update only orderStatus
+    const updatedOrder = await Order.findOneAndUpdate(
+      {
+        _id: orderId,
+        restaurantId: existingRestaurant._id,
+        orderStatus: "preparing",
+      },
+      {
+        $set: {
+          orderStatus: "ready",
+        },
+      },
+      {
+        new: true,
+        runValidators: false,
+      },
+    );
 
     return res.status(200).json({
       message: "Order is ready for rider pickup",
-      data: order,
+      data: updatedOrder,
     });
   } catch (error) {
     console.log("ReadyRestaurantOrder ERROR:", error.message);

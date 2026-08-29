@@ -37,7 +37,7 @@ router.put(
   RestaurantAuthProtect,
   RestaurantUpdateInfo,
 );
-router.get("/get-restaurant-data", RestaurantAuthProtect, RestaurantGetData);
+  router.get("/get-restaurant-data", RestaurantAuthProtect, RestaurantGetData);
 router.patch(
   "/change-open-status/:openStatus",
   RestaurantAuthProtect,

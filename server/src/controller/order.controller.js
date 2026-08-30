@@ -39,14 +39,15 @@ export const CreateOrder = async (req, res, next) => {
       error.statusCode = 400;
       return next(error);
     }
-    const customer = await Customer.findOne({
+    let customer = await Customer.findOne({
       customerId: currentUser._id,
     });
 
     if (!customer) {
-      const error = new Error("Customer profile not found");
-      error.statusCode = 404;
-      return next(error);
+      customer = await Customer.create({
+        customerId: currentUser._id,
+        addressBook: [],
+      });
     }
 
     const menuDoc = await Menu.findOne({ restaurantId });

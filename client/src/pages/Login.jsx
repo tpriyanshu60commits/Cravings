@@ -1,22 +1,23 @@
-import React from "react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../config/ApiConfig";
-import { FaEye } from "react-icons/fa";
-import { FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import toast from "react-hot-toast";
+import ForgotPasswordModal from "../components/commonModals/ForgotPasswordModal";
+
 const Login = () => {
   const navigate = useNavigate();
-  const { setIsLogin, setRole, setUser } = useAuth();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     rememberMe: false,
   });
   const [errors, setErrors] = useState({});
-  const [loading, isloading] = useState(false);
-  const [showPassword, setshowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, type, checked, value } = e.target;
@@ -25,6 +26,7 @@ const Login = () => {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
+
   const validateForm = (data) => {
     const newErrors = {};
     if (!data.email.trim()) newErrors.email = "Email is required";
@@ -37,54 +39,56 @@ const Login = () => {
     const validateErrors = validateForm(formData);
     if (Object.keys(validateErrors).length > 0) {
       setErrors(validateErrors);
-      isloading(false);
       return;
     }
     setErrors({});
-    isloading(true);
+    setLoading(true);
 
-    console.log("Form data : ", formData);
-    const paylaod = {
+    const payload = {
       ...formData,
-      email: formData.email.toLowerCase(),
+      email: formData.email.toLowerCase().trim(),
     };
-    console.log("paylaod", paylaod);
 
     try {
-      const res = await api.post("/auth/login", paylaod);
-      console.log(res);
-      //   console.log(res.data);
-      toast.success(res.data.message);
-      sessionStorage.setItem("cravingUser", JSON.stringify(res.data.data));
-      setUser(res.data.data);
-      setIsLogin(true);
-      setRole(res.data.data.userType);
+      const res = await api.post("/auth/login", payload);
+      const userData = res.data.data;
+      login(userData);
+      toast.success(res.data.message || "Welcome Back");
+
+      if (userData.userType === "restaurant") {
+        navigate("/restaurant-dashboard");
+      } else if (userData.userType === "rider") {
+        navigate("/rider-dashboard");
+      } else if (userData.userType === "admin") {
+        navigate("/admin-dashboard");
+      } else {
+        navigate("/customer-dashboard");
+      }
     } catch (error) {
-      console.log(error);
       toast.error(
         error.response?.data?.message ||
           "Unknown error occurred during Login. Please try again.",
       );
     } finally {
-      isloading(false);
+      setLoading(false);
     }
   };
 
   return (
     <>
       <div className="h-screen bg-[url('/login.avif')] bg-cover flex items-center justify-start p-5">
-        <div className="w-100 border rounded-xl p-5 mx-6 bg-(--color-base-100)">
+        <div className="w-100 border rounded-xl p-6 mx-6 bg-(--color-base-100) shadow-xl">
           <h1 className="text-3xl font-bold text-(--color-primary) mb-2 text-center">
             Welcome Back
           </h1>
-          <p className="text-(--color-secondary) text-center mb-6">
+          <p className="text-(--color-secondary) text-center mb-6 text-sm">
             Login to your Cravings account
           </p>
-          {/* loginForm */}
-          {/* email */}
-          <form onSubmit={handleSubmit}>
-            <div className="mt-5 mb-5">
-              <label className="block text-(--color-neutral) font-semibold mb-2">
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Email */}
+            <div>
+              <label className="block text-(--color-neutral) font-semibold mb-1 text-sm">
                 Email
               </label>
               <input
@@ -93,7 +97,7 @@ const Login = () => {
                 value={formData.email}
                 name="email"
                 onChange={handleInputChange}
-                className="w-full border px-3 py-2 rounded text-sm text-(--color-neutral) "
+                className="w-full border px-3 py-2 rounded text-sm text-(--color-neutral) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
               />
               {errors.email && (
                 <span className="text-(--color-error) text-xs mt-1 block">
@@ -101,10 +105,11 @@ const Login = () => {
                 </span>
               )}
             </div>
-            {/* password */}
-            <div className="mt-5 mb-5">
+
+            {/* Password */}
+            <div>
               <div className="relative">
-                <label className="block text-(--color-neutral) font-semibold mb-2">
+                <label className="block text-(--color-neutral) font-semibold mb-1 text-sm">
                   Password
                 </label>
                 <input
@@ -113,12 +118,12 @@ const Login = () => {
                   value={formData.password}
                   name="password"
                   onChange={handleInputChange}
-                  className="w-full border px-3 py-2 rounded text-sm text-(--color-neutral) "
+                  className="w-full border px-3 py-2 rounded text-sm text-(--color-neutral) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
                 />
                 <button
                   type="button"
-                  className="absolute right-3 bottom-2.5"
-                  onClick={() => setshowPassword(!showPassword)}
+                  className="absolute right-3 top-8 text-gray-500 hover:text-gray-700"
+                  onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </button>
@@ -129,8 +134,9 @@ const Login = () => {
                 </span>
               )}
             </div>
-            {/* remember me and forgot password */}
-            <div className="flex justify-between items-center mb-6">
+
+            {/* Remember Me & Forgot Password */}
+            <div className="flex justify-between items-center text-xs">
               <label className="flex items-center gap-2 cursor-pointer text-(--color-secondary)">
                 <input
                   type="checkbox"
@@ -139,23 +145,46 @@ const Login = () => {
                   onChange={handleInputChange}
                   className="cursor-pointer"
                 />
-                <span className="text-sm">Remember me</span>
+                <span>Remember me</span>
               </label>
-              <div className="text-sm text-(--color-primary) hover:underline transition-colors">
-                {" "}
+              <button
+                type="button"
+                onClick={() => setShowForgotPasswordModal(true)}
+                className="text-(--color-primary) hover:underline"
+              >
                 Forgot Password?
-              </div>
+              </button>
             </div>
-            {/* button */}
+
+            {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-3 bg-(--color-primary)  text-white font-semibold rounded-md"
+              disabled={loading}
+              className="w-full py-2.5 bg-(--color-primary) text-white font-semibold rounded-md hover:opacity-90 transition disabled:opacity-50"
             >
-              {loading ? "Login..." : "Login"}
+              {loading ? "Logging in..." : "Login"}
             </button>
+
+            {/* Sign Up Link */}
+            <div className="text-center text-xs text-(--color-secondary) pt-2">
+              Don't have an account?{" "}
+              <Link
+                to="/register"
+                className="text-(--color-primary) font-semibold hover:underline"
+              >
+                Register here
+              </Link>
+            </div>
           </form>
         </div>
       </div>
+
+      {showForgotPasswordModal && (
+        <ForgotPasswordModal
+          open={showForgotPasswordModal}
+          onClose={() => setShowForgotPasswordModal(false)}
+        />
+      )}
     </>
   );
 };

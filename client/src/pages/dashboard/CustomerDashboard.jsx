@@ -1,51 +1,52 @@
 import React, { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
-import { useLocation, useNavigate } from "react-router-dom";
 import CustomerSidebar from "../../components/customerDashboard/CustomerSidebar";
 import CustomerOverview from "../../components/customerDashboard/CustomerOverview";
 import CustomerOrders from "../../components/customerDashboard/CustomerOrders";
+import CustomerAddressBook from "../../components/customerDashboard/CustomerAddressBook";
 import CustomerSetting from "../../components/customerDashboard/CustomerSetting";
 
 const CustomerDashboard = () => {
-  const navigate = useNavigate();
-  const { isLogin, role } = useAuth();
-
-  const [activeTab, setActiveTab] = useState("settings");
-
-  if (!isLogin || role !== "customer") {
-    return (
-      <>
-        <div className="h-screen bg-gray-500 bg-cover bg-center">
-          <div className="h-full backdrop-blur-lg flex flex-col items-center justify-center ">
-            <h1 className="text-2xl font-bold text-(--color-neutral-content)">
-              Access Denied. Please log in as a Restaurant Manager to view this
-              page.
-            </h1>
-            <button
-              className="mt-4 px-4 py-2 bg-(--color-primary) text-white rounded-md"
-              onClick={() => navigate("/login")}
-            >
-              Go to Login
-            </button>
-          </div>
-        </div>
-      </>
-    );
-  }
+  const [activeTab, setActiveTab] = useState("overview");
 
   return (
-    <>
-      <div className="h-screen flex">
-        <div className="w-1/4 border">
-          <CustomerSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+    <div className="min-h-screen bg-(--color-base-200) flex">
+      {/* Sidebar */}
+      <aside className="w-64 shrink-0 bg-(--color-base-100) border-r border-(--color-base-300) p-4 hidden md:block">
+        <CustomerSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      </aside>
+
+      {/* Main Content Area */}
+      <main className="flex-1 min-w-0 bg-(--color-base-200)">
+        {/* Mobile Tab Bar */}
+        <div className="md:hidden flex overflow-x-auto gap-2 p-3 bg-(--color-base-100) border-b border-(--color-base-300)">
+          {[
+            { name: "Overview", value: "overview" },
+            { name: "Orders", value: "orders" },
+            { name: "Addresses", value: "address-book" },
+            { name: "Settings", value: "settings" },
+          ].map((tab) => (
+            <button
+              key={tab.value}
+              onClick={() => setActiveTab(tab.value)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition ${
+                activeTab === tab.value
+                  ? "bg-(--color-primary) text-(--color-primary-content)"
+                  : "bg-(--color-base-200) text-(--color-base-content)"
+              }`}
+            >
+              {tab.name}
+            </button>
+          ))}
         </div>
-        <div className="w-3/4 border">
-          {activeTab === "overview" && <CustomerOverview />}
-          {activeTab === "orders" && <CustomerOrders />}
-          {activeTab === "settings" && <CustomerSetting />}
-        </div>
-      </div>
-    </>
+
+        {activeTab === "overview" && (
+          <CustomerOverview setActiveTab={setActiveTab} />
+        )}
+        {activeTab === "orders" && <CustomerOrders />}
+        {activeTab === "address-book" && <CustomerAddressBook />}
+        {activeTab === "settings" && <CustomerSetting />}
+      </main>
+    </div>
   );
 };
 

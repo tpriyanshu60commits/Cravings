@@ -53,7 +53,9 @@ const CustomerSetting = () => {
       payload.append("fullName", formData.fullName);
       payload.append("email", formData.email);
       payload.append("phone", formData.phone);
-      payload.append("displayPic", profilePic);
+      if (profilePic) {
+        payload.append("displayPic", profilePic);
+      }
 
       const res = await api.put("/common/edit-profile", payload);
       // console.log(res);

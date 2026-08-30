@@ -198,14 +198,21 @@ export const ResetPassword = async (req, res, next) => {
   try {
     const { newPassword } = req.body;
 
-    const currentUser = req.user;
+    if (!newPassword || newPassword.length < 6) {
+      const error = new Error("New password is required (minimum 6 characters)");
+      error.statusCode = 400;
+      return next(error);
+    }
 
+    const currentUser = req.user;
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    currentUser.password = hashedPassword;
+    await User.findByIdAndUpdate(currentUser._id, {
+      $set: { password: hashedPassword },
+    });
 
-    await currentUser.save();
+    res.clearCookie("kitkat", { maxAge: 0 });
 
     res.status(200).json({ message: "Password Changed" });
   } catch (error) {
@@ -213,3 +220,4 @@ export const ResetPassword = async (req, res, next) => {
     next(error);
   }
 };
+

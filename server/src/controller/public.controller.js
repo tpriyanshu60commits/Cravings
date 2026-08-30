@@ -1,6 +1,7 @@
 import Contact from "../models/contact.model.js";
 import Menu from "../models/menu.model.js";
 import Restaurant from "../models/restaurant.model.js";
+import User from "../models/user.model.js";
 
 export const ContactUsForm = async (req, res, next) => {
   try {
@@ -30,7 +31,7 @@ export const ContactUsForm = async (req, res, next) => {
 
 export const GetAllRestaurants = async (req, res, next) => {
   try {
-    const restaurants = await Restaurant.find();
+    const restaurants = await Restaurant.find({ status: "active" });
     res.status(200).json({
       data: restaurants,
     });
@@ -43,21 +44,33 @@ export const GetAllRestaurants = async (req, res, next) => {
 export const GetRestaurantDetails = async (req, res, next) => {
   try {
     const { restaurantId } = req.params;
-    const restaurantDetails = await Menu.findOne({ restaurantId }).populate({
-      path: "restaurantId",
-      populate: {
-        path: "managerId",
-        select: "-password",
-      },
+
+    const restaurant = await Restaurant.findOne({
+      _id: restaurantId,
+      status: "active",
+    }).populate({
+      path: "managerId",
+      select: "-password",
     });
-    if (!restaurantDetails) {
+
+    if (!restaurant) {
       const error = new Error("Restaurant not found");
       error.statusCode = 404;
       return next(error);
     }
+
+    const menu = await Menu.findOne({ restaurantId });
+
+    const restaurantDetails = {
+      _id: menu?._id || null,
+      restaurantId: restaurant,
+      menuItems: menu?.menuItems || [],
+    };
+
     res.status(200).json({ data: restaurantDetails });
   } catch (error) {
     console.log(error.message);
     return next(error);
   }
 };
+

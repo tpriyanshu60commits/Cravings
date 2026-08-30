@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../config/ApiConfig";
 import toast from "react-hot-toast";
 import Loader from "../components/Loader";
@@ -60,11 +60,19 @@ const typeLabels = {
 };
 const OrderNow = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const initialQuery = searchParams.get("q") || searchParams.get("cuisine") || "";
+
   const [restaurants, setRestaurants] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [selectedType, setSelectedType] = useState("all");
   const [showOpenOnly, setShowOpenOnly] = useState(false);
+
+  useEffect(() => {
+    const q = searchParams.get("q") || searchParams.get("cuisine") || "";
+    if (q) setSearchQuery(q);
+  }, [searchParams]);
 
   const fetchRestaurants = async () => {
     try {

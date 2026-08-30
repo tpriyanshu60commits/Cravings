@@ -186,19 +186,20 @@ export const GetAddressBook = async (req, res, next) => {
   try {
     const currentUser = req.user;
 
-    const customer = await Customer.findOne({
+    let customer = await Customer.findOne({
       customerId: currentUser._id,
     });
 
     if (!customer) {
-      const error = new Error("Customer profile not found");
-      error.statusCode = 404;
-      return next(error);
+      customer = await Customer.create({
+        customerId: currentUser._id,
+        addressBook: [],
+      });
     }
 
     return res.status(200).json({
       message: "Address book fetched successfully",
-      data: customer.addressBook,
+      data: customer.addressBook || [],
     });
   } catch (error) {
     console.log(error.message);
@@ -208,13 +209,16 @@ export const GetAddressBook = async (req, res, next) => {
 export const GetAllOrders = async (req, res, next) => {
   try {
     const currentUser = req.user;
-    const customer = await Customer.findOne({ customerId: currentUser._id });
+    let customer = await Customer.findOne({ customerId: currentUser._id });
     if (!customer) {
-      const error = new Error("Customer profile not found");
-      error.statusCode = 404;
-      return next(error);
+      customer = await Customer.create({
+        customerId: currentUser._id,
+        addressBook: [],
+      });
     }
-    const allOrder = await Order.find({ customerId: customer._id });
+    const allOrder = await Order.find({ customerId: customer._id })
+      .populate("restaurantId", "restaurantName address city contactDetails")
+      .sort({ createdAt: -1 });
 
     res.status(200).json({ message: "All Order Fetched", data: allOrder });
   } catch (error) {

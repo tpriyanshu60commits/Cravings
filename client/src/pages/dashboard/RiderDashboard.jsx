@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import RiderOrders from "../../components/riderDashboard/RiderOrders";
 import RiderOverview from "../../components/riderDashboard/RiderOverview";
+import RiderEarnings from "../../components/riderDashboard/RiderEarnings";
 import RiderSettings from "../../components/riderDashboard/RiderSettings";
 import RiderSidebar from "../../components/riderDashboard/RiderSidebar";
 
@@ -42,6 +43,7 @@ const RiderDashboard = () => {
         <div className="w-4/5 border">
           {activeTab === "overview" && <RiderOverview />}
           {activeTab === "orders" && <RiderOrders />}
+          {activeTab === "earnings" && <RiderEarnings />}
           {activeTab === "settings" && <RiderSettings />}
         </div>
       </div>

@@ -1,12 +1,13 @@
-import React from "react";
-import { MdDashboard } from "react-icons/md";
+import { MdDashboard, MdPeople, MdRestaurant, MdDeliveryDining } from "react-icons/md";
 import { FaShoppingCart } from "react-icons/fa";
-import { MdFavoriteBorder } from "react-icons/md";
 import { IoMdSettings } from "react-icons/io";
 
 const AdminSidebar = ({ activeTab, setActiveTab }) => {
   const mainTabs = [
     { name: "Overview", value: "overview", icon: <MdDashboard /> },
+    { name: "Customers", value: "customers", icon: <MdPeople /> },
+    { name: "Restaurants", value: "restaurants", icon: <MdRestaurant /> },
+    { name: "Riders", value: "riders", icon: <MdDeliveryDining /> },
     { name: "Orders", value: "orders", icon: <FaShoppingCart /> },
   ];
 

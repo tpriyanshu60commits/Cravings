@@ -90,15 +90,13 @@ export const UpdateUserPassword = async (req, res, next) => {
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    currentUser.password = hashedPassword;
-    await currentUser.save();
-
-    // Delay for 3 seconds before sending the response
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    await User.findByIdAndUpdate(currentUser._id, {
+      $set: { password: hashedPassword },
+    });
 
     res.status(200).json({ message: "Password updated successfully" });
   } catch (error) {
     console.log(error.message);
-    next();
+    next(error);
   }
 };

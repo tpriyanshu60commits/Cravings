@@ -7,6 +7,7 @@ const RiderSidebar = ({ activeTab, setActiveTab }) => {
   const mainTabs = [
     { name: "overview", value: "overview", icon: <MdDashboard /> },
     { name: "orders", value: "orders", icon: <FaShoppingCart /> },
+    { name: "Earnings", value: "earnings", icon: <MdFavoriteBorder /> },
   ];
   const settings = {
     name: "settings",

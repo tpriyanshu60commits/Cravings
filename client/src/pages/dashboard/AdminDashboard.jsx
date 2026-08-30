@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import AdminSidebar from "../../components/adminDashboard/AdminSidebar";
-import AdminOverview from "../../components/adminDashboard//AdminOverview";
+import AdminOverview from "../../components/adminDashboard/AdminOverview";
+import AdminCustomers from "../../components/adminDashboard/AdminCustomers";
+import AdminRestaurants from "../../components/adminDashboard/AdminRestaurants";
+import AdminRiders from "../../components/adminDashboard/AdminRiders";
 import AdminOrders from "../../components/adminDashboard/AdminOrders";
 import AdminSetting from "../../components/adminDashboard/AdminSettings";
 
@@ -39,6 +42,9 @@ const AdminDashboard = () => {
         </div>
         <div className="w-14/17 bg-(--color-base-100) p-4 rounded-lg shadow-md h-full">
           {activeTab === "overview" && <AdminOverview />}
+          {activeTab === "customers" && <AdminCustomers />}
+          {activeTab === "restaurants" && <AdminRestaurants />}
+          {activeTab === "riders" && <AdminRiders />}
           {activeTab === "orders" && <AdminOrders />}
           {activeTab === "settings" && <AdminSetting />}
         </div>

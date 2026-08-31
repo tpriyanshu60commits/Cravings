@@ -114,7 +114,7 @@ const RestaurantSchema = mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["active", "inactive", "blocked"],
+      enum: ["active", "inactive", "pending", "blocked"],
       default: "inactive",
     },
     averageRating: {

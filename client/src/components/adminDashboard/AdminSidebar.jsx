@@ -1,43 +1,65 @@
-import { MdDashboard, MdPeople, MdRestaurant, MdDeliveryDining } from "react-icons/md";
+import React from "react";
+import {
+  MdDashboard,
+  MdPeople,
+  MdRestaurant,
+  MdDeliveryDining,
+} from "react-icons/md";
 import { FaShoppingCart } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 
 const AdminSidebar = ({ activeTab, setActiveTab }) => {
   const mainTabs = [
-    { name: "Overview", value: "overview", icon: <MdDashboard /> },
-    { name: "Customers", value: "customers", icon: <MdPeople /> },
-    { name: "Restaurants", value: "restaurants", icon: <MdRestaurant /> },
-    { name: "Riders", value: "riders", icon: <MdDeliveryDining /> },
-    { name: "Orders", value: "orders", icon: <FaShoppingCart /> },
+    { name: "Overview", value: "overview", icon: <MdDashboard size={20} /> },
+    { name: "Customers", value: "customers", icon: <MdPeople size={20} /> },
+    { name: "Restaurants", value: "restaurants", icon: <MdRestaurant size={20} /> },
+    { name: "Riders", value: "riders", icon: <MdDeliveryDining size={20} /> },
+    { name: "Orders", value: "orders", icon: <FaShoppingCart size={18} /> },
   ];
 
-  const settingsTab = { name: "Settings", value: "settings", icon: <IoMdSettings /> };
+  const settingsTab = {
+    name: "Settings",
+    value: "settings",
+    icon: <IoMdSettings size={20} />,
+  };
 
-  const renderTab = (tab) => (
-    <li
-      key={tab.value}
-      className={`cursor-pointer p-2 rounded text-(--color-neutral) flex items-center gap-3 ${
-        activeTab === tab.value
-          ? "bg-(--color-primary) text-(--color-primary-content) font-semibold"
-          : "hover:bg-(--color-secondary) hover:text-(--color-secondary-content) transition-colors duration-200"
-      }`}
-      onClick={() => setActiveTab(tab.value)}
-    >
-      {tab.icon} {tab.name}
-    </li>
-  );
+  const renderTab = (tab) => {
+    const isActive = activeTab === tab.value;
+    return (
+      <button
+        key={tab.value}
+        onClick={() => setActiveTab(tab.value)}
+        className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+          isActive
+            ? "bg-(--color-primary) text-(--color-primary-content) shadow-sm translate-x-1"
+            : "text-(--color-base-content) hover:bg-(--color-base-200) hover:text-(--color-primary)"
+        }`}
+      >
+        <span className={isActive ? "text-(--color-primary-content)" : "text-(--color-secondary)"}>
+          {tab.icon}
+        </span>
+        <span>{tab.name}</span>
+      </button>
+    );
+  };
 
   return (
-    <>
-      <div className="h-full flex flex-col">
-        <ul className="space-y-4 flex-1">
+    <div className="h-full flex flex-col justify-between">
+      <div className="space-y-1">
+        <div className="px-3 py-2 mb-2">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-(--color-secondary)">
+            Admin Control
+          </p>
+        </div>
+        <div className="space-y-1">
           {mainTabs.map((tab) => renderTab(tab))}
-        </ul>
-        <ul className="space-y-4 border-t border-(--color-secondary) py-2">
-          {renderTab(settingsTab)}
-        </ul>
+        </div>
       </div>
-    </>
+
+      <div className="pt-4 border-t border-(--color-base-300) space-y-1">
+        {renderTab(settingsTab)}
+      </div>
+    </div>
   );
 };
 

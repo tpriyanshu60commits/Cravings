@@ -27,7 +27,7 @@ export const GetAdminDashboardStats = async (req, res, next) => {
       status: "active",
     });
     const pendingRestaurants = await Restaurant.countDocuments({
-      status: "inactive",
+      status: { $in: ["inactive", "pending"] },
     });
     const blockedRestaurants = await Restaurant.countDocuments({
       status: "blocked",
@@ -39,7 +39,9 @@ export const GetAdminDashboardStats = async (req, res, next) => {
       status: "active",
       isAvailable: true,
     });
-    const pendingRiders = await Rider.countDocuments({ status: "pending" });
+    const pendingRiders = await Rider.countDocuments({
+      status: { $in: ["pending", "inactive"] },
+    });
     const blockedRiders = await Rider.countDocuments({ status: "blocked" });
 
     const totalOrders = await Order.countDocuments();
@@ -203,6 +205,9 @@ export const UpdateCustomerStatus = async (req, res, next) => {
       error.statusCode = 404;
       return next(error);
     }
+
+    const updateFields = {};
+
     if (status) {
       const allowedStatuses = ["pending", "verified", "suspended"];
       if (!allowedStatuses.includes(status)) {
@@ -212,30 +217,35 @@ export const UpdateCustomerStatus = async (req, res, next) => {
         error.statusCode = 400;
         return next(error);
       }
-      customer.status = status;
+      updateFields.status = status;
       if (status === "suspended") {
-        customer.isActive = false;
+        updateFields.isActive = false;
       } else if (status === "verified") {
-        customer.isActive = true;
+        updateFields.isActive = true;
       }
     } else {
       if (customer.status === "verified") {
-        customer.status = "suspended";
-        customer.isActive = false;
+        updateFields.status = "suspended";
+        updateFields.isActive = false;
       } else {
-        customer.status = "verified";
-        customer.isActive = true;
+        updateFields.status = "verified";
+        updateFields.isActive = true;
       }
     }
 
     if (typeof isActive === "boolean") {
-      customer.isActive = isActive;
+      updateFields.isActive = isActive;
     }
 
-    await customer.save();
+    const updatedCustomer = await Customer.findByIdAndUpdate(
+      customer._id,
+      { $set: updateFields },
+      { new: true, runValidators: false }
+    );
+
     res.status(200).json({
       message: "Customer status updated successfully",
-      data: customer,
+      data: updatedCustomer,
     });
   } catch (error) {
     console.log(error.message);
@@ -252,11 +262,15 @@ export const GetAllRestaurants = async (req, res, next) => {
     // 2. Prepare filter object
     let restaurantFilter = {};
 
-    // 3. Status filter: 'active', 'inactive', 'blocked'
+    // 3. Status filter: 'active', 'inactive', 'pending', 'blocked'
     if (status) {
-      const allowedStatuses = ["active", "inactive", "blocked"];
+      const allowedStatuses = ["active", "inactive", "pending", "blocked"];
       if (allowedStatuses.includes(status)) {
-        restaurantFilter.status = status;
+        if (status === "inactive" || status === "pending") {
+          restaurantFilter.status = { $in: ["inactive", "pending"] };
+        } else {
+          restaurantFilter.status = status;
+        }
       }
     }
 
@@ -338,7 +352,7 @@ export const UpdateRestaurantStatus = async (req, res, next) => {
       return next(error);
     }
 
-    const allowedStatuses = ["active", "inactive", "blocked"];
+    const allowedStatuses = ["active", "inactive", "pending", "blocked"];
     if (!allowedStatuses.includes(status)) {
       const error = new Error(
         `Invalid status '${status}'. Allowed values are: ${allowedStatuses.join(", ")}`
@@ -358,16 +372,20 @@ export const UpdateRestaurantStatus = async (req, res, next) => {
       return next(error);
     }
 
-    restaurant.status = status;
-    if (status === "blocked" || status === "inactive") {
-      restaurant.isOpen = false;
+    const updateFields = { status };
+    if (status === "blocked" || status === "inactive" || status === "pending") {
+      updateFields.isOpen = false;
     }
 
-    await restaurant.save();
+    const updatedRestaurant = await Restaurant.findByIdAndUpdate(
+      restaurant._id,
+      { $set: updateFields },
+      { new: true, runValidators: false }
+    );
 
     res.status(200).json({
       message: "Restaurant status updated successfully",
-      data: restaurant,
+      data: updatedRestaurant,
     });
   } catch (error) {
     console.log(error.message);
@@ -432,7 +450,11 @@ export const GetAllRiders = async (req, res, next) => {
     if (status) {
       const allowedStatuses = ["pending", "active", "inactive", "blocked"];
       if (allowedStatuses.includes(status)) {
-        riderFilter.status = status;
+        if (status === "pending" || status === "inactive") {
+          riderFilter.status = { $in: ["pending", "inactive"] };
+        } else {
+          riderFilter.status = status;
+        }
       }
     }
 
@@ -552,16 +574,20 @@ export const UpdateRiderStatus = async (req, res, next) => {
       return next(error);
     }
 
-    rider.status = status;
+    const updateFields = { status };
     if (status === "blocked" || status === "inactive") {
-      rider.isAvailable = false;
+      updateFields.isAvailable = false;
     }
 
-    await rider.save();
+    const updatedRider = await Rider.findByIdAndUpdate(
+      rider._id,
+      { $set: updateFields },
+      { new: true, runValidators: false }
+    );
 
     res.status(200).json({
       message: "Rider status updated successfully",
-      data: rider,
+      data: updatedRider,
     });
   } catch (error) {
     console.log(error.message);
@@ -668,7 +694,7 @@ export const GetRiderEarnings = async (req, res, next) => {
 
 export const GetAllOrders = async (req, res, next) => {
   try {
-    const { status, restaurantId, customerId, riderId, startDate, endDate } =
+    const { status, restaurantId, customerId, riderId, startDate, endDate, search } =
       req.query;
 
     let filter = {};
@@ -696,6 +722,51 @@ export const GetAllOrders = async (req, res, next) => {
         end.setHours(23, 59, 59, 999);
         filter.createdAt.$lte = end;
       }
+    }
+
+    if (search && search.trim() !== "") {
+      const searchTrim = search.trim();
+      const searchRegex = new RegExp(searchTrim, "i");
+      const isObjectId = mongoose.Types.ObjectId.isValid(searchTrim) && searchTrim.length === 24;
+
+      const [matchingUsers, matchingRestaurants] = await Promise.all([
+        User.find({
+          $or: [
+            { fullName: { $regex: searchRegex } },
+            { email: { $regex: searchRegex } },
+            { phone: { $regex: searchRegex } },
+          ],
+        }).select("_id"),
+        Restaurant.find({
+          restaurantName: { $regex: searchRegex },
+        }).select("_id"),
+      ]);
+
+      const userIds = matchingUsers.map((u) => u._id);
+      const restIds = matchingRestaurants.map((r) => r._id);
+
+      const [matchingCustomers, matchingRiders] = await Promise.all([
+        Customer.find({ customerId: { $in: userIds } }).select("_id"),
+        Rider.find({ riderId: { $in: userIds } }).select("_id"),
+      ]);
+
+      const customerDocIds = matchingCustomers.map((c) => c._id);
+      const riderDocIds = matchingRiders.map((r) => r._id);
+
+      const orConditions = [
+        { "deliveryAddress.name": { $regex: searchRegex } },
+        { "deliveryAddress.phone": { $regex: searchRegex } },
+        { "deliveryAddress.city": { $regex: searchRegex } },
+        { restaurantId: { $in: restIds } },
+        { customerId: { $in: customerDocIds } },
+        { riderId: { $in: riderDocIds } },
+      ];
+
+      if (isObjectId) {
+        orConditions.push({ _id: new mongoose.Types.ObjectId(searchTrim) });
+      }
+
+      filter.$or = orConditions;
     }
 
     const orders = await Order.find(filter)
@@ -814,10 +885,11 @@ export const AssignRiderToOrder = async (req, res, next) => {
       return next(error);
     }
 
-    order.riderId = rider._id;
-    await order.save();
-
-    const updatedOrder = await Order.findById(order._id)
+    const updatedOrder = await Order.findByIdAndUpdate(
+      order._id,
+      { $set: { riderId: rider._id } },
+      { new: true, runValidators: false }
+    )
       .populate("restaurantId", "restaurantName address contactDetails")
       .populate({
         path: "riderId",
@@ -877,21 +949,25 @@ export const UpdateOrderStatus = async (req, res, next) => {
       return next(error);
     }
 
-    order.orderStatus = status;
+    const updateFields = { orderStatus: status };
 
     if (cancellationReason) {
-      order.cancellationReason = cancellationReason;
+      updateFields.cancellationReason = cancellationReason;
     }
 
-    if (paymentStatus && order.paymentDetails) {
-      order.paymentDetails.paymentStatus = paymentStatus;
+    if (paymentStatus) {
+      updateFields["paymentDetails.paymentStatus"] = paymentStatus;
     }
 
-    await order.save();
+    const updatedOrder = await Order.findByIdAndUpdate(
+      order._id,
+      { $set: updateFields },
+      { new: true, runValidators: false }
+    );
 
     res.status(200).json({
       message: "Order status updated successfully",
-      data: order,
+      data: updatedOrder,
     });
   } catch (error) {
     console.log(error.message);

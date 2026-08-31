@@ -21,6 +21,7 @@ const CustomerAddressModal = ({ isOpen, onClose, addressToEdit, onSaveSuccess })
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [isDetectingLocation, setIsDetectingLocation] = useState(false);
 
   useEffect(() => {
     if (addressToEdit) {
@@ -52,6 +53,36 @@ const CustomerAddressModal = ({ isOpen, onClose, addressToEdit, onSaveSuccess })
     }
     setErrors({});
   }, [addressToEdit, isOpen]);
+
+  const handleUseCurrentLocation = () => {
+    if (!("geolocation" in navigator)) {
+      toast.error("Geolocation is not supported by your browser");
+      return;
+    }
+
+    setIsDetectingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = String(position.coords.latitude);
+        const lon = String(position.coords.longitude);
+        setFormData((prev) => ({
+          ...prev,
+          geoLat: lat,
+          geoLon: lon,
+        }));
+        setIsDetectingLocation(false);
+        toast.success(`GPS Location linked: ${Number(lat).toFixed(4)}, ${Number(lon).toFixed(4)}`);
+      },
+      (error) => {
+        setIsDetectingLocation(false);
+        console.warn("Geolocation notice:", error.message);
+        toast.error("Please allow location permission to attach live GPS coordinates", {
+          id: "geo-cust-perm",
+        });
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+  };
 
   if (!isOpen) return null;
 
@@ -87,12 +118,20 @@ const CustomerAddressModal = ({ isOpen, onClose, addressToEdit, onSaveSuccess })
 
     setLoading(true);
     try {
+      const payload = {
+        ...formData,
+        geoLocation: {
+          lat: formData.geoLat,
+          lon: formData.geoLon,
+        },
+      };
+
       let res;
       if (addressToEdit?._id) {
-        res = await api.put(`/customer/address-book/${addressToEdit._id}`, formData);
+        res = await api.put(`/customer/address-book/${addressToEdit._id}`, payload);
         toast.success("Address updated successfully");
       } else {
-        res = await api.post("/customer/address-book", formData);
+        res = await api.post("/customer/address-book", payload);
         toast.success("Address added successfully");
       }
 
@@ -124,6 +163,28 @@ const CustomerAddressModal = ({ isOpen, onClose, addressToEdit, onSaveSuccess })
             <MdCancel className="text-2xl" />
           </button>
         </header>
+
+        {/* GPS Location Auto-detect Widget */}
+        <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between gap-3">
+          <div>
+            <p className="text-xs font-bold text-blue-900 flex items-center gap-1">
+              <IoLocationOutline className="text-sm" /> Accurate GPS Pinpoint
+            </p>
+            <p className="text-[11px] text-blue-700 mt-0.5">
+              {formData.geoLat && formData.geoLon
+                ? `GPS Linked: ${Number(formData.geoLat).toFixed(4)}, ${Number(formData.geoLon).toFixed(4)}`
+                : "Attach your current GPS location for precise delivery navigation"}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={handleUseCurrentLocation}
+            disabled={isDetectingLocation}
+            className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shrink-0 transition flex items-center gap-1 disabled:opacity-50"
+          >
+            {isDetectingLocation ? "Detecting..." : formData.geoLat ? "Update GPS" : "Detect GPS"}
+          </button>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-3.5">
           {/* Address Type Selection */}

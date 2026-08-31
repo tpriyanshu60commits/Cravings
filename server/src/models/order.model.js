@@ -26,14 +26,17 @@ const orderSchema = mongoose.Schema(
           itemName: {
             type: String,
             required: true,
+            default: "Food Item",
           },
           itemPrice: {
-            type: String,
+            type: mongoose.Schema.Types.Mixed,
             required: true,
+            default: "0",
           },
           quantity: {
-            type: String,
+            type: mongoose.Schema.Types.Mixed,
             required: true,
+            default: "1",
           },
           image: {
             url: {
@@ -145,12 +148,15 @@ const orderSchema = mongoose.Schema(
           type: {
             lat: {
               type: String,
+              default: "",
             },
             lon: {
               type: String,
+              default: "",
             },
           },
-          required: true,
+          required: false,
+          default: () => ({ lat: "", lon: "" }),
         },
         city: {
           type: String,
@@ -191,6 +197,28 @@ const orderSchema = mongoose.Schema(
         },
       },
       required: true,
+    },
+    deliveryConfirmation: {
+      type: {
+        riderConfirmed: {
+          type: Boolean,
+          default: false,
+        },
+        riderConfirmedAt: {
+          type: Date,
+        },
+        customerConfirmed: {
+          type: Boolean,
+          default: false,
+        },
+        customerConfirmedAt: {
+          type: Date,
+        },
+      },
+      default: () => ({
+        riderConfirmed: false,
+        customerConfirmed: false,
+      }),
     },
   },
   {

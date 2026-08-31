@@ -207,9 +207,10 @@ export const ToggleRiderAvailability = async (req, res, next) => {
       return next(error);
     }
 
+    const body = req.body || {};
     const targetAvailability =
-      req.body.isAvailable !== undefined
-        ? req.body.isAvailable === true || req.body.isAvailable === "true"
+      body.isAvailable !== undefined
+        ? body.isAvailable === true || body.isAvailable === "true"
         : !rider.isAvailable;
 
     if (targetAvailability && rider.status !== "active") {
@@ -231,7 +232,7 @@ export const ToggleRiderAvailability = async (req, res, next) => {
       },
     });
   } catch (error) {
-    console.log(error.message);
+    console.log("ToggleRiderAvailability ERROR:", error.message);
     next(error);
   }
 };
@@ -239,7 +240,7 @@ export const ToggleRiderAvailability = async (req, res, next) => {
 export const UpdateRiderLocation = async (req, res, next) => {
   try {
     const currentUser = req.user;
-    const { lat, lon } = req.body;
+    const { lat, lon } = req.body || {};
 
     if (!lat || !lon) {
       const error = new Error("Both latitude (lat) and longitude (lon) are required");
@@ -264,7 +265,7 @@ export const UpdateRiderLocation = async (req, res, next) => {
       data: rider.currentLocation,
     });
   } catch (error) {
-    console.log(error.message);
+    console.log("UpdateRiderLocation ERROR:", error.message);
     next(error);
   }
 };
@@ -421,17 +422,33 @@ export const GetRiderOrders = async (req, res, next) => {
 
     let query = { riderId: rider._id };
 
-
-    if (status === "active") {
-      query.orderStatus = {
-        $in: ["accepted", "preparing", "ready", "pickedUp", "outForDelivery"],
+    if (status === "available") {
+      query = {
+        orderStatus: "ready",
+        $or: [
+          { riderId: { $in: [null, undefined] } },
+          { riderId: rider._id },
+        ],
+      };
+    } else if (status === "active") {
+      query = {
+        riderId: rider._id,
+        orderStatus: {
+          $in: ["accepted", "preparing", "ready", "pickedUp", "outForDelivery"],
+        },
       };
     } else if (status === "completed") {
-      query.orderStatus = {
-        $in: ["delivered", "undeliverable"],
+      query = {
+        riderId: rider._id,
+        orderStatus: {
+          $in: ["delivered", "undeliverable"],
+        },
       };
     } else if (status && status !== "all") {
-      query.orderStatus = status;
+      query = {
+        riderId: rider._id,
+        orderStatus: status,
+      };
     }
     const orders = await Order.find(query)
       .populate(
@@ -471,7 +488,10 @@ export const GetRiderOrderDetails = async (req, res, next) => {
 
     const order = await Order.findOne({
       _id: orderId,
-      riderId: rider._id,
+      $or: [
+        { riderId: rider._id },
+        { orderStatus: "ready", riderId: { $in: [null, undefined] } },
+      ],
     })
       .populate(
         "restaurantId",
@@ -514,36 +534,56 @@ export const AcceptAssignedOrder = async (req, res, next) => {
     }
     const order = await Order.findOne({
       _id: orderId,
-      riderId: rider._id,
+      orderStatus: { $in: ["ready", "accepted", "preparing"] },
+      $or: [
+        { riderId: { $in: [null, undefined] } },
+        { riderId: rider._id },
+      ],
     });
 
     if (!order) {
-      const error = new Error("Order not found or not assigned to you");
+      const error = new Error("Order not found or no longer available for pickup");
       error.statusCode = 404;
       return next(error);
     }
-    const allowedStatuses = ["ready", "accepted"];
-    if (!allowedStatuses.includes(order.orderStatus)) {
-      const error = new Error(
-        `Cannot accept order with current status '${order.orderStatus}'`
-      );
-      error.statusCode = 400;
-      return next(error);
+
+    // Defensive check & populate orderItems if missing in legacy order
+    if (Array.isArray(order.orderItems)) {
+      order.orderItems.forEach((item, index) => {
+        if (!item.itemName) item.itemName = `Item #${index + 1}`;
+        if (item.itemPrice === undefined || item.itemPrice === null) item.itemPrice = "0";
+        if (item.quantity === undefined || item.quantity === null) item.quantity = "1";
+      });
     }
+
+    order.riderId = rider._id;
+    await order.save();
+
+    const populatedOrder = await Order.findById(order._id)
+      .populate(
+        "restaurantId",
+        "restaurantName address city contactDetails geoLocation"
+      )
+      .populate({
+        path: "customerId",
+        populate: {
+          path: "customerId",
+          select: "fullName phone email",
+        },
+      });
 
     res.status(200).json({
       message: "Order accepted successfully",
-      data: order,
+      data: populatedOrder,
     });
   } catch (error) {
-    console.log(error.message);
+    console.error("AcceptAssignedOrder ERROR:", error.stack || error.message);
     next(error);
   }
 };
 
 export const PickupOrder = async (req, res, next) => {
   try {
-
     const currentUser = req.user;
     const { orderId } = req.params;
 
@@ -571,17 +611,42 @@ export const PickupOrder = async (req, res, next) => {
       );
       error.statusCode = 400;
       return next(error);
-    } order.orderStatus = "pickedUp";
+    }
+
+    if (Array.isArray(order.orderItems)) {
+      order.orderItems.forEach((item, index) => {
+        if (!item.itemName) item.itemName = `Item #${index + 1}`;
+        if (item.itemPrice === undefined || item.itemPrice === null) item.itemPrice = "0";
+        if (item.quantity === undefined || item.quantity === null) item.quantity = "1";
+      });
+    }
+
+    order.orderStatus = "pickedUp";
     await order.save();
+
+    const populatedOrder = await Order.findById(order._id)
+      .populate(
+        "restaurantId",
+        "restaurantName address city contactDetails geoLocation"
+      )
+      .populate({
+        path: "customerId",
+        populate: {
+          path: "customerId",
+          select: "fullName phone email",
+        },
+      });
+
     res.status(200).json({
       message: "Order marked as picked up",
-      data: order,
+      data: populatedOrder,
     });
   } catch (error) {
-    console.log(error.message);
+    console.error("PickupOrder ERROR:", error.stack || error.message);
     next(error);
   }
 };
+
 export const OutForDeliveryOrder = async (req, res, next) => {
   try {
     const currentUser = req.user;
@@ -610,17 +675,41 @@ export const OutForDeliveryOrder = async (req, res, next) => {
       error.statusCode = 400;
       return next(error);
     }
+
+    if (Array.isArray(order.orderItems)) {
+      order.orderItems.forEach((item, index) => {
+        if (!item.itemName) item.itemName = `Item #${index + 1}`;
+        if (item.itemPrice === undefined || item.itemPrice === null) item.itemPrice = "0";
+        if (item.quantity === undefined || item.quantity === null) item.quantity = "1";
+      });
+    }
+
     order.orderStatus = "outForDelivery";
     await order.save();
+
+    const populatedOrder = await Order.findById(order._id)
+      .populate(
+        "restaurantId",
+        "restaurantName address city contactDetails geoLocation"
+      )
+      .populate({
+        path: "customerId",
+        populate: {
+          path: "customerId",
+          select: "fullName phone email",
+        },
+      });
+
     res.status(200).json({
       message: "Order marked as out for delivery",
-      data: order,
+      data: populatedOrder,
     });
   } catch (error) {
-    console.log(error.message);
+    console.error("OutForDeliveryOrder ERROR:", error.stack || error.message);
     next(error);
   }
 };
+
 export const DeliverOrder = async (req, res, next) => {
   try {
     const currentUser = req.user;
@@ -649,17 +738,60 @@ export const DeliverOrder = async (req, res, next) => {
       error.statusCode = 400;
       return next(error);
     }
-    order.orderStatus = "delivered";
+
+    if (Array.isArray(order.orderItems)) {
+      order.orderItems.forEach((item, index) => {
+        if (!item.itemName) item.itemName = `Item #${index + 1}`;
+        if (item.itemPrice === undefined || item.itemPrice === null) item.itemPrice = "0";
+        if (item.quantity === undefined || item.quantity === null) item.quantity = "1";
+      });
+    }
+
+    if (!order.deliveryConfirmation) {
+      order.deliveryConfirmation = {
+        riderConfirmed: false,
+        customerConfirmed: false,
+      };
+    }
+
+    order.deliveryConfirmation.riderConfirmed = true;
+    order.deliveryConfirmation.riderConfirmedAt = new Date();
+
+    let message = "Delivery marked by rider. Waiting for customer confirmation.";
+
+    // Only transition to 'delivered' when BOTH rider and customer have confirmed
+    if (order.deliveryConfirmation.customerConfirmed === true) {
+      order.orderStatus = "delivered";
+      message = "Delivery confirmed by both rider and customer. Order completed successfully!";
+    } else {
+      order.orderStatus = "outForDelivery";
+    }
+
     await order.save();
+
+    const populatedOrder = await Order.findById(order._id)
+      .populate(
+        "restaurantId",
+        "restaurantName address city contactDetails geoLocation"
+      )
+      .populate({
+        path: "customerId",
+        populate: {
+          path: "customerId",
+          select: "fullName phone email",
+        },
+      });
+
     res.status(200).json({
-      message: "Order delivered successfully",
-      data: order,
+      message,
+      data: populatedOrder,
     });
   } catch (error) {
-    console.log(error.message);
+    console.error("DeliverOrder ERROR:", error.stack || error.message);
     next(error);
   }
 };
+
 export const MarkOrderUndeliverable = async (req, res, next) => {
   try {
     const currentUser = req.user;
@@ -694,6 +826,14 @@ export const MarkOrderUndeliverable = async (req, res, next) => {
       return next(error);
     }
 
+    if (Array.isArray(order.orderItems)) {
+      order.orderItems.forEach((item, index) => {
+        if (!item.itemName) item.itemName = `Item #${index + 1}`;
+        if (item.itemPrice === undefined || item.itemPrice === null) item.itemPrice = "0";
+        if (item.quantity === undefined || item.quantity === null) item.quantity = "1";
+      });
+    }
+
     order.orderStatus = "undeliverable";
 
     await order.save();
@@ -703,10 +843,7 @@ export const MarkOrderUndeliverable = async (req, res, next) => {
       data: order,
     });
   } catch (error) {
-    console.log(
-      "MarkOrderUndeliverable ERROR:",
-      error.message
-    );
+    console.error("MarkOrderUndeliverable ERROR:", error.stack || error.message);
     next(error);
   }
 };

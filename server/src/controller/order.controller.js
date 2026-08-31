@@ -75,12 +75,12 @@ export const CreateOrder = async (req, res, next) => {
       itemAmount += itemPrice * qty;
       normalizedOrderItems.push({
         itemId: menuItem._id,
-        itemName: menuItem.itemName,
-        itemPrice,
-        quantity: qty,
+        itemName: menuItem.itemName || item.itemName || "Item",
+        itemPrice: String(itemPrice),
+        quantity: String(qty),
         image: {
-          url: menuItem.image?.url || "",
-          publicId: menuItem.image?.publicId || "",
+          url: menuItem.image?.url || item.image?.url || "",
+          publicId: menuItem.image?.publicId || item.image?.publicId || "",
         },
       });
     }
@@ -103,6 +103,40 @@ export const CreateOrder = async (req, res, next) => {
           100,
       ) / 100;
 
+    const resolvedGeoLocation = {
+      lat: String(deliveryAddress?.geoLocation?.lat || deliveryAddress?.geoLat || "").trim(),
+      lon: String(deliveryAddress?.geoLocation?.lon || deliveryAddress?.geoLon || "").trim(),
+    };
+
+    // If coordinates were omitted in checkout payload, resolve from customer's saved addressBook
+    if (!resolvedGeoLocation.lat || !resolvedGeoLocation.lon) {
+      if (customer && Array.isArray(customer.addressBook) && customer.addressBook.length > 0) {
+        const matchingAddr =
+          customer.addressBook.find(
+            (a) =>
+              a.address === deliveryAddress?.address &&
+              a.pinCode === deliveryAddress?.pinCode
+          ) ||
+          customer.addressBook.find((a) => a.isDefault) ||
+          customer.addressBook[0];
+
+        if (matchingAddr?.geoLocation?.lat && matchingAddr?.geoLocation?.lon) {
+          resolvedGeoLocation.lat = String(matchingAddr.geoLocation.lat).trim();
+          resolvedGeoLocation.lon = String(matchingAddr.geoLocation.lon).trim();
+        }
+      }
+    }
+
+    const sanitizedDeliveryAddress = {
+      name: deliveryAddress?.name || currentUser.fullName || "Customer",
+      address: deliveryAddress?.address || "",
+      city: deliveryAddress?.city || "",
+      state: deliveryAddress?.state || "",
+      pinCode: deliveryAddress?.pinCode || "",
+      country: deliveryAddress?.country || "India",
+      geoLocation: resolvedGeoLocation,
+    };
+
     const newOrder = await Order.create({
       restaurantId,
       customerId: customer._id,
@@ -117,7 +151,7 @@ export const CreateOrder = async (req, res, next) => {
         discountAmount,
         finalAmount,
       },
-      deliveryAddress,
+      deliveryAddress: sanitizedDeliveryAddress,
       paymentDetails: {
         paymentMethod: paymentMethod || "upi",
         paymentStatus: "pending",
@@ -128,7 +162,7 @@ export const CreateOrder = async (req, res, next) => {
       data: newOrder,
     });
   } catch (error) {
-    console.log(error.message);
+    console.error("CreateOrder ERROR:", error.stack || error.message);
     next(error);
   }
 };

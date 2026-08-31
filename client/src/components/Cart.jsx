@@ -155,8 +155,8 @@ const Cart = () => {
         pinCode: selectedAddr.pinCode,
         country: selectedAddr.country || "India",
         geoLocation: {
-          lat: selectedAddr.geoLocation?.lat || "",
-          lon: selectedAddr.geoLocation?.lon || "",
+          lat: String(selectedAddr.geoLocation?.lat || selectedAddr.geoLat || "").trim(),
+          lon: String(selectedAddr.geoLocation?.lon || selectedAddr.geoLon || "").trim(),
         },
       };
 

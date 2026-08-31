@@ -39,12 +39,23 @@ app.get("/", (req, res) => {
 });
 
 //Default Error Handler
-
 app.use((err, req, res, next) => {
-  const ErrMessage = err.message || "Internal Server Error";
-  const ErrStausCode = err.statusCode || 500;
+  console.error("Server Error:", err.stack || err.message);
+  let ErrStatusCode = err.statusCode || 500;
+  let ErrMessage = err.message || "Internal Server Error";
 
-  res.status(ErrStausCode).json({ message: ErrMessage });
+  if (err.name === "ValidationError") {
+    ErrStatusCode = 400;
+    ErrMessage =
+      Object.values(err.errors || {})
+        .map((e) => e.message)
+        .join(", ") || err.message;
+  } else if (err.name === "CastError") {
+    ErrStatusCode = 400;
+    ErrMessage = `Invalid ${err.path}: ${err.value}`;
+  }
+
+  res.status(ErrStatusCode).json({ message: ErrMessage });
 });
 
 const port = process.env.PORT || 5000;

@@ -44,6 +44,7 @@ router.put(
 
 // Availability & Location
 router.patch("/toggle-availability", ToggleRiderAvailability);
+router.get("/toggle-availability", ToggleRiderAvailability);
 router.patch("/location", UpdateRiderLocation);
 
 // Dashboard & Financials

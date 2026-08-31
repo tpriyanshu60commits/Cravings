@@ -15,6 +15,7 @@ export const AddAddress = async (req, res, next) => {
       isDefault,
       geoLat,
       geoLon,
+      geoLocation,
     } = req.body;
 
     if (
@@ -30,6 +31,9 @@ export const AddAddress = async (req, res, next) => {
       error.statusCode = 400;
       return next(error);
     }
+
+    const finalLat = String(geoLat || geoLocation?.lat || "").trim();
+    const finalLon = String(geoLon || geoLocation?.lon || "").trim();
 
     let customer = await Customer.findOne({
       customerId: currentUser._id,
@@ -49,8 +53,8 @@ export const AddAddress = async (req, res, next) => {
             addressType,
             isDefault: isDefault === true || isDefault === "true",
             geoLocation: {
-              lat: geoLat || "",
-              lon: geoLon || "",
+              lat: finalLat,
+              lon: finalLon,
             },
           },
         ],
@@ -72,8 +76,8 @@ export const AddAddress = async (req, res, next) => {
         addressType,
         isDefault: isDefault === true || isDefault === "true",
         geoLocation: {
-          lat: geoLat || "",
-          lon: geoLon || "",
+          lat: finalLat,
+          lon: finalLon,
         },
       });
 
@@ -85,7 +89,7 @@ export const AddAddress = async (req, res, next) => {
       data: customer.addressBook,
     });
   } catch (error) {
-    console.log(error.message);
+    console.error("AddAddress ERROR:", error.stack || error.message);
     next(error);
   }
 };
@@ -106,6 +110,7 @@ export const UpdateAddress = async (req, res, next) => {
       isDefault,
       geoLat,
       geoLon,
+      geoLocation,
     } = req.body;
 
     const customer = await Customer.findOne({
@@ -138,8 +143,12 @@ export const UpdateAddress = async (req, res, next) => {
     if (country !== undefined) existingAddress.country = country;
     if (addressType !== undefined) existingAddress.addressType = addressType;
     if (isDefault !== undefined) existingAddress.isDefault = shouldBeDefault;
-    if (geoLat !== undefined) existingAddress.geoLocation.lat = geoLat;
-    if (geoLon !== undefined) existingAddress.geoLocation.lon = geoLon;
+
+    const finalLat = geoLat !== undefined ? geoLat : geoLocation?.lat;
+    const finalLon = geoLon !== undefined ? geoLon : geoLocation?.lon;
+    if (finalLat !== undefined) existingAddress.geoLocation.lat = String(finalLat).trim();
+    if (finalLon !== undefined) existingAddress.geoLocation.lon = String(finalLon).trim();
+
     customer.markModified("addressBook");
     await customer.save();
     return res.status(200).json({
@@ -147,7 +156,7 @@ export const UpdateAddress = async (req, res, next) => {
       data: customer.addressBook,
     });
   } catch (error) {
-    console.log(error.message);
+    console.error("UpdateAddress ERROR:", error.stack || error.message);
     next(error);
   }
 };
@@ -270,7 +279,92 @@ export const GetCustomerOrderDetails = async (req, res, next) => {
       data: order,
     });
   } catch (error) {
-    console.log("GetCustomerOrderDetails ERROR:", error.message);
+    console.error("GetCustomerOrderDetails ERROR:", error.stack || error.message);
+    next(error);
+  }
+};
+
+export const ConfirmOrderDeliveryByCustomer = async (req, res, next) => {
+  try {
+    const currentUser = req.user;
+    const { orderId } = req.params;
+
+    const customer = await Customer.findOne({
+      customerId: currentUser._id,
+    });
+    if (!customer) {
+      const error = new Error("Customer profile not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    const order = await Order.findOne({
+      _id: orderId,
+      customerId: customer._id,
+    });
+
+    if (!order) {
+      const error = new Error(
+        "Order not found or you are not authorized to confirm this order"
+      );
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    if (order.orderStatus !== "outForDelivery") {
+      const error = new Error(
+        `Cannot confirm delivery because order is currently '${order.orderStatus}'. Confirmation is only available when the order is 'outForDelivery'.`
+      );
+      error.statusCode = 400;
+      return next(error);
+    }
+
+    if (Array.isArray(order.orderItems)) {
+      order.orderItems.forEach((item, index) => {
+        if (!item.itemName) item.itemName = `Item #${index + 1}`;
+        if (item.itemPrice === undefined || item.itemPrice === null) item.itemPrice = "0";
+        if (item.quantity === undefined || item.quantity === null) item.quantity = "1";
+      });
+    }
+
+    if (!order.deliveryConfirmation) {
+      order.deliveryConfirmation = {
+        riderConfirmed: false,
+        customerConfirmed: false,
+      };
+    }
+
+    order.deliveryConfirmation.customerConfirmed = true;
+    order.deliveryConfirmation.customerConfirmedAt = new Date();
+
+    let message = "Order received confirmed by customer. Waiting for rider confirmation.";
+
+    // Only transition to 'delivered' when BOTH rider and customer have confirmed
+    if (order.deliveryConfirmation.riderConfirmed === true) {
+      order.orderStatus = "delivered";
+      message = "Delivery confirmed by both customer and rider. Order completed successfully!";
+    } else {
+      order.orderStatus = "outForDelivery";
+    }
+
+    await order.save();
+
+    const populatedOrder = await Order.findById(order._id)
+      .populate(
+        "restaurantId",
+        "restaurantName address city contactDetails geoLocation"
+      )
+      .populate({
+        path: "riderId",
+        select: "vehicleDetails currentLocation averageRating isAvailable status",
+      });
+
+    res.status(200).json({
+      message,
+      data: populatedOrder,
+    });
+  } catch (error) {
+    console.error("ConfirmOrderDeliveryByCustomer ERROR:", error.stack || error.message);
     next(error);
   }
 };

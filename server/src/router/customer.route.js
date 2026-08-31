@@ -7,6 +7,7 @@ import {
   DeleteAddress,
   GetAllOrders,
   GetCustomerOrderDetails,
+  ConfirmOrderDeliveryByCustomer,
 } from "../controller/customer.controller.js";
 
 const router = express.Router();
@@ -20,5 +21,8 @@ router.delete("/address-book/:addressId", DeleteAddress);
 
 router.get("/all-orders", GetAllOrders);
 router.get("/orders/:orderId", GetCustomerOrderDetails);
+router.patch("/orders/:orderId/confirm-delivery", ConfirmOrderDeliveryByCustomer);
+router.patch("/orders/:orderId/confirm-received", ConfirmOrderDeliveryByCustomer);
+router.post("/orders/:orderId/confirm-delivery", ConfirmOrderDeliveryByCustomer);
 
 export default router;

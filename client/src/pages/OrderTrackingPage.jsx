@@ -55,6 +55,7 @@ const OrderTrackingPage = () => {
   const [order, setOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isConfirming, setIsConfirming] = useState(false);
 
   const fetchOrderDetails = useCallback(
     async (isManual = false) => {
@@ -73,6 +74,22 @@ const OrderTrackingPage = () => {
     },
     [orderId]
   );
+
+  const handleConfirmReceived = async () => {
+    try {
+      setIsConfirming(true);
+      const res = await api.patch(`/customer/orders/${orderId}/confirm-delivery`);
+      toast.success(res.data?.message || "Order received confirmed!");
+      setOrder(res.data?.data);
+      await fetchOrderDetails();
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Failed to confirm order delivery"
+      );
+    } finally {
+      setIsConfirming(false);
+    }
+  };
 
   useEffect(() => {
     fetchOrderDetails();
@@ -142,6 +159,48 @@ const OrderTrackingPage = () => {
             Refresh Status
           </button>
         </div>
+
+        {/* Dual Delivery Confirmation Card for Customer */}
+        {order.orderStatus === "outForDelivery" && (
+          <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-6 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-600 flex items-center justify-center text-2xl shrink-0">
+                <IoBicycleOutline />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-(--color-base-content)">
+                  Your Meal is Out for Delivery!
+                </h3>
+                <p className="text-xs text-(--color-secondary) mt-0.5">
+                  {order.deliveryConfirmation?.customerConfirmed
+                    ? "✓ You confirmed order receipt. Waiting for rider to complete drop-off confirmation."
+                    : order.deliveryConfirmation?.riderConfirmed
+                    ? "Rider has arrived and marked delivery! Please confirm you received your food."
+                    : "Once your delivery partner arrives with your meal, click below to confirm receipt."}
+                </p>
+              </div>
+            </div>
+
+            {order.deliveryConfirmation?.customerConfirmed ? (
+              <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/20 text-green-700 px-4 py-2.5 rounded-xl text-xs font-bold shrink-0">
+                <IoCheckmarkCircle className="text-base" /> Order Receipt Confirmed
+              </div>
+            ) : (
+              <button
+                onClick={handleConfirmReceived}
+                disabled={isConfirming}
+                className="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-2 shrink-0 disabled:opacity-50"
+              >
+                {isConfirming ? (
+                  <IoRefreshOutline className="animate-spin text-sm" />
+                ) : (
+                  <IoCheckmarkCircle className="text-base" />
+                )}
+                Confirm Order Received
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Status Stepper / Banner */}
         <div className="bg-(--color-base-100) p-6 rounded-2xl border border-(--color-base-300) shadow-xs space-y-6">

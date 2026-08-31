@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { useAuth } from "../../../../context/AuthContext";
+import { useState } from "react";
 import api from "../../../../config/ApiConfig";
 import toast from "react-hot-toast";
 import { MdEdit } from "react-icons/md";
 
 const RestaurantInformation = () => {
-  const { user, setUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const getStoredRestaurant = () => {
     try {

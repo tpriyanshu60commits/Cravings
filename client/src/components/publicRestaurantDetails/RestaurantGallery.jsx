@@ -1,4 +1,3 @@
-import React from "react";
 
 const RestaurantGallery = ({ images }) => {
   if (!images?.length) return null;

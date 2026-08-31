@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import Loader from "../Loader";
@@ -12,7 +12,6 @@ import {
   MdVisibility,
   MdClose,
   MdPhone,
-  MdEmail,
   MdLocationOn,
   MdHourglassTop,
 } from "react-icons/md";
@@ -37,11 +36,11 @@ const AdminRestaurants = ({ initialFilter = "all" }) => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [actionLoadingId, setActionLoadingId] = useState(null);
 
-  useEffect(() => {
-    if (initialFilter) {
-      setSelectedStatus(initialFilter);
-    }
-  }, [initialFilter]);
+  const [prevFilter, setPrevFilter] = useState(initialFilter);
+  if (initialFilter !== prevFilter) {
+    setPrevFilter(initialFilter);
+    setSelectedStatus(initialFilter || "all");
+  }
 
   const fetchRestaurants = useCallback(async (isManual = false) => {
     try {
@@ -69,8 +68,37 @@ const AdminRestaurants = ({ initialFilter = "all" }) => {
   }, [selectedStatus, searchQuery]);
 
   useEffect(() => {
-    fetchRestaurants();
-  }, [fetchRestaurants]);
+    let isMounted = true;
+    const loadInitialRestaurants = async () => {
+      try {
+        const params = {};
+        if (selectedStatus !== "all") {
+          params.status = selectedStatus;
+        }
+        if (searchQuery.trim() !== "") {
+          params.search = searchQuery.trim();
+        }
+        const res = await api.get("/admin/restaurants", { params });
+        if (isMounted) {
+          if (Array.isArray(res.data?.data)) {
+            setRestaurants(res.data.data);
+          }
+          setIsLoading(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          toast.error(
+            error.response?.data?.message || "Failed to fetch restaurants",
+          );
+          setIsLoading(false);
+        }
+      }
+    };
+    loadInitialRestaurants();
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedStatus, searchQuery]);
 
   const handleUpdateStatus = async (restaurantId, newStatus) => {
     try {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { MdEdit, MdOutlineLockReset, MdOutlineAddAPhoto, MdPerson, MdEmail, MdPhone } from "react-icons/md";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../config/ApiConfig";
@@ -20,15 +20,15 @@ const AdminSetting = () => {
     phone: user?.phone || "",
   });
 
-  useEffect(() => {
-    if (user) {
-      setFormData({
-        fullName: user.fullName || "",
-        email: user.email || "",
-        phone: user.phone || "",
-      });
-    }
-  }, [user]);
+  const [prevUser, setPrevUser] = useState(user);
+  if (user !== prevUser) {
+    setPrevUser(user);
+    setFormData({
+      fullName: user?.fullName || "",
+      email: user?.email || "",
+      phone: user?.phone || "",
+    });
+  }
 
   const handleProfileChange = (e) => {
     const { name, value } = e.target;

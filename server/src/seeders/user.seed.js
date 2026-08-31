@@ -47,7 +47,7 @@ const userSeed = async () => {
 
     console.log("Creating New Restaurant");
 
-    const newRestaurant = await User.create(UserData[0]);
+    await User.create(UserData[0]);
     console.log("Restaurant Created Sucessfully");
 
     //Seeding Customer
@@ -62,7 +62,7 @@ const userSeed = async () => {
 
     console.log("Creating New Customer");
 
-    const newCustomer = await User.create(UserData[1]);
+    await User.create(UserData[1]);
     console.log("Customer Created Sucessfully");
 
     // Seeding Rider
@@ -77,7 +77,7 @@ const userSeed = async () => {
 
     console.log("Creating New Rider");
 
-    const newRider = await User.create(UserData[2]);
+    await User.create(UserData[2]);
     console.log("Rider Created Sucessfully");
   } catch (error) {
     console.log("User Not Created");

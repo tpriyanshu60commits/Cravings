@@ -3,21 +3,6 @@ import Customer from "../models/customer.model.js";
 import Menu from "../models/menu.model.js";
 import mongoose from "mongoose";
 
-const getDefaultDeliveryAddress = (currentUser) => {
-  return {
-    name: currentUser.fullName,
-    address: "Address Line",
-    city: "City",
-    state: "State",
-    pinCode: "000000",
-    country: "India",
-    geoLocation: {
-      lat: "",
-      lon: "",
-    },
-  };
-};
-
 export const CreateOrder = async (req, res, next) => {
   try {
     const currentUser = req.user;

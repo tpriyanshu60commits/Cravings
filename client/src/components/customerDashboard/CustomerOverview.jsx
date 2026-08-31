@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../config/ApiConfig";
@@ -11,7 +11,7 @@ import {
   IoChevronForward,
   IoStorefrontOutline,
 } from "react-icons/io5";
-import { FaMotorcycle, FaCheckCircle } from "react-icons/fa";
+import { FaMotorcycle } from "react-icons/fa";
 
 const CustomerOverview = ({ setActiveTab }) => {
   const { user } = useAuth();
@@ -22,22 +22,29 @@ const CustomerOverview = ({ setActiveTab }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
     const fetchData = async () => {
       try {
-        setIsLoading(true);
         const [ordersRes, addressRes] = await Promise.all([
           api.get("/customer/all-orders"),
           api.get("/customer/address-book"),
         ]);
-        setOrders(ordersRes.data?.data || []);
-        setAddresses(addressRes.data?.data || []);
+        if (isMounted) {
+          setOrders(ordersRes.data?.data || []);
+          setAddresses(addressRes.data?.data || []);
+          setIsLoading(false);
+        }
       } catch (error) {
         console.error("Overview data fetch error:", error);
-      } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
     fetchData();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   if (isLoading) return <Loader height="300px" width="100%" />;
@@ -46,10 +53,6 @@ const CustomerOverview = ({ setActiveTab }) => {
     ["pending", "accepted", "preparing", "ready", "pickedup", "outfordelivery"].includes(
       o.orderStatus?.toLowerCase()
     )
-  );
-
-  const deliveredOrders = orders.filter(
-    (o) => o.orderStatus?.toLowerCase() === "delivered"
   );
 
   return (

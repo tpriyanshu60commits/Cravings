@@ -3,7 +3,6 @@ import Menu from "../models/menu.model.js";
 import Order from "../models/order.model.js";
 import {
   uploadMultipleImages,
-  deleteMultipleImages,
   UploadSingleImage,
   deleteSingleImage,
 } from "../utils/image.service.js";

@@ -1,26 +1,20 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "../../config/ApiConfig";
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
-import { MdLinkedCamera, MdSave, MdEdit, MdDirectionsBike, MdAccountBalance, MdLocationOn } from "react-icons/md";
-import { RiLoader4Fill } from "react-icons/ri";
+import { MdLinkedCamera, MdDirectionsBike, MdAccountBalance, MdLocationOn } from "react-icons/md";
 import PasswordChangeModal from "../commonModals/PasswordChangeModal";
-import RiderKYCModal from "./RiderKYCModal";
 
 const RiderSettings = () => {
   const { user, setUser } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [editingProfile, setEditingProfile] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState(false);
   const [editingAddress, setEditingAddress] = useState(false);
   const [editingBank, setEditingBank] = useState(false);
-  const [isKYCModalOpen, setIsKYCModalOpen] = useState(false);
   const [isPasswordChangeModalOpen, setIsPasswordChangeModalOpen] = useState(false);
   const [profilePicPreview, setProfilePicPreview] = useState(null);
   const [profilePic, setProfilePic] = useState(null);
-
-  const [riderData, setRiderData] = useState(null);
 
   // Form states
   const [userFormData, setUserFormData] = useState({
@@ -50,48 +44,43 @@ const RiderSettings = () => {
     ifscCode: "",
   });
 
-  const fetchRiderProfile = async () => {
-    try {
-      setIsLoading(true);
-      const res = await api.get("/rider/profile");
-      const rider = res.data?.data || {};
-      setRiderData(rider);
-
-      setVehicleFormData({
-        vehicleType: rider.vehicleDetails?.vehicleType || "Motorcycle",
-        vehicleNumber: rider.vehicleDetails?.vehicleNumber || "",
-        vehicleModel: rider.vehicleDetails?.vehicleModel || "",
-        vehicleColor: rider.vehicleDetails?.vehicleColor || "",
-      });
-
-      setAddressFormData({
-        address: rider.currentAddress?.address || "",
-        city: rider.currentAddress?.city || "",
-        state: rider.currentAddress?.state || "",
-        pinCode: rider.currentAddress?.pinCode || "",
-        country: rider.currentAddress?.country || "India",
-      });
-
-      setBankFormData({
-        bankName: rider.financialDetails?.bankName || "",
-        accountNumber: rider.financialDetails?.accountNumber || "",
-        ifscCode: rider.financialDetails?.ifscCode || "",
-      });
-    } catch (error) {
-      console.error("Failed to fetch rider profile:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchRiderProfile();
-    setUserFormData({
-      fullName: user?.fullName || "",
-      email: user?.email || "",
-      phone: user?.phone || "",
-    });
-  }, [user]);
+    let isMounted = true;
+    const loadProfile = async () => {
+      try {
+        const res = await api.get("/rider/profile");
+        if (isMounted) {
+          const rider = res.data?.data || {};
+          setVehicleFormData({
+            vehicleType: rider.vehicleDetails?.vehicleType || "Motorcycle",
+            vehicleNumber: rider.vehicleDetails?.vehicleNumber || "",
+            vehicleModel: rider.vehicleDetails?.vehicleModel || "",
+            vehicleColor: rider.vehicleDetails?.vehicleColor || "",
+          });
+
+          setAddressFormData({
+            address: rider.currentAddress?.address || "",
+            city: rider.currentAddress?.city || "",
+            state: rider.currentAddress?.state || "",
+            pinCode: rider.currentAddress?.pinCode || "",
+            country: rider.currentAddress?.country || "India",
+          });
+
+          setBankFormData({
+            bankName: rider.financialDetails?.bankName || "",
+            accountNumber: rider.financialDetails?.accountNumber || "",
+            ifscCode: rider.financialDetails?.ifscCode || "",
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch rider profile:", error);
+      }
+    };
+    loadProfile();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleProfilePicChange = (e) => {
     const file = e.target.files?.[0];
@@ -131,8 +120,7 @@ const RiderSettings = () => {
       if (section === "address") payload.currentAddress = dataToSave;
       if (section === "bank") payload.financialDetails = dataToSave;
 
-      const res = await api.put("/rider/profile", payload);
-      setRiderData(res.data?.data);
+      await api.put("/rider/profile", payload);
       toast.success(`${section.toUpperCase()} details updated successfully!`);
 
       if (section === "vehicle") setEditingVehicle(false);

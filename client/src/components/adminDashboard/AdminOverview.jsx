@@ -1,22 +1,16 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import Loader from "../Loader";
 import {
   MdDashboard,
   MdRefresh,
-  MdPeople,
   MdRestaurant,
   MdDeliveryDining,
-  MdCheckCircle,
   MdPendingActions,
-  MdCancel,
   MdTrendingUp,
-  MdAttachMoney,
   MdOutlineReceiptLong,
-  MdHourglassTop,
   MdArrowForward,
-  MdStorefront,
 } from "react-icons/md";
 import { FaShoppingCart, FaMotorcycle, FaUsers, FaCoins } from "react-icons/fa";
 
@@ -51,12 +45,32 @@ const AdminOverview = ({ setActiveTab, setTabWithFilter }) => {
   }, []);
 
   useEffect(() => {
-    fetchStats();
+    let isMounted = true;
+    const loadInitialStats = async () => {
+      try {
+        const res = await api.get("/admin/dashboard");
+        if (isMounted && res.data?.data) {
+          setStats(res.data.data);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          toast.error(
+            error.response?.data?.message || "Failed to load dashboard metrics",
+          );
+          setIsLoading(false);
+        }
+      }
+    };
+    loadInitialStats();
     // Poll stats every 15 seconds
     const interval = setInterval(() => {
       fetchStats();
     }, 15000);
-    return () => clearInterval(interval);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, [fetchStats]);
 
   if (isLoading) return <Loader height="70vh" width="100%" />;

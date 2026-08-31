@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import Loader from "../Loader";
@@ -35,11 +35,11 @@ const AdminCustomers = ({ initialFilter = "all" }) => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [actionLoadingId, setActionLoadingId] = useState(null);
 
-  useEffect(() => {
-    if (initialFilter) {
-      setSelectedStatus(initialFilter);
-    }
-  }, [initialFilter]);
+  const [prevFilter, setPrevFilter] = useState(initialFilter);
+  if (initialFilter !== prevFilter) {
+    setPrevFilter(initialFilter);
+    setSelectedStatus(initialFilter || "all");
+  }
 
   const fetchCustomers = useCallback(async (isManual = false) => {
     try {
@@ -67,8 +67,37 @@ const AdminCustomers = ({ initialFilter = "all" }) => {
   }, [selectedStatus, searchQuery]);
 
   useEffect(() => {
-    fetchCustomers();
-  }, [fetchCustomers]);
+    let isMounted = true;
+    const loadInitialCustomers = async () => {
+      try {
+        const params = {};
+        if (selectedStatus !== "all") {
+          params.status = selectedStatus;
+        }
+        if (searchQuery.trim() !== "") {
+          params.search = searchQuery.trim();
+        }
+        const res = await api.get("/admin/customers", { params });
+        if (isMounted) {
+          if (Array.isArray(res.data?.data)) {
+            setCustomers(res.data.data);
+          }
+          setIsLoading(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          toast.error(
+            error.response?.data?.message || "Failed to fetch customers",
+          );
+          setIsLoading(false);
+        }
+      }
+    };
+    loadInitialCustomers();
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedStatus, searchQuery]);
 
   const handleUpdateStatus = async (customerId, newStatus) => {
     try {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import { openRiderNavigation } from "../../utils/riderNavigation";
@@ -7,7 +7,6 @@ import {
   MdStorefront,
   MdLocationOn,
   MdDirections,
-  MdPhone,
   MdSearch,
   MdCheckCircle,
   MdCancel,
@@ -19,7 +18,7 @@ import {
 } from "react-icons/md";
 import { RiEBike2Fill, RiLoader4Fill } from "react-icons/ri";
 
-const RiderOrders = ({ initialSubTab = "available", onSelectOrderForDetails }) => {
+const RiderOrders = ({ initialSubTab = "available" }) => {
   const [subTab, setSubTab] = useState(initialSubTab); // "available" | "active" | "history"
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,7 +31,7 @@ const RiderOrders = ({ initialSubTab = "available", onSelectOrderForDetails }) =
     openRiderNavigation(addressObj);
   };
 
-  const fetchOrders = async (silent = false) => {
+  const fetchOrders = useCallback(async (silent = false) => {
     try {
       if (!silent) setIsLoading(true);
       else setIsRefreshing(true);
@@ -54,13 +53,39 @@ const RiderOrders = ({ initialSubTab = "available", onSelectOrderForDetails }) =
       setIsLoading(false);
       setIsRefreshing(false);
     }
-  };
+  }, [subTab]);
 
   useEffect(() => {
-    fetchOrders();
+    let isMounted = true;
+    const loadInitialOrders = async () => {
+      try {
+        let endpoint = "/rider/orders";
+        if (subTab === "available") {
+          endpoint = "/rider/orders?status=available";
+        } else if (subTab === "active") {
+          endpoint = "/rider/orders?status=active";
+        } else if (subTab === "history") {
+          endpoint = "/rider/orders?status=completed";
+        }
+        const res = await api.get(endpoint);
+        if (isMounted) {
+          setOrders(Array.isArray(res.data?.data) ? res.data.data : []);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          toast.error(error.response?.data?.message || "Failed to fetch orders");
+          setIsLoading(false);
+        }
+      }
+    };
+    loadInitialOrders();
     const interval = setInterval(() => fetchOrders(true), 10000);
-    return () => clearInterval(interval);
-  }, [subTab]);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, [subTab, fetchOrders]);
 
   // Actions
   const handleAcceptOrder = async (orderId) => {

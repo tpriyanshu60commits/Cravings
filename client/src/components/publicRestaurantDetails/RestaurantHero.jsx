@@ -1,4 +1,3 @@
-import React from "react";
 import { IoArrowBack, IoStar } from "react-icons/io5";
 import { restaurantTypeLabel } from "./helpers";
 

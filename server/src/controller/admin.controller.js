@@ -2,9 +2,9 @@ import Customer from "../models/customer.model.js";
 import Restaurant from "../models/restaurant.model.js";
 import Rider from "../models/rider.model.js";
 import Order from "../models/order.model.js";
-import Admin from "../models/admin.model.js";
 import User from "../models/user.model.js";
 import Menu from "../models/menu.model.js";
+import mongoose from "mongoose";
 
 export const GetAdminDashboardStats = async (req, res, next) => {
   try {

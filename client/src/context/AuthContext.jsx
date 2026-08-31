@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, createContext } from "react";
+import { useState, useEffect, useContext, createContext } from "react";
 import api from "../config/ApiConfig";
 
 const AuthContext = createContext();
@@ -14,12 +14,10 @@ export const AuthProvider = ({ children }) => {
     }
   });
 
-  const [isLogin, setIsLogin] = useState(!!user);
-  const [role, setRole] = useState(user?.userType || null);
+  const isLogin = !!user;
+  const role = user?.userType || null;
 
   useEffect(() => {
-    setIsLogin(!!user);
-    setRole(user?.userType || null);
     if (user) {
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(user));
     } else {
@@ -29,8 +27,6 @@ export const AuthProvider = ({ children }) => {
 
   const login = (userData) => {
     setUser(userData);
-    setIsLogin(true);
-    setRole(userData?.userType || null);
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
   };
 
@@ -41,8 +37,6 @@ export const AuthProvider = ({ children }) => {
       console.error("Logout error:", err);
     } finally {
       setUser(null);
-      setIsLogin(false);
-      setRole(null);
       sessionStorage.removeItem(STORAGE_KEY);
     }
   };
@@ -57,9 +51,9 @@ export const AuthProvider = ({ children }) => {
     user,
     setUser,
     isLogin,
-    setIsLogin,
+    setIsLogin: () => {},
     role,
-    setRole,
+    setRole: () => {},
     login,
     logout,
     updateUser,
@@ -68,5 +62,5 @@ export const AuthProvider = ({ children }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
+// Custom Hook to consume AuthContext
 export const useAuth = () => useContext(AuthContext);
-

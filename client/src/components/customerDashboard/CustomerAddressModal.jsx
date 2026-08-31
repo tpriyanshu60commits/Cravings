@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import { LuLoaderCircle } from "react-icons/lu";
@@ -6,53 +6,40 @@ import { MdCancel } from "react-icons/md";
 import { IoHomeOutline, IoBriefcaseOutline, IoLocationOutline } from "react-icons/io5";
 
 const CustomerAddressModal = ({ isOpen, onClose, addressToEdit, onSaveSuccess }) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    address: "",
-    city: "",
-    state: "",
-    pinCode: "",
-    country: "India",
-    addressType: "home",
-    isDefault: false,
-    geoLat: "",
-    geoLon: "",
-  });
+  const [formData, setFormData] = useState(() => ({
+    name: addressToEdit?.name || "",
+    address: addressToEdit?.address || "",
+    city: addressToEdit?.city || "",
+    state: addressToEdit?.state || "",
+    pinCode: addressToEdit?.pinCode || "",
+    country: addressToEdit?.country || "India",
+    addressType: addressToEdit?.addressType || "home",
+    isDefault: !!addressToEdit?.isDefault,
+    geoLat: addressToEdit?.geoLocation?.lat || "",
+    geoLon: addressToEdit?.geoLocation?.lon || "",
+  }));
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [isDetectingLocation, setIsDetectingLocation] = useState(false);
+  const [prevAddressId, setPrevAddressId] = useState(addressToEdit?._id);
 
-  useEffect(() => {
-    if (addressToEdit) {
-      setFormData({
-        name: addressToEdit.name || "",
-        address: addressToEdit.address || "",
-        city: addressToEdit.city || "",
-        state: addressToEdit.state || "",
-        pinCode: addressToEdit.pinCode || "",
-        country: addressToEdit.country || "India",
-        addressType: addressToEdit.addressType || "home",
-        isDefault: !!addressToEdit.isDefault,
-        geoLat: addressToEdit.geoLocation?.lat || "",
-        geoLon: addressToEdit.geoLocation?.lon || "",
-      });
-    } else {
-      setFormData({
-        name: "",
-        address: "",
-        city: "",
-        state: "",
-        pinCode: "",
-        country: "India",
-        addressType: "home",
-        isDefault: false,
-        geoLat: "",
-        geoLon: "",
-      });
-    }
+  if (addressToEdit?._id !== prevAddressId) {
+    setPrevAddressId(addressToEdit?._id);
+    setFormData({
+      name: addressToEdit?.name || "",
+      address: addressToEdit?.address || "",
+      city: addressToEdit?.city || "",
+      state: addressToEdit?.state || "",
+      pinCode: addressToEdit?.pinCode || "",
+      country: addressToEdit?.country || "India",
+      addressType: addressToEdit?.addressType || "home",
+      isDefault: !!addressToEdit?.isDefault,
+      geoLat: addressToEdit?.geoLocation?.lat || "",
+      geoLon: addressToEdit?.geoLocation?.lon || "",
+    });
     setErrors({});
-  }, [addressToEdit, isOpen]);
+  }
 
   const handleUseCurrentLocation = () => {
     if (!("geolocation" in navigator)) {

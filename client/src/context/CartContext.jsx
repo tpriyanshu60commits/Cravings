@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 import api from "../config/ApiConfig";
 
 const CartContext = createContext();
@@ -24,7 +24,7 @@ export const CartProvider = ({ children }) => {
           })),
         };
       }
-      return savedCart || emptyCart;
+      return emptyCart;
     } catch {
       return emptyCart;
     }
@@ -76,20 +76,20 @@ export const CartProvider = ({ children }) => {
   }, [cart.restaurantId, cart.items]);
 
   // Total quantity of all items
-  const totalItems = cart.items.reduce(
+  const totalItems = (cart?.items || []).reduce(
     (sum, i) => sum + (Number(i.quantity) || 0),
     0
   );
 
   // Total price of all items
-  const totalPrice = cart.items.reduce(
+  const totalPrice = (cart?.items || []).reduce(
     (sum, i) => sum + (Number(i.price ?? i.itemPrice) || 0) * (Number(i.quantity) || 0),
     0
   );
 
   // Get quantity of a specific item
   const getItemQuantity = (itemId) => {
-    const found = cart.items.find((i) => i._id === itemId);
+    const found = (cart?.items || []).find((i) => i._id === itemId);
 
     return found ? found.quantity : 0;
   };
@@ -107,32 +107,32 @@ export const CartProvider = ({ children }) => {
 
       const updatedItems = exists
         ? // Item already exists → increase quantity and ensure price is updated
-          prev.items.map((i) =>
-            i._id === item._id
-              ? {
-                  ...i,
-                  price: Number(item.itemPrice ?? item.price) || i.price || 0,
-                  quantity: i.quantity + 1,
-                }
-              : i
-          )
+        prev.items.map((i) =>
+          i._id === item._id
+            ? {
+              ...i,
+              price: Number(item.itemPrice ?? item.price) || i.price || 0,
+              quantity: i.quantity + 1,
+            }
+            : i
+        )
         : // Item doesn't exist → add new item
-          [
-            ...prev.items,
-            {
-              _id: item._id,
-              itemName: item.itemName,
+        [
+          ...prev.items,
+          {
+            _id: item._id,
+            itemName: item.itemName,
 
-              // Backend field = itemPrice
-              // Cart field = price
-              price: Number(item.itemPrice ?? item.price) || 0,
+            // Backend field = itemPrice
+            // Cart field = price
+            price: Number(item.itemPrice ?? item.price) || 0,
 
-              image: item.image,
-              category: item.category,
-              foodType: item.foodType,
-              quantity: 1,
-            },
-          ];
+            image: item.image,
+            category: item.category,
+            foodType: item.foodType,
+            quantity: 1,
+          },
+        ];
 
       return {
         restaurantId,

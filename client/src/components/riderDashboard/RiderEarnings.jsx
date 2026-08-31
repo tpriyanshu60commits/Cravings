@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import {
   MdAttachMoney,
   MdCheckCircle,
   MdDateRange,
-  MdLocationOn,
   MdPayment,
   MdRefresh,
 } from "react-icons/md";
@@ -32,7 +31,25 @@ const RiderEarnings = () => {
   };
 
   useEffect(() => {
-    fetchEarnings();
+    let isMounted = true;
+    const loadInitialEarnings = async () => {
+      try {
+        const res = await api.get("/rider/earnings");
+        if (isMounted) {
+          setEarningsData(res.data?.data || null);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          toast.error(error.response?.data?.message || "Failed to fetch earnings");
+          setIsLoading(false);
+        }
+      }
+    };
+    loadInitialEarnings();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const summary = earningsData?.summary || {};

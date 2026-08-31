@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import {
   MdVerifiedUser,
   MdOutlineFileUpload,
   MdCheckCircle,
-  MdClose,
-  MdRefresh,
   MdVisibility,
 } from "react-icons/md";
 import { RiLoader4Fill } from "react-icons/ri";
@@ -18,20 +16,26 @@ const RiderKYCModal = () => {
   const [selectedFiles, setSelectedFiles] = useState({});
   const [filePreviews, setFilePreviews] = useState({});
 
-  const fetchKYCDocuments = async () => {
-    try {
-      setIsLoading(true);
-      const res = await api.get("/rider/profile");
-      setDocuments(res.data?.data?.documents || {});
-    } catch (error) {
-      console.error("Failed to fetch KYC documents:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
+    let isMounted = true;
+    const fetchKYCDocuments = async () => {
+      try {
+        const res = await api.get("/rider/profile");
+        if (isMounted) {
+          setDocuments(res.data?.data?.documents || {});
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error("Failed to fetch KYC documents:", error);
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
     fetchKYCDocuments();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const documentConfigs = [
@@ -102,7 +106,6 @@ const RiderKYCModal = () => {
       setDocuments(res.data?.data || {});
       setSelectedFiles({});
       setFilePreviews({});
-      await fetchKYCDocuments();
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Failed to upload KYC documents"

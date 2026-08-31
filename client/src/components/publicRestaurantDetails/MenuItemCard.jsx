@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { MdOutlineRestaurantMenu } from "react-icons/md";
 import { IoCartOutline, IoStar, IoStorefrontOutline } from "react-icons/io5";
@@ -41,11 +41,10 @@ const MenuItemCard = ({ item, restaurantId, restaurantName }) => {
   return (
     <>
       <div
-        className={`bg-(--color-base-200) rounded-xl overflow-hidden border border-(--color-base-300) transition ${
-          isUnavailable
+        className={`bg-(--color-base-200) rounded-xl overflow-hidden border border-(--color-base-300) transition ${isUnavailable
             ? "grayscale opacity-60 cursor-not-allowed"
             : "hover:shadow-md cursor-pointer"
-        }`}
+          }`}
       >
         {/* Image */}
         <div className="relative h-36 bg-(--color-base-300)">

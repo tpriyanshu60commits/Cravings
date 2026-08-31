@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import Loader from "../Loader";
@@ -13,7 +13,6 @@ import {
   MdClose,
   MdPhone,
   MdEmail,
-  MdHourglassTop,
   MdPauseCircle,
 } from "react-icons/md";
 import { RiLoader4Fill } from "react-icons/ri";
@@ -38,11 +37,11 @@ const AdminRiders = ({ initialFilter = "all" }) => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [actionLoadingId, setActionLoadingId] = useState(null);
 
-  useEffect(() => {
-    if (initialFilter) {
-      setSelectedStatus(initialFilter);
-    }
-  }, [initialFilter]);
+  const [prevFilter, setPrevFilter] = useState(initialFilter);
+  if (initialFilter !== prevFilter) {
+    setPrevFilter(initialFilter);
+    setSelectedStatus(initialFilter || "all");
+  }
 
   const fetchRiders = useCallback(async (isManual = false) => {
     try {
@@ -73,8 +72,40 @@ const AdminRiders = ({ initialFilter = "all" }) => {
   }, [selectedStatus, selectedAvailability, searchQuery]);
 
   useEffect(() => {
-    fetchRiders();
-  }, [fetchRiders]);
+    let isMounted = true;
+    const loadInitialRiders = async () => {
+      try {
+        const params = {};
+        if (selectedStatus !== "all") {
+          params.status = selectedStatus;
+        }
+        if (selectedAvailability !== "all") {
+          params.isAvailable = selectedAvailability === "online";
+        }
+        if (searchQuery.trim() !== "") {
+          params.search = searchQuery.trim();
+        }
+        const res = await api.get("/admin/riders", { params });
+        if (isMounted) {
+          if (Array.isArray(res.data?.data)) {
+            setRiders(res.data.data);
+          }
+          setIsLoading(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          toast.error(
+            error.response?.data?.message || "Failed to fetch riders",
+          );
+          setIsLoading(false);
+        }
+      }
+    };
+    loadInitialRiders();
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedStatus, selectedAvailability, searchQuery]);
 
   const handleUpdateStatus = async (riderId, newStatus) => {
     try {

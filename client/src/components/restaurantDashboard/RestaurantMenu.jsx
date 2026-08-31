@@ -1,9 +1,8 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { FaAward } from "react-icons/fa";
 import { LuPencilLine, LuTrash2, LuEye, LuChevronDown } from "react-icons/lu";
 import { AiTwotoneLike } from "react-icons/ai";
 import { IoMdAddCircleOutline } from "react-icons/io";
-import { useState, useEffect } from "react";
 import ConfirmModal from "./menuItems/ConfirmModal";
 import AddNewItemModal from "./menuItems/AddNewItemModal";
 import EditOrViewItem from "./menuItems/EditOrViewItem";
@@ -47,7 +46,28 @@ const RestaurantMenu = () => {
     }
   };
   useEffect(() => {
-    fetchMenuItems();
+    let isMounted = true;
+    const loadInitialMenuItems = async () => {
+      try {
+        const response = await api.get("/restaurant/menu-items");
+        if (isMounted) {
+          setMenuItems(Array.isArray(response.data?.data) ? response.data.data : []);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          toast.error(
+            error.response?.data?.message ||
+              "Unknown error occurred while fetching menu items. Please try again.",
+          );
+          setIsLoading(false);
+        }
+      }
+    };
+    loadInitialMenuItems();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleStatusChange = async (itemId, status) => {

@@ -1,4 +1,3 @@
-import React from "react";
 import { MdDashboard, MdRestaurantMenu, MdOutlineReceiptLong } from "react-icons/md";
 import { IoMdSettings } from "react-icons/io";
 import { FaStore } from "react-icons/fa";

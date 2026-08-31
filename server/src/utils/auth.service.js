@@ -1,43 +1,33 @@
 import jwt from "jsonwebtoken";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 export const genToken = async (user, res) => {
-  try {
-    const payload = { id: user._id };
+  const payload = { id: user._id };
 
-    const token = await jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "1d",
-    });
+  const token = jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
 
-    res.cookie("oreo", token, {
-      maxAge: 1000 * 60 * 60 * 24,
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-    });
-
-    console.log("TOKEN CREATED:", token);
-  } catch (error) {
-    throw error;
-  }
+  res.cookie("oreo", token, {
+    maxAge: 1000 * 60 * 60 * 24,
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+  });
 };
 
 export const genOTPToken = async (user, res) => {
-  try {
-    const payload = { id: user._id };
+  const payload = { id: user._id };
 
-    const token = await jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "10m",
-    });
+  const token = jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: "10m",
+  });
 
-    res.cookie("kitkat", token, {
-      maxAge: 1000 * 60 * 10,
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-    });
-
-    console.log(token);
-  } catch (error) {
-    throw error;
-  }
+  res.cookie("kitkat", token, {
+    maxAge: 1000 * 60 * 10,
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+  });
 };

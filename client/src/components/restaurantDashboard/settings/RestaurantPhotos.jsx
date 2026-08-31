@@ -1,4 +1,3 @@
-import React from "react";
 import { useState, useEffect, useMemo } from "react";
 import { MdOutlineAddAPhoto, MdDeleteOutline } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
@@ -25,7 +24,6 @@ const RestaurantPhotos = () => {
   const [deletingImageId, setDeletingImageId] = useState(null);
 
   const existingGalleryImages = restaurantData?.restaurantImage || [];
-  const totalCombinedCount = existingGalleryImages.length + galleryImages.length;
   const remainingSlots = MAX_GALLERY_IMAGES - existingGalleryImages.length;
 
   const coverPreview = useMemo(() => {

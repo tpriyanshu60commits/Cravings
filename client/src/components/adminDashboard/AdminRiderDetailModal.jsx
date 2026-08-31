@@ -1,21 +1,17 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import Loader from "../Loader";
 import {
   MdClose,
   MdDeliveryDining,
-  MdEmail,
   MdPhone,
-  MdLocationOn,
   MdCheckCircle,
   MdBlock,
   MdStar,
   MdOpenInNew,
   MdAccountBalance,
   MdOutlineReceiptLong,
-  MdDirectionsBike,
-  MdAttachMoney,
   MdGpsFixed,
   MdHourglassTop,
   MdPauseCircle,
@@ -39,7 +35,6 @@ const AdminRiderDetailModal = ({
   onStatusChange,
 }) => {
   const [riderData, setRiderData] = useState(null);
-  const [activeOrders, setActiveOrders] = useState([]);
   const [earningsData, setEarningsData] = useState(null);
   const [pastOrders, setPastOrders] = useState([]);
   const [activeOrderLoad, setActiveOrderLoad] = useState(0);
@@ -50,38 +45,44 @@ const AdminRiderDetailModal = ({
 
   useEffect(() => {
     if (!isOpen || !riderId) return;
+    let isMounted = true;
 
     const fetchDetails = async () => {
       try {
-        setIsLoading(true);
         const [resDetails, resEarnings, resOrders] = await Promise.all([
           api.get(`/admin/riders/${riderId}`),
           api.get(`/admin/riders/${riderId}/earnings`).catch(() => ({ data: { data: null } })),
           api.get(`/admin/riders/${riderId}/orders`).catch(() => ({ data: { data: [] } })),
         ]);
 
-        if (resDetails.data?.data) {
-          setRiderData(resDetails.data.data.rider);
-          setActiveOrders(resDetails.data.data.activeOrders || []);
-          setActiveOrderLoad(resDetails.data.data.activeOrderLoad || 0);
-          setTotalCompletedDeliveries(resDetails.data.data.totalCompletedDeliveries || 0);
-        }
-        if (resEarnings.data?.data) {
-          setEarningsData(resEarnings.data.data);
-        }
-        if (Array.isArray(resOrders.data?.data)) {
-          setPastOrders(resOrders.data.data);
+        if (isMounted) {
+          if (resDetails.data?.data) {
+            setRiderData(resDetails.data.data.rider);
+            setActiveOrderLoad(resDetails.data.data.activeOrderLoad || 0);
+            setTotalCompletedDeliveries(resDetails.data.data.totalCompletedDeliveries || 0);
+          }
+          if (resEarnings.data?.data) {
+            setEarningsData(resEarnings.data.data);
+          }
+          if (Array.isArray(resOrders.data?.data)) {
+            setPastOrders(resOrders.data.data);
+          }
+          setIsLoading(false);
         }
       } catch (error) {
-        toast.error(
-          error.response?.data?.message || "Failed to load rider details",
-        );
-      } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          toast.error(
+            error.response?.data?.message || "Failed to load rider details",
+          );
+          setIsLoading(false);
+        }
       }
     };
 
     fetchDetails();
+    return () => {
+      isMounted = false;
+    };
   }, [isOpen, riderId]);
 
   if (!isOpen) return null;

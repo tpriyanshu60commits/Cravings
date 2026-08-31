@@ -1,6 +1,5 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { IoMdCloseCircleOutline } from "react-icons/io";
-import { FaRegFileImage } from "react-icons/fa";
 import toast from "react-hot-toast";
 import api from "../../../config/ApiConfig";
 
@@ -66,12 +65,13 @@ const EditOrViewItem = ({
     selectedItem?.image?.url || null,
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
+  const [prevItem, setPrevItem] = useState(selectedItem);
+  if (selectedItem !== prevItem) {
+    setPrevItem(selectedItem);
     setFormData(getDefaultFormData(selectedItem));
     setItemImage(null);
     setPreviewImage(selectedItem?.image?.url || null);
-  }, [selectedItem, isOpen]);
+  }
 
   const modalTitle = useMemo(
     () => (isViewMode ? "View Menu Item" : "Edit Menu Item"),

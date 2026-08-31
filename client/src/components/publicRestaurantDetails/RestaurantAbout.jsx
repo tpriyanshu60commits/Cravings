@@ -1,4 +1,3 @@
-import React from "react";
 
 const RestaurantAbout = ({ description }) => (
   <div className="bg-(--color-base-100) rounded-2xl p-4 shadow-sm">

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../config/ApiConfig";
 import toast from "react-hot-toast";
@@ -23,26 +23,30 @@ const RestaurantDetailsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!restaurantId) {
-      setIsLoading(false);
-      return;
-    }
+    if (!restaurantId) return;
 
+    let isMounted = true;
     const fetchDetails = async () => {
       try {
-        setIsLoading(true);
         const res = await api.get(`/public/restaurant-detail/${restaurantId}`);
-        setDetails(res.data.data);
+        if (isMounted) {
+          setDetails(res.data.data);
+          setIsLoading(false);
+        }
       } catch (error) {
-        toast.error(
-          error.response?.data?.message ||
-            "Failed to load restaurant details. Please try again.",
-        );
-      } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          toast.error(
+            error.response?.data?.message ||
+              "Failed to load restaurant details. Please try again.",
+          );
+          setIsLoading(false);
+        }
       }
     };
     fetchDetails();
+    return () => {
+      isMounted = false;
+    };
   }, [restaurantId]);
 
   if (isLoading) return <Loader height="100vh" width="100%" />;

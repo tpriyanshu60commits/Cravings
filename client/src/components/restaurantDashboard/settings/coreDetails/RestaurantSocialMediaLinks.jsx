@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import api from "../../../../config/ApiConfig";
-import { MdEdit } from "react-icons/md";
 import toast from "react-hot-toast";
 
 const RestaurantSocialMediaLinks = () => {

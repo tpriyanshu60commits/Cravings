@@ -1,25 +1,22 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import Loader from "../Loader";
 import {
   MdClose,
   MdRestaurant,
-  MdEmail,
-  MdPhone,
   MdLocationOn,
   MdCheckCircle,
   MdBlock,
   MdAccessTime,
   MdOutlineReceiptLong,
   MdMenuBook,
-  MdDescription,
   MdAccountBalance,
   MdOpenInNew,
   MdStar,
   MdHourglassTop,
 } from "react-icons/md";
-import { FaUtensils, FaStore, FaFileAlt } from "react-icons/fa";
+import { FaStore, FaFileAlt } from "react-icons/fa";
 import { RiLoader4Fill } from "react-icons/ri";
 
 const statusBadges = {
@@ -47,32 +44,39 @@ const AdminRestaurantDetailModal = ({
 
   useEffect(() => {
     if (!isOpen || !restaurantId) return;
+    let isMounted = true;
 
     const fetchDetails = async () => {
       try {
-        setIsLoading(true);
         const [resDetails, resOrders] = await Promise.all([
           api.get(`/admin/restaurants/${restaurantId}`),
           api.get(`/admin/restaurants/${restaurantId}/orders`).catch(() => ({ data: { data: [] } })),
         ]);
 
-        if (resDetails.data?.data) {
-          setRestaurantData(resDetails.data.data.restaurant);
-          setMenuItems(resDetails.data.data.menu || []);
-        }
-        if (Array.isArray(resOrders.data?.data)) {
-          setOrders(resOrders.data.data);
+        if (isMounted) {
+          if (resDetails.data?.data) {
+            setRestaurantData(resDetails.data.data.restaurant);
+            setMenuItems(resDetails.data.data.menu || []);
+          }
+          if (Array.isArray(resOrders.data?.data)) {
+            setOrders(resOrders.data.data);
+          }
+          setIsLoading(false);
         }
       } catch (error) {
-        toast.error(
-          error.response?.data?.message || "Failed to load restaurant details",
-        );
-      } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          toast.error(
+            error.response?.data?.message || "Failed to load restaurant details",
+          );
+          setIsLoading(false);
+        }
       }
     };
 
     fetchDetails();
+    return () => {
+      isMounted = false;
+    };
   }, [isOpen, restaurantId]);
 
   if (!isOpen) return null;

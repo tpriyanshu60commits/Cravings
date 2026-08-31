@@ -24,7 +24,7 @@ const adminSeed = async () => {
 
     console.log("Creating New Admin");
 
-    const newAdmin = await User.create(AdminUser);
+    await User.create(AdminUser);
     console.log("Admin Create Sucessfully");
   } catch (error) {
     console.log("Admin Not Created");

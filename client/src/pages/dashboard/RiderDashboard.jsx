@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import api from "../../config/ApiConfig";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -13,7 +13,7 @@ import RiderKYCModal from "../../components/riderDashboard/RiderKYCModal";
 import RiderOrderDetailsModal from "../../components/riderDashboard/RiderOrderDetailsModal";
 
 const RiderDashboard = () => {
-  const { isLogin, role, user } = useAuth();
+  const { isLogin, role } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
 
@@ -58,25 +58,28 @@ const RiderDashboard = () => {
     );
   }, []);
 
-  // Fetch initial profile & availability status
-  const fetchRiderStatus = useCallback(async () => {
-    try {
-      const res = await api.get("/rider/dashboard");
-      if (res.data?.data) {
-        setIsAvailable(!!res.data.data.isAvailable);
-        setRiderStatus(res.data.data.status || "active");
-      }
-    } catch (error) {
-      console.error("Failed to fetch initial rider status:", error);
-    }
-  }, []);
+
 
   useEffect(() => {
     if (isLogin && role === "rider") {
-      fetchRiderStatus();
+      let isMounted = true;
+      api
+        .get("/rider/dashboard")
+        .then((res) => {
+          if (isMounted && res.data?.data) {
+            setIsAvailable(!!res.data.data.isAvailable);
+            setRiderStatus(res.data.data.status || "active");
+          }
+        })
+        .catch((err) =>
+          console.error("Failed to fetch initial rider status:", err)
+        );
       syncLocation(false);
+      return () => {
+        isMounted = false;
+      };
     }
-  }, [isLogin, role, fetchRiderStatus, syncLocation]);
+  }, [isLogin, role, syncLocation]);
 
   // Periodic location sync when online
   useEffect(() => {

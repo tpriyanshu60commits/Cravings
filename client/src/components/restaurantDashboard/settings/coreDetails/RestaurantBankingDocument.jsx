@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import api from "../../../../config/ApiConfig";
 import toast from "react-hot-toast";
 import { MdEdit } from "react-icons/md";

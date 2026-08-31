@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../../../../context/AuthContext";
 import PasswordChangeModal from "../../../commonModals/PasswordChangeModal";
 import { MdEdit, MdOutlineAddAPhoto, MdOutlineLockReset } from "react-icons/md";

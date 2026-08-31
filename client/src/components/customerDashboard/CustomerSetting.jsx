@@ -1,8 +1,7 @@
-import React from "react";
+import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
 import api from "../../config/ApiConfig";
-import { useState } from "react";
 import { MdLinkedCamera } from "react-icons/md";
 import PasswordChangeModal from "../../components/commonModals/PasswordChangeModal"
 const CustomerSetting = () => {

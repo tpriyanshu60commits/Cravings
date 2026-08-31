@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import Loader from "../Loader";
@@ -19,22 +19,30 @@ const CustomerAddressBook = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [addressToEdit, setAddressToEdit] = useState(null);
 
-  const fetchAddressBook = async () => {
-    try {
-      setIsLoading(true);
-      const res = await api.get("/customer/address-book");
-      setAddressList(res.data.data || []);
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message || "Failed to load address book",
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
+
 
   useEffect(() => {
-    fetchAddressBook();
+    let isMounted = true;
+    const loadAddressBook = async () => {
+      try {
+        const res = await api.get("/customer/address-book");
+        if (isMounted) {
+          setAddressList(res.data.data || []);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          toast.error(
+            error.response?.data?.message || "Failed to load address book",
+          );
+          setIsLoading(false);
+        }
+      }
+    };
+    loadAddressBook();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleOpenAddModal = () => {

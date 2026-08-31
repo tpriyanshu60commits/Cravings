@@ -1,4 +1,3 @@
-import React from "react";
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../config/ApiConfig";
@@ -70,27 +69,28 @@ const OrderNow = () => {
   const [showOpenOnly, setShowOpenOnly] = useState(false);
 
   useEffect(() => {
-    const q = searchParams.get("q") || searchParams.get("cuisine") || "";
-    if (q) setSearchQuery(q);
-  }, [searchParams]);
-
-  const fetchRestaurants = async () => {
-    try {
-      setIsLoading(true);
-      const response = await api.get("/public/restaurants");
-      setRestaurants(response.data.data);
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message ||
-          "Unknown error occurred during fetching restaurants. Please try again.",
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
+    let isMounted = true;
+    const fetchRestaurants = async () => {
+      try {
+        const response = await api.get("/public/restaurants");
+        if (isMounted) {
+          setRestaurants(response.data.data);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          toast.error(
+            error.response?.data?.message ||
+              "Unknown error occurred during fetching restaurants. Please try again.",
+          );
+          setIsLoading(false);
+        }
+      }
+    };
     fetchRestaurants();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const filteredRestaurants = useMemo(() => {

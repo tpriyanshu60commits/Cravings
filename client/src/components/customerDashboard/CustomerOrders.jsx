@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import Loader from "../Loader";
@@ -7,7 +7,6 @@ import CustomerOrderDetailsModal from "./CustomerOrderDetailsModal";
 import {
   IoReceiptOutline,
   IoStorefrontOutline,
-  IoLocationOutline,
   IoChevronForward,
   IoRefreshOutline,
 } from "react-icons/io5";
@@ -59,7 +58,25 @@ const CustomerOrders = () => {
   };
 
   useEffect(() => {
-    fetchOrders();
+    let isMounted = true;
+    const loadOrders = async () => {
+      try {
+        const res = await api.get("/customer/all-orders");
+        if (isMounted) {
+          setOrders(res.data.data || []);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          toast.error(error.response?.data?.message || "Failed to fetch orders");
+          setIsLoading(false);
+        }
+      }
+    };
+    loadOrders();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleOpenDetails = (orderId) => {
@@ -109,8 +126,6 @@ const CustomerOrders = () => {
       ) : (
         <div className="space-y-4">
           {orders.map((order) => {
-            const itemCount =
-              order.orderItems?.reduce((acc, it) => acc + (it.quantity || 1), 0) || 0;
             const itemsSummary =
               order.orderItems?.map((it) => `${it.quantity}x ${it.itemName}`).join(", ") ||
               "Food items";

@@ -1,6 +1,4 @@
-import React from "react";
-
-const RiderOrderDetailsModal = ({ isOpen, onClose, orderId }) => {
+const RiderOrderDetailsModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (

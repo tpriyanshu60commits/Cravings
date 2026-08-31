@@ -1,4 +1,3 @@
-import React from "react";
 import NoDataFoundGif from "../assets/NoDataFound.gif";
 
 const NoDataFound = ({ height, width, text }) => {

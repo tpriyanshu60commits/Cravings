@@ -1,7 +1,6 @@
 import Contact from "../models/contact.model.js";
 import Menu from "../models/menu.model.js";
 import Restaurant from "../models/restaurant.model.js";
-import User from "../models/user.model.js";
 
 export const ContactUsForm = async (req, res, next) => {
   try {
@@ -12,7 +11,7 @@ export const ContactUsForm = async (req, res, next) => {
       return next(error);
     }
 
-    const NewContactMessage = await Contact.create({
+    await Contact.create({
       fullName,
       email,
       phone,

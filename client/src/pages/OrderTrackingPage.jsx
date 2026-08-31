@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useState, useEffect, useCallback } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import api from "../config/ApiConfig";
 import toast from "react-hot-toast";
 import Loader from "../components/Loader";
 import {
   IoArrowBack,
   IoCheckmarkCircle,
-  IoTimeOutline,
   IoLocationOutline,
   IoStorefrontOutline,
   IoCallOutline,
@@ -15,7 +14,7 @@ import {
   IoReceiptOutline,
 } from "react-icons/io5";
 import { FaUtensils, FaCheckDouble, FaMotorcycle, FaBoxOpen } from "react-icons/fa";
-import { MdOutlineRestaurantMenu, MdErrorOutline } from "react-icons/md";
+import { MdErrorOutline } from "react-icons/md";
 
 const ORDER_STEPS = [
   { key: "pending", label: "Order Placed", icon: <IoReceiptOutline /> },
@@ -92,13 +91,35 @@ const OrderTrackingPage = () => {
   };
 
   useEffect(() => {
-    fetchOrderDetails();
+    let isMounted = true;
+    const loadInitialOrder = async () => {
+      try {
+        const res = await api.get(`/customer/orders/${orderId}`);
+        if (isMounted) {
+          setOrder(res.data.data);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          toast.error(
+            error.response?.data?.message || "Failed to fetch order tracking status",
+          );
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadInitialOrder();
+
     // Auto-poll every 12 seconds
     const interval = setInterval(() => {
       fetchOrderDetails();
     }, 12000);
-    return () => clearInterval(interval);
-  }, [fetchOrderDetails]);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, [orderId, fetchOrderDetails]);
 
   if (isLoading) return <Loader height="100vh" width="100%" />;
 

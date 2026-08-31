@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import toast from "react-hot-toast";
 import api from "../../../config/ApiConfig";
@@ -40,7 +40,7 @@ const ConfirmModal = ({
   onClose,
   onActionSuccess,
 }) => {
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const currentConfig = modalConfig[modalMode] || {
     heading: "Are you sure?",
     description: "Please confirm this action.",

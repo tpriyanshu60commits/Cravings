@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import Loader from "../Loader";
@@ -9,14 +9,10 @@ import {
   MdSearch,
   MdVisibility,
   MdClose,
-  MdDeliveryDining,
   MdAccessTime,
-  MdLocationOn,
-  MdPhone,
   MdStore,
-  MdPerson,
 } from "react-icons/md";
-import { FaShoppingCart, FaUtensils, FaMotorcycle } from "react-icons/fa";
+import { FaShoppingCart, FaMotorcycle } from "react-icons/fa";
 
 const statusBadges = {
   pending: { label: "Pending", bg: "bg-amber-100 text-amber-800 border-amber-300" },
@@ -41,11 +37,11 @@ const AdminOrders = ({ initialFilter = "all" }) => {
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
-  useEffect(() => {
-    if (initialFilter) {
-      setSelectedStatusTab(initialFilter);
-    }
-  }, [initialFilter]);
+  const [prevFilter, setPrevFilter] = useState(initialFilter);
+  if (initialFilter !== prevFilter) {
+    setPrevFilter(initialFilter);
+    setSelectedStatusTab(initialFilter || "all");
+  }
 
   const fetchOrders = useCallback(async (isManual = false) => {
     try {
@@ -70,13 +66,39 @@ const AdminOrders = ({ initialFilter = "all" }) => {
   }, [searchQuery]);
 
   useEffect(() => {
-    fetchOrders();
+    let isMounted = true;
+    const loadInitialOrders = async () => {
+      try {
+        const params = {};
+        if (searchQuery.trim() !== "") {
+          params.search = searchQuery.trim();
+        }
+        const res = await api.get("/admin/orders", { params });
+        if (isMounted) {
+          if (Array.isArray(res.data?.data)) {
+            setOrders(res.data.data);
+          }
+          setIsLoading(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          toast.error(
+            error.response?.data?.message || "Failed to fetch platform orders",
+          );
+          setIsLoading(false);
+        }
+      }
+    };
+    loadInitialOrders();
     // Auto-poll orders every 15 seconds
     const interval = setInterval(() => {
       fetchOrders();
     }, 15000);
-    return () => clearInterval(interval);
-  }, [fetchOrders]);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, [fetchOrders, searchQuery]);
 
   const handleOpenDetail = (orderId) => {
     setSelectedOrderId(orderId);

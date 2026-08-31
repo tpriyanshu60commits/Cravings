@@ -1,4 +1,3 @@
-import React from "react";
 import { IoGlobeOutline } from "react-icons/io5";
 import { platformIcon } from "./helpers";
 

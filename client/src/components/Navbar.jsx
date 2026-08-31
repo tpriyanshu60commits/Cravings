@@ -1,4 +1,3 @@
-import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
@@ -7,7 +6,7 @@ import { MdOutlineDashboard, MdLogout } from "react-icons/md";
 import toast from "react-hot-toast";
 
 const Navbar = () => {
-  const { user, isLogin, role, logout } = useAuth();
+  const { isLogin, role, logout } = useAuth();
   const { totalItems } = useCart();
   const navigate = useNavigate();
   const location = useLocation();

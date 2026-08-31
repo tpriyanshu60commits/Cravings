@@ -1,7 +1,6 @@
-import React from "react";
+import { useState } from "react";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
-import { useState } from "react";
 import { MdCancel } from "react-icons/md";
 import { LuLoaderCircle } from "react-icons/lu";
 
@@ -22,7 +21,7 @@ const PasswordChangeModal = ({ open, onClose }) => {
     onClose();
   };
   const handleChange = (e) => {
-    const { name, type, value } = e.target;
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,

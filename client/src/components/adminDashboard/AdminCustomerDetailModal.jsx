@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import Loader from "../Loader";
@@ -9,13 +9,10 @@ import {
   MdPhone,
   MdLocationOn,
   MdCheckCircle,
-  MdPending,
   MdBlock,
-  MdCalendarToday,
-  MdOutlineReceiptLong,
   MdHourglassTop,
 } from "react-icons/md";
-import { FaUserCircle, FaMapMarkerAlt, FaShoppingBag } from "react-icons/fa";
+import { FaMapMarkerAlt, FaShoppingBag } from "react-icons/fa";
 import { RiLoader4Fill } from "react-icons/ri";
 
 const statusBadges = {
@@ -48,25 +45,32 @@ const AdminCustomerDetailModal = ({ isOpen, onClose, customerId, onStatusChange 
 
   useEffect(() => {
     if (!isOpen || !customerId) return;
+    let isMounted = true;
 
     const fetchCustomer = async () => {
       try {
-        setIsLoading(true);
         const res = await api.get(`/admin/customers/${customerId}`);
-        if (res.data?.data) {
-          setCustomerData(res.data.data.customer);
-          setOrders(res.data.data.orders || []);
+        if (isMounted) {
+          if (res.data?.data) {
+            setCustomerData(res.data.data.customer);
+            setOrders(res.data.data.orders || []);
+          }
+          setIsLoading(false);
         }
       } catch (error) {
-        toast.error(
-          error.response?.data?.message || "Failed to load customer details",
-        );
-      } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          toast.error(
+            error.response?.data?.message || "Failed to load customer details",
+          );
+          setIsLoading(false);
+        }
       }
     };
 
     fetchCustomer();
+    return () => {
+      isMounted = false;
+    };
   }, [isOpen, customerId]);
 
   if (!isOpen) return null;

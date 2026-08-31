@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import { openRiderNavigation } from "../../utils/riderNavigation";
@@ -14,7 +14,7 @@ import {
 } from "react-icons/md";
 import { RiEBike2Fill, RiLoader4Fill } from "react-icons/ri";
 
-const RiderOverview = ({ setActiveTab, onSelectOrderForDetails }) => {
+const RiderOverview = ({ setActiveTab }) => {
   const [stats, setStats] = useState(null);
   const [activeOrders, setActiveOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -37,9 +37,31 @@ const RiderOverview = ({ setActiveTab, onSelectOrderForDetails }) => {
   };
 
   useEffect(() => {
-    fetchOverviewData();
+    let isMounted = true;
+    const loadOverview = async () => {
+      try {
+        const [dashRes, ordersRes] = await Promise.all([
+          api.get("/rider/dashboard"),
+          api.get("/rider/orders?status=active"),
+        ]);
+        if (isMounted) {
+          setStats(dashRes.data?.data || null);
+          setActiveOrders(Array.isArray(ordersRes.data?.data) ? ordersRes.data.data : []);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error("Failed to fetch rider overview data:", error);
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+    loadOverview();
     const interval = setInterval(fetchOverviewData, 15000);
-    return () => clearInterval(interval);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, []);
 
   const currentOrder = activeOrders[0] || null;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import api from "../../../config/ApiConfig";
 import toast from "react-hot-toast";
@@ -50,9 +50,9 @@ const AddNewItemModal = ({ isOpen, onClose, onActionSuccess }) => {
     isNew: true,
     isDeleted: false,
   });
-  const [previewImage, setPreviewImage] = React.useState(null);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [itemImage, setItemImage] = React.useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [itemImage, setItemImage] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;

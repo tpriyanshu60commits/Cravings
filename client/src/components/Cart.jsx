@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
@@ -57,29 +57,32 @@ const Cart = () => {
 
   // Fetch saved addresses on mount if logged in
   useEffect(() => {
+    let isMounted = true;
     if (isLogin) {
-      fetchAddressBook();
+      api
+        .get("/customer/address-book")
+        .then((res) => {
+          if (isMounted) {
+            const list = res.data?.data || [];
+            setAddressList(list);
+            if (list.length > 0) {
+              const defaultAddr = list.find((a) => a.isDefault) || list[0];
+              setSelectedAddressId(defaultAddr._id);
+            }
+            setIsLoadingAddresses(false);
+          }
+        })
+        .catch((error) => {
+          console.error("Failed to load customer addresses:", error);
+          if (isMounted) {
+            setIsLoadingAddresses(false);
+          }
+        });
     }
+    return () => {
+      isMounted = false;
+    };
   }, [isLogin]);
-
-  const fetchAddressBook = async () => {
-    try {
-      setIsLoadingAddresses(true);
-      const res = await api.get("/customer/address-book");
-      const list = res.data.data || [];
-      setAddressList(list);
-
-      // Pre-select default address, or the first address
-      if (list.length > 0) {
-        const defaultAddr = list.find((a) => a.isDefault) || list[0];
-        setSelectedAddressId(defaultAddr._id);
-      }
-    } catch (error) {
-      console.error("Failed to load customer addresses:", error);
-    } finally {
-      setIsLoadingAddresses(false);
-    }
-  };
 
   // -----------------------------------------------------
   // Calculate pricing breakdown

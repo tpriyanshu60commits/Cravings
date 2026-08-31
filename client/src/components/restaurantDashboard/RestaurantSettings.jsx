@@ -1,14 +1,13 @@
-import React from "react";
 import { useState, useEffect } from "react";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
 import Loader from "../../components/Loader";
-import { IoMdHammer } from "react-icons/io";
 import { RiLoader4Fill } from "react-icons/ri";
 import Information from "./settings/restaurantInformation/Index";
 import CoreDetails from "./settings/coreDetails/Index";
-import RestaurantPhotos from "./settings/RestaurantPhotos"
+import RestaurantPhotos from "./settings/RestaurantPhotos";
+
 const RestaurantSettings = () => {
   const { user } = useAuth();
   const Tabs = [
@@ -17,47 +16,13 @@ const RestaurantSettings = () => {
     { id: "photos", label: "Photos" },
   ];
   const [activeTab, setActiveTab] = useState("information");
-  const [isLoadingRestaurantOpen, setIsLoadingRestaurantOpen] = useState(true);
+  const [isLoadingRestaurantOpen, setIsLoadingRestaurantOpen] = useState(false);
   const [isRestaurantOpen, setIsRestaurantOpen] = useState(
     () => sessionStorage.getItem("RestaurantOpen") === "true",
   );
   //Load Restaurant Data
   const [isLoadingRestaurant, setIsLoadingRestaurant] = useState(false);
-  const [loadingRestaurantError, setLoadingRestaurantError] = useState(null);
-  const [restaurantData, setRestaurantData] = useState();
 
-  const fetchRestaurantData = async () => {
-    try {
-      setIsLoadingRestaurant(true);
-      setIsLoadingRestaurantOpen(true);
-      const res = await api.get(
-        `restaurant/get-restaurant-data?id=${user._id}`,
-      );
-      setRestaurantData(res.data.data);
-      sessionStorage.setItem(
-        "cravingRestaurant",
-        JSON.stringify(res.data.data),
-      );
-      sessionStorage.setItem(
-        "RestaurantOpen",
-        JSON.stringify(res.data.data.isOpen),
-      );
-      setIsRestaurantOpen(res.data.data.isOpen);
-      toast.success(res.data.message);
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message ||
-          "Unknown error occurred fetching restaurant. Please try again.",
-      );
-      setLoadingRestaurantError(
-        error.response?.data?.message ||
-          "Unknown error occurred fetching restaurant. Please try again.",
-      );
-    } finally {
-      setIsLoadingRestaurant(false);
-      setIsLoadingRestaurantOpen(false);
-    }
-  };
   const handleRestaurantOpen = async () => {
     try {
       setIsLoadingRestaurantOpen(true);
@@ -65,7 +30,6 @@ const RestaurantSettings = () => {
         `/restaurant/change-open-status/${!isRestaurantOpen}?id=${user._id}`,
       );
       setIsRestaurantOpen(res.data.data.isOpen);
-      setRestaurantData(res.data.data);
       sessionStorage.setItem(
         "cravingRestaurant",
         JSON.stringify(res.data.data),
@@ -81,11 +45,41 @@ const RestaurantSettings = () => {
       setIsLoadingRestaurantOpen(false);
     }
   };
+
   useEffect(() => {
-    if (user?._id) {
-      fetchRestaurantData();
-    }
-  }, [user]);
+    if (!user?._id) return;
+    let isMounted = true;
+    api
+      .get(`restaurant/get-restaurant-data?id=${user._id}`)
+      .then((res) => {
+        if (isMounted && res.data?.data) {
+          sessionStorage.setItem(
+            "cravingRestaurant",
+            JSON.stringify(res.data.data),
+          );
+          sessionStorage.setItem(
+            "RestaurantOpen",
+            JSON.stringify(res.data.data.isOpen),
+          );
+          setIsRestaurantOpen(res.data.data.isOpen);
+          setIsLoadingRestaurant(false);
+          setIsLoadingRestaurantOpen(false);
+        }
+      })
+      .catch((error) => {
+        if (isMounted) {
+          toast.error(
+            error.response?.data?.message ||
+              "Unknown error occurred fetching restaurant. Please try again.",
+          );
+          setIsLoadingRestaurant(false);
+          setIsLoadingRestaurantOpen(false);
+        }
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, [user?._id]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { IoSearch } from "react-icons/io5";
 import { MdOutlineRestaurantMenu } from "react-icons/md";
 import { foodTypeDot } from "./helpers";

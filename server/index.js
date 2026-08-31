@@ -16,8 +16,17 @@ import cookieParser from "cookie-parser";
 
 const app = express();
 
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
-app.use(express.json());
+const allowedOrigins = [
+  "http://localhost:5173",
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  })
+);app.use(express.json());
 app.use(cookieParser());
 
 app.use(morgan("dev"));
@@ -39,7 +48,7 @@ app.get("/", (req, res) => {
 });
 
 //Default Error Handler
-app.use((err, req, res, next) => {
+app.use((err, req, res, _next) => {
   console.error("Server Error:", err.stack || err.message);
   let ErrStatusCode = err.statusCode || 500;
   let ErrMessage = err.message || "Internal Server Error";

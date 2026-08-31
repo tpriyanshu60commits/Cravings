@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import Loader from "../Loader";
@@ -7,7 +7,6 @@ import {
   MdRefresh,
   MdSearch,
   MdCheckCircle,
-  MdOutdoorGrill,
   MdDeliveryDining,
   MdLocationOn,
   MdPhone,
@@ -60,12 +59,34 @@ const RestaurantOrders = () => {
   }, []);
 
   useEffect(() => {
-    fetchOrders();
+    let isMounted = true;
+    const loadInitialOrders = async () => {
+      try {
+        const res = await api.get("/restaurant/orders");
+        if (isMounted) {
+          if (Array.isArray(res.data?.data)) {
+            setOrders(res.data.data);
+          }
+          setIsLoading(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          toast.error(
+            error.response?.data?.message || "Failed to fetch restaurant orders",
+          );
+          setIsLoading(false);
+        }
+      }
+    };
+    loadInitialOrders();
     // Auto-poll orders every 10 seconds for real-time responsiveness
     const interval = setInterval(() => {
       fetchOrders();
     }, 10000);
-    return () => clearInterval(interval);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, [fetchOrders]);
 
   // Status transitions

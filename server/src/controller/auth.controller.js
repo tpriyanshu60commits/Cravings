@@ -141,7 +141,7 @@ export const SendOtp = async (req, res, next) => {
       await existingOTP.deleteOne();
     }
 
-    const saveOTP = await OTP.create({
+    await OTP.create({
       email,
       otp: hashedOTP,
     });
@@ -165,14 +165,14 @@ export const VerifyOtp = async (req, res, next) => {
     const existingOTP = await OTP.findOne({ email });
     if (!existingOTP) {
       const error = new Error("OTP Expired");
-      const statusCode = 401;
+      error.statusCode = 401;
       return next(error);
     }
 
     const isVerified = await bcrypt.compare(otp, existingOTP.otp);
     if (!isVerified) {
       const error = new Error("OTP Expired");
-      const statusCode = 401;
+      error.statusCode = 401;
       return next(error);
     }
 

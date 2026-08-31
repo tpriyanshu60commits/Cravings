@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import Loader from "../Loader";
@@ -63,7 +63,40 @@ const RestaurantOverview = ({ setActiveTab }) => {
   };
 
   useEffect(() => {
-    fetchOverviewData();
+    let isMounted = true;
+    const loadOverview = async () => {
+      try {
+        const [restRes, ordersRes, menuRes] = await Promise.allSettled([
+          api.get("/restaurant/get-restaurant-data"),
+          api.get("/restaurant/orders"),
+          api.get("/restaurant/menu-items"),
+        ]);
+
+        if (isMounted) {
+          if (restRes.status === "fulfilled" && restRes.value.data?.data) {
+            setRestaurant(restRes.value.data.data);
+          }
+          if (ordersRes.status === "fulfilled" && Array.isArray(ordersRes.value.data?.data)) {
+            setOrders(ordersRes.value.data.data);
+          }
+          if (menuRes.status === "fulfilled" && Array.isArray(menuRes.value.data?.data)) {
+            setMenuItems(menuRes.value.data.data);
+          }
+          setIsLoading(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          toast.error(
+            error.response?.data?.message || "Failed to load restaurant overview",
+          );
+          setIsLoading(false);
+        }
+      }
+    };
+    loadOverview();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleToggleStoreOpen = async () => {

@@ -1,4 +1,3 @@
-import React from "react";
 import loader from "../assets/runningLoader.gif";
 
 const Loader = ({ height, width }) => {

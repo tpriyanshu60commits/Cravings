@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import Loader from "../Loader";
@@ -6,15 +6,9 @@ import {
   MdClose,
   MdOutlineReceiptLong,
   MdPerson,
-  MdRestaurant,
   MdDeliveryDining,
-  MdLocationOn,
-  MdPhone,
-  MdEmail,
-  MdAccessTime,
   MdPayment,
   MdCheckCircle,
-  MdCancel,
   MdSwapHoriz,
   MdOutlineShield,
 } from "react-icons/md";
@@ -55,39 +49,46 @@ const AdminOrderDetailModal = ({
 
   useEffect(() => {
     if (!isOpen || !orderId) return;
+    let isMounted = true;
 
     const fetchOrderDetails = async () => {
       try {
-        setIsLoading(true);
         const [resOrder, resRiders] = await Promise.all([
           api.get(`/admin/orders/${orderId}`),
           api.get("/admin/riders", { params: { status: "active" } }).catch(() => ({ data: { data: [] } })),
         ]);
 
-        if (resOrder.data?.data) {
-          const ord = resOrder.data.data;
-          setOrder(ord);
-          setOverrideStatus(ord.orderStatus || "");
-          setCancellationReason(ord.cancellationReason || "");
-          setPaymentStatusOverride(ord.paymentDetails?.paymentStatus || "pending");
-          if (ord.riderId?._id) {
-            setSelectedRiderId(ord.riderId._id);
+        if (isMounted) {
+          if (resOrder.data?.data) {
+            const ord = resOrder.data.data;
+            setOrder(ord);
+            setOverrideStatus(ord.orderStatus || "");
+            setCancellationReason(ord.cancellationReason || "");
+            setPaymentStatusOverride(ord.paymentDetails?.paymentStatus || "pending");
+            if (ord.riderId?._id) {
+              setSelectedRiderId(ord.riderId._id);
+            }
           }
-        }
 
-        if (Array.isArray(resRiders.data?.data)) {
-          setRidersList(resRiders.data.data);
+          if (Array.isArray(resRiders.data?.data)) {
+            setRidersList(resRiders.data.data);
+          }
+          setIsLoading(false);
         }
       } catch (error) {
-        toast.error(
-          error.response?.data?.message || "Failed to load order details",
-        );
-      } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          toast.error(
+            error.response?.data?.message || "Failed to load order details",
+          );
+          setIsLoading(false);
+        }
       }
     };
 
     fetchOrderDetails();
+    return () => {
+      isMounted = false;
+    };
   }, [isOpen, orderId]);
 
   if (!isOpen) return null;

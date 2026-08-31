@@ -20,7 +20,8 @@ import {
   AcceptRestaurantOrder,
   PrepareRestaurantOrder,
   ReadyRestaurantOrder,
-  RestaurantUpdateMenuItem
+  RestaurantUpdateMenuItem,
+  RestaurantDeleteRestaurantImage,
 } from "../controller/restaurant.controller.js";
 const upload = multer();
 const router = express.Router();
@@ -71,6 +72,11 @@ router.put(
   RestaurantAuthProtect,
   upload.array("restaurantImages", 8),
   RestaurantUpdateRestaurantImages,
+);
+router.delete(
+  "/restaurant-image/:imageId",
+  RestaurantAuthProtect,
+  RestaurantDeleteRestaurantImage,
 );
 
 router.post(
@@ -124,6 +130,7 @@ router.patch(
 router.put(
   "/menu-item/:itemId",
   RestaurantAuthProtect,
+  upload.single("itemImage"),
   RestaurantUpdateMenuItem
 );
 export default router;

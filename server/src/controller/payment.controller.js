@@ -130,7 +130,7 @@ export const VerifyRazorpayPayment = async (req, res, next) => {
     order.paymentDetails.razorpayPaymentId = razorpay_payment_id;
     order.paymentDetails.razorpaySignature = razorpay_signature;
     order.paymentDetails.paidAt = new Date();
-    order.orderStatus = "accepted"; // move order to next stage
+    order.orderStatus = "pending";
     await order.save();
 
     return res.status(200).json({

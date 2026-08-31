@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { FaRegFileImage } from "react-icons/fa";
 import toast from "react-hot-toast";
@@ -43,7 +43,7 @@ const statusOptions = ["available", "unavailable", "discontinued"];
 const getDefaultFormData = (item) => ({
   itemName: item?.itemName || "",
   description: item?.description || "",
-  price: item?.price ?? "",
+  itemPrice: item?.itemPrice ?? item?.price ?? "",
   category: item?.category || "",
   foodType: item?.foodType || "",
   status: item?.status || "available",
@@ -66,6 +66,12 @@ const EditOrViewItem = ({
     selectedItem?.image?.url || null,
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    setFormData(getDefaultFormData(selectedItem));
+    setItemImage(null);
+    setPreviewImage(selectedItem?.image?.url || null);
+  }, [selectedItem, isOpen]);
 
   const modalTitle = useMemo(
     () => (isViewMode ? "View Menu Item" : "Edit Menu Item"),
@@ -92,7 +98,7 @@ const EditOrViewItem = ({
       const payload = new FormData();
       payload.append("itemName", formData.itemName);
       payload.append("description", formData.description);
-      payload.append("price", formData.price);
+      payload.append("itemPrice", formData.itemPrice);
       payload.append("category", formData.category);
       payload.append("foodType", formData.foodType);
       payload.append("status", formData.status);
@@ -204,8 +210,8 @@ const EditOrViewItem = ({
                 <input
                   type="number"
                   id="editItemPrice"
-                  name="price"
-                  value={formData.price}
+                  name="itemPrice"
+                  value={formData.itemPrice}
                   onChange={handleInputChange}
                   disabled={isViewMode}
                   className="w-full border border-gray-300 rounded px-3 py-2 disabled:bg-gray-100"

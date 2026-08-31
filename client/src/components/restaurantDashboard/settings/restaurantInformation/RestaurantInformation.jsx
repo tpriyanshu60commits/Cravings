@@ -7,15 +7,30 @@ import { MdEdit } from "react-icons/md";
 const RestaurantInformation = () => {
   const { user, setUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [restaurantData, setRestaurantData] = useState(
-    JSON.parse(sessionStorage.getItem("cravingRestaurant")) || [],
-  );
+  const getStoredRestaurant = () => {
+    try {
+      return JSON.parse(sessionStorage.getItem("cravingRestaurant")) || {};
+    } catch {
+      return {};
+    }
+  };
+
+  const [restaurantData, setRestaurantData] = useState(getStoredRestaurant);
   const [editingRestaurant, setEditingRestaurant] = useState(false);
+
+  const getCuisinesString = (data) => {
+    if (Array.isArray(data?.cuisinesTypes)) return data.cuisinesTypes.join(", ");
+    if (Array.isArray(data?.cuisineTypes)) return data.cuisineTypes.join(", ");
+    if (typeof data?.cuisinesTypes === "string") return data.cuisinesTypes;
+    if (typeof data?.cuisineTypes === "string") return data.cuisineTypes;
+    return "";
+  };
+
   const [restaurantFormData, setRestaurantFormData] = useState({
     restaurantName: restaurantData?.restaurantName || "",
     description: restaurantData?.description || "",
     restaurantType: restaurantData?.restaurantType || "",
-    cuisineTypes: restaurantData?.cuisineTypes?.join(", ") || "",
+    cuisineTypes: getCuisinesString(restaurantData),
     contactEmail: restaurantData?.contactDetails?.email || "",
     contactPhone: restaurantData?.contactDetails?.phone || "",
     openingTime: restaurantData?.servingHours?.openingTime || "",
@@ -36,7 +51,6 @@ const RestaurantInformation = () => {
         `/restaurant/update-restaurant-info`,
         restaurantFormData,
       );
-      console.log(restaurantFormData);
 
       setRestaurantData(res.data.data);
       sessionStorage.setItem(
@@ -59,7 +73,7 @@ const RestaurantInformation = () => {
       restaurantName: restaurantData?.restaurantName || "",
       description: restaurantData?.description || "",
       restaurantType: restaurantData?.restaurantType || "",
-      cuisineTypes: restaurantData?.cuisineTypes || "",
+      cuisineTypes: getCuisinesString(restaurantData),
       contactEmail: restaurantData?.contactDetails?.email || "",
       contactPhone: restaurantData?.contactDetails?.phone || "",
       openingTime: restaurantData?.servingHours?.openingTime || "",

@@ -29,13 +29,14 @@ const RestaurantMenu = () => {
   const [isControlsModalOpen, setIsControlsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchMenuItems = async () => {
     try {
       setIsLoading(true);
-      const response = await api.get("/restaurant/menu-items    ");
-      setMenuItems(response.data.data);
+      const response = await api.get("/restaurant/menu-items");
+      setMenuItems(Array.isArray(response.data?.data) ? response.data.data : []);
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
@@ -49,12 +50,12 @@ const RestaurantMenu = () => {
     fetchMenuItems();
   }, []);
 
-  const handleStatusChange = async () => {
+  const handleStatusChange = async (itemId, status) => {
     try {
       const response = await api.patch(
-        `restaurant/menu-item/${itemId}/status?status=${encodeURIComponent(status)}`,
+        `/restaurant/menu-item/${itemId}/status?status=${encodeURIComponent(status)}`,
       );
-      toast.success(response.data.message || "Item status updated");
+      toast.success(response.data?.message || "Item status updated");
       await fetchMenuItems();
     } catch (error) {
       toast.error(
@@ -84,6 +85,8 @@ const RestaurantMenu = () => {
               name="search"
               id="search"
               placeholder="Search menu..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="border border-(--color-primary) rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-(--color-primary) transition-colors"
             />
           </div>
@@ -98,13 +101,25 @@ const RestaurantMenu = () => {
             <div>Actions</div>
           </div>
           <div className="overflow-y-auto max-h-[65vh]">
-            {menuItems.length === 0 ? (
+            {menuItems.filter((i) =>
+              searchQuery
+                ? i.itemName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  i.category?.toLowerCase().includes(searchQuery.toLowerCase())
+                : true,
+            ).length === 0 ? (
               <div className="text-center py-10 text-(--color-primary)/70">
                 No menu items found.
               </div>
             ) : (
               <>
-                {menuItems.map((item, index) => (
+                {menuItems
+                  .filter((i) =>
+                    searchQuery
+                      ? i.itemName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        i.category?.toLowerCase().includes(searchQuery.toLowerCase())
+                      : true,
+                  )
+                  .map((item, index) => (
                   <div
                     key={item._id || index}
                     className="grid grid-cols-7 gap-4 border-b border-(--color-secondary) py-2 items-center"

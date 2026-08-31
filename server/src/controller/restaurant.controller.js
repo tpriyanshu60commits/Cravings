@@ -533,25 +533,34 @@ export const RestaurantUpdateRestaurantImages = async (req, res, next) => {
       return next(error);
     }
 
-    // Delete old images from Cloudinary
-    if (existingRestaurant.restaurantImage?.length > 0) {
-      await deleteMultipleImages(existingRestaurant.restaurantImage);
+    const currentCount = existingRestaurant.restaurantImage?.length || 0;
+    if (currentCount + restaurantImagesFromFE.length > 8) {
+      const error = new Error(
+        `Cannot have more than 8 gallery images in total. You currently have ${currentCount} image(s).`,
+      );
+      error.statusCode = 400;
+      return next(error);
     }
 
-    // Upload new images
-    const restaurantImages = await uploadMultipleImages(
+    // Upload new images to Cloudinary
+    const newRestaurantImages = await uploadMultipleImages(
       restaurantImagesFromFE,
       `restaurant/${currentUser.phone}/restaurantPhotos`,
     );
 
-    // Update only restaurantImage
+    // Append new images to existing images array (preserves previous images)
+    const combinedImages = [
+      ...(existingRestaurant.restaurantImage || []),
+      ...newRestaurantImages,
+    ];
+
     const updatedRestaurant = await Restaurant.findOneAndUpdate(
       {
         managerId: currentUser._id,
       },
       {
         $set: {
-          restaurantImage: restaurantImages,
+          restaurantImage: combinedImages,
         },
       },
       {
@@ -560,11 +569,81 @@ export const RestaurantUpdateRestaurantImages = async (req, res, next) => {
     );
 
     return res.status(200).json({
-      message: "Restaurant images updated successfully",
+      message: "Restaurant images uploaded successfully",
       data: updatedRestaurant,
     });
   } catch (error) {
-    console.log(error.message);
+    console.log("RestaurantUpdateRestaurantImages ERROR:", error.message);
+    next(error);
+  }
+};
+
+export const RestaurantDeleteRestaurantImage = async (req, res, next) => {
+  try {
+    const currentUser = req.user;
+    const { imageId } = req.params;
+    const publicId = req.query?.publicId || req.body?.publicId;
+
+    const existingRestaurant = await Restaurant.findOne({
+      managerId: currentUser._id,
+    });
+
+    if (!existingRestaurant) {
+      const error = new Error("Restaurant Not Found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    // Match image by subdocument _id or publicId
+    const imageToDelete = existingRestaurant.restaurantImage.find(
+      (img) =>
+        img._id?.toString() === imageId ||
+        img.publicId === imageId ||
+        (publicId && img.publicId === publicId),
+    );
+
+    if (!imageToDelete) {
+      const error = new Error("Image not found in restaurant gallery");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    // Remove from Cloudinary if publicId is present
+    if (imageToDelete.publicId) {
+      try {
+        await deleteSingleImage(imageToDelete.publicId);
+      } catch (err) {
+        console.log("Cloudinary image deletion warning:", err.message);
+      }
+    }
+
+    // Remove only the target image from database array
+    const remainingImages = existingRestaurant.restaurantImage.filter(
+      (img) =>
+        img._id?.toString() !== imageToDelete._id?.toString() &&
+        img.publicId !== imageToDelete.publicId,
+    );
+
+    const updatedRestaurant = await Restaurant.findOneAndUpdate(
+      {
+        managerId: currentUser._id,
+      },
+      {
+        $set: {
+          restaurantImage: remainingImages,
+        },
+      },
+      {
+        new: true,
+      },
+    );
+
+    return res.status(200).json({
+      message: "Restaurant image deleted successfully",
+      data: updatedRestaurant,
+    });
+  } catch (error) {
+    console.log("RestaurantDeleteRestaurantImage ERROR:", error.message);
     next(error);
   }
 };
@@ -739,8 +818,9 @@ export const RestaurantUpdateMenuItem = async (req, res, next) => {
 
     if (!context) return;
     const { existingMenu, menuItem } = context;
+    const body = req.body || {};
     const { itemName, description, itemPrice, category, foodType, status } =
-      req.body;
+      body;
 
     const itemImageFromFE = req.file;
     if (itemName !== undefined) menuItem.itemName = itemName;
@@ -753,9 +833,9 @@ export const RestaurantUpdateMenuItem = async (req, res, next) => {
     if (foodType !== undefined) menuItem.foodType = foodType;
     if (status !== undefined) menuItem.status = status;
 
-    const isTopRated = parseBoolean(req.body.isTopRated);
-    const isRecommended = parseBoolean(req.body.isRecommended);
-    const isNew = parseBoolean(req.body.isNew);
+    const isTopRated = parseBoolean(body.isTopRated);
+    const isRecommended = parseBoolean(body.isRecommended);
+    const isNew = parseBoolean(body.isNew);
 
     if (isTopRated !== undefined) menuItem.isTopRated = isTopRated;
     if (isRecommended !== undefined) menuItem.isRecommended = isRecommended;
@@ -766,7 +846,13 @@ export const RestaurantUpdateMenuItem = async (req, res, next) => {
         itemImageFromFE,
         `restaurant/${currentUser.phone}/menuItems`,
       );
-      await deleteSingleImage(menuItem.image);
+      if (menuItem.image?.publicId) {
+        try {
+          await deleteSingleImage(menuItem.image.publicId);
+        } catch (err) {
+          console.log("Delete old menu image warning:", err.message);
+        }
+      }
       menuItem.image = updatedImage;
     }
     existingMenu.markModified("menuItems");

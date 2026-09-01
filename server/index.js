@@ -1,3 +1,5 @@
+import dns from "dns";
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
 import cloudinary from "./src/config/cloudinary.config.js";
 import express from "express";
 import connectDB from "./src/config/dbConnection.config.js";

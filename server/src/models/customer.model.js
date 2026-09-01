@@ -6,6 +6,8 @@ const customerSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
       required: true,
+      unique: true,
+      index: true,
     },
     addressBook: {
       type: [
@@ -55,6 +57,7 @@ const customerSchema = mongoose.Schema(
           },
         },
       ],
+      default: [],
     },
     status: {
       type: String,
@@ -70,6 +73,42 @@ const customerSchema = mongoose.Schema(
     timestamps: true,
   },
 );
+
+/**
+ * Atomic, idempotent find-or-create helper to prevent duplicate Customer documents
+ * caused by concurrent frontend requests.
+ */
+customerSchema.statics.findOrCreateByUserId = async function (
+  userId,
+  initialData = {},
+) {
+  try {
+    let customer = await this.findOne({ customerId: userId });
+    if (customer) {
+      return customer;
+    }
+
+    customer = await this.findOneAndUpdate(
+      { customerId: userId },
+      {
+        $setOnInsert: {
+          customerId: userId,
+          addressBook: initialData.addressBook || [],
+          status: initialData.status || "pending",
+          isActive:
+            initialData.isActive !== undefined ? initialData.isActive : true,
+        },
+      },
+      { upsert: true, new: true, setDefaultsOnInsert: true },
+    );
+    return customer;
+  } catch (error) {
+    if (error.code === 11000) {
+      return await this.findOne({ customerId: userId });
+    }
+    throw error;
+  }
+};
 
 const Customer = mongoose.model("customer", customerSchema);
 export default Customer;

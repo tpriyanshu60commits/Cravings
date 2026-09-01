@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
 import Rider from "../models/rider.model.js";
+import Customer from "../models/customer.model.js";
 import bcrypt from "bcrypt";
 import { genToken } from "../utils/auth.service.js";
 import OTP from "../models/otp.model.js";
@@ -55,6 +56,8 @@ export const RegisterUser = async (req, res, next) => {
 
     if (userType === "rider") {
       await Rider.create({ riderId: newUser._id });
+    } else if (userType === "customer") {
+      await Customer.findOrCreateByUserId(newUser._id);
     }
 
     res.status(201).json({ message: "User Created Successfully" });

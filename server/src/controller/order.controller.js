@@ -24,16 +24,7 @@ export const CreateOrder = async (req, res, next) => {
       error.statusCode = 400;
       return next(error);
     }
-    let customer = await Customer.findOne({
-      customerId: currentUser._id,
-    });
-
-    if (!customer) {
-      customer = await Customer.create({
-        customerId: currentUser._id,
-        addressBook: [],
-      });
-    }
+    const customer = await Customer.findOrCreateByUserId(currentUser._id);
 
     const menuDoc = await Menu.findOne({ restaurantId });
     if (!menuDoc || !menuDoc.menuItems?.length) {

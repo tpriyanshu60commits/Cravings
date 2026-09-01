@@ -1,86 +1,79 @@
 import User from "../models/user.model.js";
+import Customer from "../models/customer.model.js";
+import Rider from "../models/rider.model.js";
 import bcrypt from "bcrypt";
-
-const UserData = [
-  {
-    fullName: "Manager1",
-    email: "Manager1@gmail.com",
-    password: await bcrypt.hash("Manager@123", 10),
-    dob: "2000-01-01",
-    gender: "other",
-    userType: "restaurant",
-    phone: "9876543210",
-    photo: { url: "https://placehold.co/600x400?text=M", publicId: null },
-  },
-  {
-    fullName: "Customer1",
-    email: "Customer1@gmail.com",
-    password: await bcrypt.hash("Customer@123", 10),
-    dob: "2000-01-01",
-    gender: "other",
-    userType: "customer",
-    phone: "9876543210",
-    photo: { url: "https://placehold.co/600x400?text=C", publicId: null },
-  },
-  {
-    fullName: "Rider1",
-    email: "Rider1@gmail.com",
-    password: await bcrypt.hash("Rider@123", 10),
-    dob: "2000-01-01",
-    gender: "other",
-    userType: "rider",
-    phone: "9876543210",
-    photo: { url: "https://placehold.co/600x400?text=R", publicId: null },
-  },
-];
 
 const userSeed = async () => {
   try {
-    //Seeding Restaurant
-    const existingRestaurant = await User.findOne({ email: UserData[0].email });
+    const rawUsers = [
+      {
+        fullName: "Manager1",
+        email: "Manager1@gmail.com",
+        plainPassword: "Manager@123",
+        dob: "2000-01-01",
+        gender: "other",
+        userType: "restaurant",
+        phone: "9876543210",
+        photo: { url: "https://placehold.co/600x400?text=M", publicId: null },
+      },
+      {
+        fullName: "Customer1",
+        email: "Customer1@gmail.com",
+        plainPassword: "Customer@123",
+        dob: "2000-01-01",
+        gender: "other",
+        userType: "customer",
+        phone: "9876543210",
+        photo: { url: "https://placehold.co/600x400?text=C", publicId: null },
+      },
+      {
+        fullName: "Rider1",
+        email: "Rider1@gmail.com",
+        plainPassword: "Rider@123",
+        dob: "2000-01-01",
+        gender: "other",
+        userType: "rider",
+        phone: "9876543210",
+        photo: { url: "https://placehold.co/600x400?text=R", publicId: null },
+      },
+    ];
 
-    if (existingRestaurant) {
-      console.log("Existing Resturant Found");
-      console.log("Deleting Existing Resturant");
-      await existingRestaurant.deleteOne();
+    for (const userData of rawUsers) {
+      const normalizedEmail = userData.email.toLowerCase().trim();
+      let user = await User.findOne({ email: normalizedEmail });
+
+      if (!user) {
+        console.log(`Creating new ${userData.userType}: ${userData.email}`);
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(userData.plainPassword, salt);
+
+        user = await User.create({
+          fullName: userData.fullName,
+          email: normalizedEmail,
+          password: hashedPassword,
+          dob: new Date(userData.dob),
+          gender: userData.gender,
+          userType: userData.userType,
+          phone: userData.phone,
+          photo: userData.photo,
+        });
+        console.log(`${userData.userType} created successfully`);
+      } else {
+        console.log(`${userData.userType} already exists: ${userData.email}`);
+      }
+
+      // Ensure corresponding role-specific profile exists without duplication
+      if (user.userType === "customer") {
+        await Customer.findOrCreateByUserId(user._id);
+      } else if (user.userType === "rider") {
+        const existingRider = await Rider.findOne({ riderId: user._id });
+        if (!existingRider) {
+          await Rider.create({ riderId: user._id });
+        }
+      }
     }
-
-    console.log("Creating New Restaurant");
-
-    await User.create(UserData[0]);
-    console.log("Restaurant Created Sucessfully");
-
-    //Seeding Customer
-
-    const existingCustomer = await User.findOne({ email: UserData[1].email });
-
-    if (existingCustomer) {
-      console.log("Existing Customer Found");
-      console.log("Deleting Existing Customer");
-      await existingCustomer.deleteOne();
-    }
-
-    console.log("Creating New Customer");
-
-    await User.create(UserData[1]);
-    console.log("Customer Created Sucessfully");
-
-    // Seeding Rider
-
-    const existingRider = await User.findOne({ email: UserData[2].email });
-
-    if (existingRider) {
-      console.log("Existing Rider Found");
-      console.log("Deleting Existing Rider");
-      await existingRider.deleteOne();
-    }
-
-    console.log("Creating New Rider");
-
-    await User.create(UserData[2]);
-    console.log("Rider Created Sucessfully");
   } catch (error) {
-    console.log("User Not Created");
+    console.error("userSeed error:", error.message);
     throw error;
   }
 };

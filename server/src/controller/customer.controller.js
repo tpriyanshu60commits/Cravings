@@ -35,54 +35,30 @@ export const AddAddress = async (req, res, next) => {
     const finalLat = String(geoLat || geoLocation?.lat || "").trim();
     const finalLon = String(geoLon || geoLocation?.lon || "").trim();
 
-    let customer = await Customer.findOne({
-      customerId: currentUser._id,
+    const customer = await Customer.findOrCreateByUserId(currentUser._id);
+
+    if (isDefault === true || isDefault === "true") {
+      customer.addressBook.forEach((addr) => {
+        addr.isDefault = false;
+      });
+    }
+
+    customer.addressBook.push({
+      name,
+      address,
+      city,
+      state,
+      pinCode,
+      country,
+      addressType,
+      isDefault: isDefault === true || isDefault === "true",
+      geoLocation: {
+        lat: finalLat,
+        lon: finalLon,
+      },
     });
 
-    if (!customer) {
-      customer = await Customer.create({
-        customerId: currentUser._id,
-        addressBook: [
-          {
-            name,
-            address,
-            city,
-            state,
-            pinCode,
-            country,
-            addressType,
-            isDefault: isDefault === true || isDefault === "true",
-            geoLocation: {
-              lat: finalLat,
-              lon: finalLon,
-            },
-          },
-        ],
-      });
-    } else {
-      if (isDefault === true || isDefault === "true") {
-        customer.addressBook.forEach((addr) => {
-          addr.isDefault = false;
-        });
-      }
-
-      customer.addressBook.push({
-        name,
-        address,
-        city,
-        state,
-        pinCode,
-        country,
-        addressType,
-        isDefault: isDefault === true || isDefault === "true",
-        geoLocation: {
-          lat: finalLat,
-          lon: finalLon,
-        },
-      });
-
-      await customer.save();
-    }
+    await customer.save();
 
     return res.status(201).json({
       message: "Address added successfully",
@@ -195,16 +171,7 @@ export const GetAddressBook = async (req, res, next) => {
   try {
     const currentUser = req.user;
 
-    let customer = await Customer.findOne({
-      customerId: currentUser._id,
-    });
-
-    if (!customer) {
-      customer = await Customer.create({
-        customerId: currentUser._id,
-        addressBook: [],
-      });
-    }
+    const customer = await Customer.findOrCreateByUserId(currentUser._id);
 
     return res.status(200).json({
       message: "Address book fetched successfully",
@@ -218,13 +185,7 @@ export const GetAddressBook = async (req, res, next) => {
 export const GetAllOrders = async (req, res, next) => {
   try {
     const currentUser = req.user;
-    let customer = await Customer.findOne({ customerId: currentUser._id });
-    if (!customer) {
-      customer = await Customer.create({
-        customerId: currentUser._id,
-        addressBook: [],
-      });
-    }
+    const customer = await Customer.findOrCreateByUserId(currentUser._id);
     const allOrder = await Order.find({ customerId: customer._id })
       .populate("restaurantId", "restaurantName address city contactDetails")
       .sort({ createdAt: -1 });

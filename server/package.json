@@ -13,6 +13,7 @@
     "seed": "node ./src/seeders/seed.js",
     "seed:admin": "node --require ./dns-fix.cjs ./src/seeders/admin.seed.js",
     "migrate:dedup-customers": "node --require ./dns-fix.cjs ./src/scripts/deduplicate-customers.js",
+    "migrate:dedup-customers:dry": "node --require ./dns-fix.cjs ./src/scripts/deduplicate-customers.js --dry-run",
     "lint": "eslint ."
   },
   "dependencies": {

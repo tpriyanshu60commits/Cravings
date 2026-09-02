@@ -20,7 +20,7 @@ export default defineConfig([
     rules: {
       'react-refresh/only-export-components': [
         'warn',
-        { allowConstantExport: true },
+        { allowConstantExport: true, allowExportNames: ['useAuth', 'useCart'] },
       ],
     },
   },

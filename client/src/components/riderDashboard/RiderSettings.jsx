@@ -134,24 +134,22 @@ const RiderSettings = () => {
   };
 
   return (
-    <div className="overflow-y-auto h-full p-6 space-y-6">
+    <div className="overflow-y-auto h-full p-4 sm:p-6 space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-(--color-base-content)">
-            Rider Profile & Settings
-          </h1>
-          <p className="text-xs text-(--color-secondary) mt-1">
-            Manage your personal profile, vehicle registration, payout bank details, and address.
-          </p>
-        </div>
+      <div className="bg-[#072420] p-4 sm:p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40">
+        <h1 className="text-lg sm:text-xl font-bold text-white tracking-tight">
+          Rider Profile & Settings
+        </h1>
+        <p className="text-xs text-[#8faea7] mt-0.5">
+          Manage your personal profile, vehicle registration, payout bank details, and address.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Card 1: Personal Account */}
-        <div className="bg-(--color-base-100) rounded-2xl border border-(--color-secondary)/30 shadow-sm p-5 space-y-4">
-          <div className="flex justify-between items-center border-b border-(--color-secondary)/20 pb-3">
-            <h3 className="text-sm font-bold text-(--color-base-content)">
+        <div className="bg-[#072420] rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 p-5 space-y-4">
+          <div className="flex justify-between items-center border-b border-teal-900/40 pb-3">
+            <h3 className="text-sm font-bold text-white">
               Personal Information
             </h3>
             <div className="flex gap-2">
@@ -159,13 +157,13 @@ const RiderSettings = () => {
                 <>
                   <button
                     onClick={() => setEditingProfile(true)}
-                    className="bg-(--color-primary) text-(--color-primary-content) px-3 py-1 rounded-lg text-xs font-semibold"
+                    className="bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-md shadow-orange-950/40 hover:opacity-95 transition cursor-pointer"
                   >
                     Edit Profile
                   </button>
                   <button
                     onClick={() => setIsPasswordChangeModalOpen(true)}
-                    className="bg-(--color-base-200) text-(--color-base-content) px-3 py-1 rounded-lg text-xs font-semibold"
+                    className="bg-[#041916] border border-teal-800/60 hover:bg-teal-900/30 text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer"
                   >
                     Password
                   </button>
@@ -175,13 +173,13 @@ const RiderSettings = () => {
                   <button
                     onClick={handleSaveUserProfile}
                     disabled={isSaving}
-                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-xs font-semibold disabled:opacity-50"
+                    className="bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-md shadow-orange-950/40 hover:opacity-95 transition disabled:opacity-50 cursor-pointer"
                   >
                     {isSaving ? "Saving..." : "Save"}
                   </button>
                   <button
                     onClick={() => setEditingProfile(false)}
-                    className="bg-gray-200 text-gray-700 px-3 py-1 rounded-lg text-xs font-semibold"
+                    className="bg-[#041916] border border-teal-800/60 text-[#8faea7] hover:text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -191,16 +189,22 @@ const RiderSettings = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-5">
-            <div className="relative">
-              <img
-                src={profilePicPreview || user?.photo?.url || "https://placehold.co/150"}
-                alt="Profile"
-                className="w-24 h-24 rounded-full object-cover border-2 border-(--color-primary)"
-              />
+            <div className="relative shrink-0">
+              <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-orange-500/50 bg-[#041916] flex items-center justify-center text-2xl font-bold text-orange-400">
+                {profilePicPreview || user?.photo?.url ? (
+                  <img
+                    src={profilePicPreview || user?.photo?.url}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span>{user?.fullName?.charAt(0)?.toUpperCase() || "R"}</span>
+                )}
+              </div>
               {editingProfile && (
                 <label
                   htmlFor="riderDisplayPic"
-                  className="absolute bottom-0 right-0 p-1.5 bg-(--color-primary) text-white rounded-full cursor-pointer shadow hover:opacity-90"
+                  className="absolute bottom-0 right-0 p-1.5 bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white rounded-full cursor-pointer shadow-md hover:opacity-95"
                 >
                   <MdLinkedCamera size={16} />
                   <input
@@ -216,7 +220,7 @@ const RiderSettings = () => {
 
             <div className="w-full space-y-3">
               <div>
-                <label className="text-[11px] font-bold text-(--color-secondary)">
+                <label className="text-[11px] font-semibold text-[#8faea7] block mb-1">
                   Full Name
                 </label>
                 <input
@@ -226,24 +230,24 @@ const RiderSettings = () => {
                     setUserFormData({ ...userFormData, fullName: e.target.value })
                   }
                   disabled={!editingProfile}
-                  className="w-full px-3 py-1.5 text-xs border rounded-lg bg-(--color-base-100) disabled:bg-(--color-base-200)"
+                  className="w-full px-3.5 py-2 text-xs border border-teal-800/60 rounded-xl bg-[#041916] text-white disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors"
                 />
               </div>
 
               <div>
-                <label className="text-[11px] font-bold text-(--color-secondary)">
+                <label className="text-[11px] font-semibold text-[#8faea7] block mb-1">
                   Email Address
                 </label>
                 <input
                   type="email"
                   value={userFormData.email}
                   disabled
-                  className="w-full px-3 py-1.5 text-xs border rounded-lg bg-(--color-base-200) text-gray-500 cursor-not-allowed"
+                  className="w-full px-3.5 py-2 text-xs border border-teal-900/60 rounded-xl bg-[#041916]/60 text-[#8faea7] cursor-not-allowed"
                 />
               </div>
 
               <div>
-                <label className="text-[11px] font-bold text-(--color-secondary)">
+                <label className="text-[11px] font-semibold text-[#8faea7] block mb-1">
                   Phone Number
                 </label>
                 <input
@@ -253,7 +257,7 @@ const RiderSettings = () => {
                     setUserFormData({ ...userFormData, phone: e.target.value })
                   }
                   disabled={!editingProfile}
-                  className="w-full px-3 py-1.5 text-xs border rounded-lg bg-(--color-base-100) disabled:bg-(--color-base-200)"
+                  className="w-full px-3.5 py-2 text-xs border border-teal-800/60 rounded-xl bg-[#041916] text-white disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors"
                 />
               </div>
             </div>
@@ -261,16 +265,16 @@ const RiderSettings = () => {
         </div>
 
         {/* Card 2: Vehicle Details */}
-        <div className="bg-(--color-base-100) rounded-2xl border border-(--color-secondary)/30 shadow-sm p-5 space-y-4">
-          <div className="flex justify-between items-center border-b border-(--color-secondary)/20 pb-3">
-            <h3 className="text-sm font-bold text-(--color-base-content) flex items-center gap-2">
-              <MdDirectionsBike size={18} /> Vehicle Details
+        <div className="bg-[#072420] rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 p-5 space-y-4">
+          <div className="flex justify-between items-center border-b border-teal-900/40 pb-3">
+            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <MdDirectionsBike size={18} className="text-[#f97316]" /> Vehicle Details
             </h3>
             <div>
               {!editingVehicle ? (
                 <button
                   onClick={() => setEditingVehicle(true)}
-                  className="bg-(--color-primary) text-(--color-primary-content) px-3 py-1 rounded-lg text-xs font-semibold"
+                  className="bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-md shadow-orange-950/40 hover:opacity-95 transition cursor-pointer"
                 >
                   Edit Vehicle
                 </button>
@@ -279,13 +283,13 @@ const RiderSettings = () => {
                   <button
                     onClick={() => handleSaveRiderSpecificData("vehicle", vehicleFormData)}
                     disabled={isSaving}
-                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-xs font-semibold disabled:opacity-50"
+                    className="bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-md shadow-orange-950/40 hover:opacity-95 transition disabled:opacity-50 cursor-pointer"
                   >
                     Save
                   </button>
                   <button
                     onClick={() => setEditingVehicle(false)}
-                    className="bg-gray-200 text-gray-700 px-3 py-1 rounded-lg text-xs font-semibold"
+                    className="bg-[#041916] border border-teal-800/60 text-[#8faea7] hover:text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -296,7 +300,7 @@ const RiderSettings = () => {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[11px] font-bold text-(--color-secondary)">
+              <label className="text-[11px] font-semibold text-[#8faea7] block mb-1">
                 Vehicle Type
               </label>
               <select
@@ -305,7 +309,7 @@ const RiderSettings = () => {
                   setVehicleFormData({ ...vehicleFormData, vehicleType: e.target.value })
                 }
                 disabled={!editingVehicle}
-                className="w-full px-3 py-1.5 text-xs border rounded-lg bg-(--color-base-100) disabled:bg-(--color-base-200)"
+                className="w-full px-3.5 py-2 text-xs border border-teal-800/60 rounded-xl bg-[#041916] text-white disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors"
               >
                 <option value="Motorcycle">Motorcycle</option>
                 <option value="Scooter">Scooter</option>
@@ -315,7 +319,7 @@ const RiderSettings = () => {
             </div>
 
             <div>
-              <label className="text-[11px] font-bold text-(--color-secondary)">
+              <label className="text-[11px] font-semibold text-[#8faea7] block mb-1">
                 Registration Number
               </label>
               <input
@@ -326,12 +330,12 @@ const RiderSettings = () => {
                   setVehicleFormData({ ...vehicleFormData, vehicleNumber: e.target.value })
                 }
                 disabled={!editingVehicle}
-                className="w-full px-3 py-1.5 text-xs border rounded-lg bg-(--color-base-100) disabled:bg-(--color-base-200)"
+                className="w-full px-3.5 py-2 text-xs border border-teal-800/60 rounded-xl bg-[#041916] text-white placeholder-[#537770] disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors"
               />
             </div>
 
             <div>
-              <label className="text-[11px] font-bold text-(--color-secondary)">
+              <label className="text-[11px] font-semibold text-[#8faea7] block mb-1">
                 Vehicle Model
               </label>
               <input
@@ -342,12 +346,12 @@ const RiderSettings = () => {
                   setVehicleFormData({ ...vehicleFormData, vehicleModel: e.target.value })
                 }
                 disabled={!editingVehicle}
-                className="w-full px-3 py-1.5 text-xs border rounded-lg bg-(--color-base-100) disabled:bg-(--color-base-200)"
+                className="w-full px-3.5 py-2 text-xs border border-teal-800/60 rounded-xl bg-[#041916] text-white placeholder-[#537770] disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors"
               />
             </div>
 
             <div>
-              <label className="text-[11px] font-bold text-(--color-secondary)">
+              <label className="text-[11px] font-semibold text-[#8faea7] block mb-1">
                 Vehicle Color
               </label>
               <input
@@ -358,23 +362,23 @@ const RiderSettings = () => {
                   setVehicleFormData({ ...vehicleFormData, vehicleColor: e.target.value })
                 }
                 disabled={!editingVehicle}
-                className="w-full px-3 py-1.5 text-xs border rounded-lg bg-(--color-base-100) disabled:bg-(--color-base-200)"
+                className="w-full px-3.5 py-2 text-xs border border-teal-800/60 rounded-xl bg-[#041916] text-white placeholder-[#537770] disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors"
               />
             </div>
           </div>
         </div>
 
         {/* Card 3: Bank & Payouts */}
-        <div className="bg-(--color-base-100) rounded-2xl border border-(--color-secondary)/30 shadow-sm p-5 space-y-4">
-          <div className="flex justify-between items-center border-b border-(--color-secondary)/20 pb-3">
-            <h3 className="text-sm font-bold text-(--color-base-content) flex items-center gap-2">
-              <MdAccountBalance size={18} /> Banking & Payout Details
+        <div className="bg-[#072420] rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 p-5 space-y-4">
+          <div className="flex justify-between items-center border-b border-teal-900/40 pb-3">
+            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <MdAccountBalance size={18} className="text-[#f97316]" /> Banking & Payout Details
             </h3>
             <div>
               {!editingBank ? (
                 <button
                   onClick={() => setEditingBank(true)}
-                  className="bg-(--color-primary) text-(--color-primary-content) px-3 py-1 rounded-lg text-xs font-semibold"
+                  className="bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-md shadow-orange-950/40 hover:opacity-95 transition cursor-pointer"
                 >
                   Edit Bank
                 </button>
@@ -383,13 +387,13 @@ const RiderSettings = () => {
                   <button
                     onClick={() => handleSaveRiderSpecificData("bank", bankFormData)}
                     disabled={isSaving}
-                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-xs font-semibold disabled:opacity-50"
+                    className="bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-md shadow-orange-950/40 hover:opacity-95 transition disabled:opacity-50 cursor-pointer"
                   >
                     Save
                   </button>
                   <button
                     onClick={() => setEditingBank(false)}
-                    className="bg-gray-200 text-gray-700 px-3 py-1 rounded-lg text-xs font-semibold"
+                    className="bg-[#041916] border border-teal-800/60 text-[#8faea7] hover:text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -400,7 +404,7 @@ const RiderSettings = () => {
 
           <div className="space-y-3">
             <div>
-              <label className="text-[11px] font-bold text-(--color-secondary)">
+              <label className="text-[11px] font-semibold text-[#8faea7] block mb-1">
                 Bank Name
               </label>
               <input
@@ -411,13 +415,13 @@ const RiderSettings = () => {
                   setBankFormData({ ...bankFormData, bankName: e.target.value })
                 }
                 disabled={!editingBank}
-                className="w-full px-3 py-1.5 text-xs border rounded-lg bg-(--color-base-100) disabled:bg-(--color-base-200)"
+                className="w-full px-3.5 py-2 text-xs border border-teal-800/60 rounded-xl bg-[#041916] text-white placeholder-[#537770] disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors"
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="text-[11px] font-bold text-(--color-secondary)">
+                <label className="text-[11px] font-semibold text-[#8faea7] block mb-1">
                   Account Number
                 </label>
                 <input
@@ -428,12 +432,12 @@ const RiderSettings = () => {
                     setBankFormData({ ...bankFormData, accountNumber: e.target.value })
                   }
                   disabled={!editingBank}
-                  className="w-full px-3 py-1.5 text-xs border rounded-lg bg-(--color-base-100) disabled:bg-(--color-base-200)"
+                  className="w-full px-3.5 py-2 text-xs border border-teal-800/60 rounded-xl bg-[#041916] text-white placeholder-[#537770] disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors"
                 />
               </div>
 
               <div>
-                <label className="text-[11px] font-bold text-(--color-secondary)">
+                <label className="text-[11px] font-semibold text-[#8faea7] block mb-1">
                   IFSC Code
                 </label>
                 <input
@@ -444,7 +448,7 @@ const RiderSettings = () => {
                     setBankFormData({ ...bankFormData, ifscCode: e.target.value })
                   }
                   disabled={!editingBank}
-                  className="w-full px-3 py-1.5 text-xs border rounded-lg bg-(--color-base-100) disabled:bg-(--color-base-200)"
+                  className="w-full px-3.5 py-2 text-xs border border-teal-800/60 rounded-xl bg-[#041916] text-white placeholder-[#537770] disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors"
                 />
               </div>
             </div>
@@ -452,16 +456,16 @@ const RiderSettings = () => {
         </div>
 
         {/* Card 4: Current Address */}
-        <div className="bg-(--color-base-100) rounded-2xl border border-(--color-secondary)/30 shadow-sm p-5 space-y-4">
-          <div className="flex justify-between items-center border-b border-(--color-secondary)/20 pb-3">
-            <h3 className="text-sm font-bold text-(--color-base-content) flex items-center gap-2">
-              <MdLocationOn size={18} /> Residential Address
+        <div className="bg-[#072420] rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 p-5 space-y-4">
+          <div className="flex justify-between items-center border-b border-teal-900/40 pb-3">
+            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <MdLocationOn size={18} className="text-[#f97316]" /> Residential Address
             </h3>
             <div>
               {!editingAddress ? (
                 <button
                   onClick={() => setEditingAddress(true)}
-                  className="bg-(--color-primary) text-(--color-primary-content) px-3 py-1 rounded-lg text-xs font-semibold"
+                  className="bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-md shadow-orange-950/40 hover:opacity-95 transition cursor-pointer"
                 >
                   Edit Address
                 </button>
@@ -470,13 +474,13 @@ const RiderSettings = () => {
                   <button
                     onClick={() => handleSaveRiderSpecificData("address", addressFormData)}
                     disabled={isSaving}
-                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-xs font-semibold disabled:opacity-50"
+                    className="bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-md shadow-orange-950/40 hover:opacity-95 transition disabled:opacity-50 cursor-pointer"
                   >
                     Save
                   </button>
                   <button
                     onClick={() => setEditingAddress(false)}
-                    className="bg-gray-200 text-gray-700 px-3 py-1 rounded-lg text-xs font-semibold"
+                    className="bg-[#041916] border border-teal-800/60 text-[#8faea7] hover:text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -487,7 +491,7 @@ const RiderSettings = () => {
 
           <div className="space-y-3">
             <div>
-              <label className="text-[11px] font-bold text-(--color-secondary)">
+              <label className="text-[11px] font-semibold text-[#8faea7] block mb-1">
                 Street Address
               </label>
               <input
@@ -498,13 +502,13 @@ const RiderSettings = () => {
                   setAddressFormData({ ...addressFormData, address: e.target.value })
                 }
                 disabled={!editingAddress}
-                className="w-full px-3 py-1.5 text-xs border rounded-lg bg-(--color-base-100) disabled:bg-(--color-base-200)"
+                className="w-full px-3.5 py-2 text-xs border border-teal-800/60 rounded-xl bg-[#041916] text-white placeholder-[#537770] disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors"
               />
             </div>
 
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               <div>
-                <label className="text-[11px] font-bold text-(--color-secondary)">
+                <label className="text-[11px] font-semibold text-[#8faea7] block mb-1">
                   City
                 </label>
                 <input
@@ -515,12 +519,12 @@ const RiderSettings = () => {
                     setAddressFormData({ ...addressFormData, city: e.target.value })
                   }
                   disabled={!editingAddress}
-                  className="w-full px-3 py-1.5 text-xs border rounded-lg bg-(--color-base-100) disabled:bg-(--color-base-200)"
+                  className="w-full px-3.5 py-2 text-xs border border-teal-800/60 rounded-xl bg-[#041916] text-white placeholder-[#537770] disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors"
                 />
               </div>
 
               <div>
-                <label className="text-[11px] font-bold text-(--color-secondary)">
+                <label className="text-[11px] font-semibold text-[#8faea7] block mb-1">
                   State
                 </label>
                 <input
@@ -531,12 +535,12 @@ const RiderSettings = () => {
                     setAddressFormData({ ...addressFormData, state: e.target.value })
                   }
                   disabled={!editingAddress}
-                  className="w-full px-3 py-1.5 text-xs border rounded-lg bg-(--color-base-100) disabled:bg-(--color-base-200)"
+                  className="w-full px-3.5 py-2 text-xs border border-teal-800/60 rounded-xl bg-[#041916] text-white placeholder-[#537770] disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors"
                 />
               </div>
 
               <div>
-                <label className="text-[11px] font-bold text-(--color-secondary)">
+                <label className="text-[11px] font-semibold text-[#8faea7] block mb-1">
                   Pin Code
                 </label>
                 <input
@@ -547,7 +551,7 @@ const RiderSettings = () => {
                     setAddressFormData({ ...addressFormData, pinCode: e.target.value })
                   }
                   disabled={!editingAddress}
-                  className="w-full px-3 py-1.5 text-xs border rounded-lg bg-(--color-base-100) disabled:bg-(--color-base-200)"
+                  className="w-full px-3.5 py-2 text-xs border border-teal-800/60 rounded-xl bg-[#041916] text-white placeholder-[#537770] disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors"
                 />
               </div>
             </div>

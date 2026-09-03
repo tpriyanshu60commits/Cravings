@@ -135,12 +135,12 @@ const EditOrViewItem = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-      <div className="bg-white p-6 rounded-lg w-full max-w-5xl max-h-[92vh] overflow-y-auto">
-        <header className="flex justify-between items-center border-b border-(--color-secondary) pb-2 mb-4">
-          <h2 className="text-lg font-semibold">{modalTitle}</h2>
+    <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-[#072420] border border-teal-800/60 p-6 rounded-2xl w-full max-w-5xl max-h-[92vh] overflow-y-auto text-white shadow-2xl shadow-black/80">
+        <header className="flex justify-between items-center border-b border-teal-900/60 pb-3 mb-4">
+          <h2 className="text-lg font-bold text-white tracking-tight">{modalTitle}</h2>
           <button
-            className="text-red-300 hover:text-red-500"
+            className="text-[#8faea7] hover:text-white transition cursor-pointer"
             onClick={onClose}
             disabled={isSubmitting}
           >
@@ -149,9 +149,9 @@ const EditOrViewItem = ({
         </header>
 
         <main className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="text-center">
-              <div className="h-52 w-52 mx-auto border-2 border-(--color-primary) rounded overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="text-center flex flex-col items-center">
+              <div className="h-52 w-52 mx-auto border-2 border-dashed border-teal-800/80 bg-[#041916] rounded-2xl overflow-hidden flex items-center justify-center shadow-inner">
                 {previewImage && (
                   <img
                     src={previewImage}
@@ -161,8 +161,8 @@ const EditOrViewItem = ({
                 )}
               </div>
               {!isViewMode && (
-                <>
-                  <label htmlFor="editItemImage" className="cursor-pointer">
+                <div className="mt-2.5">
+                  <label htmlFor="editItemImage" className="cursor-pointer text-xs font-semibold text-orange-400 hover:text-orange-300 transition">
                     Click to Change Image
                   </label>
                   <input
@@ -177,14 +177,14 @@ const EditOrViewItem = ({
                       setPreviewImage(URL.createObjectURL(file));
                     }}
                   />
-                </>
+                </div>
               )}
             </div>
 
             <div className="md:col-span-2 space-y-4">
               <div>
                 <label
-                  className="block mb-1 font-medium"
+                  className="block mb-1.5 text-xs font-semibold text-[#8faea7]"
                   htmlFor="editItemName"
                 >
                   Item Name
@@ -196,16 +196,16 @@ const EditOrViewItem = ({
                   value={formData.itemName}
                   onChange={handleInputChange}
                   disabled={isViewMode}
-                  className="w-full border border-gray-300 rounded px-3 py-2 disabled:bg-gray-100"
+                  className="w-full bg-[#041916] border border-teal-800/60 rounded-xl px-3.5 py-2 text-xs text-white placeholder-[#537770] focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 disabled:opacity-60"
                 />
               </div>
 
               <div>
                 <label
-                  className="block mb-1 font-medium"
+                  className="block mb-1.5 text-xs font-semibold text-[#8faea7]"
                   htmlFor="editItemPrice"
                 >
-                  Item Price
+                  Item Price (₹)
                 </label>
                 <input
                   type="number"
@@ -214,14 +214,14 @@ const EditOrViewItem = ({
                   value={formData.itemPrice}
                   onChange={handleInputChange}
                   disabled={isViewMode}
-                  className="w-full border border-gray-300 rounded px-3 py-2 disabled:bg-gray-100"
+                  className="w-full bg-[#041916] border border-teal-800/60 rounded-xl px-3.5 py-2 text-xs text-white placeholder-[#537770] focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 disabled:opacity-60"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label
-                    className="block mb-1 font-medium"
+                    className="block mb-1.5 text-xs font-semibold text-[#8faea7]"
                     htmlFor="editItemCategory"
                   >
                     Item Category
@@ -232,11 +232,11 @@ const EditOrViewItem = ({
                     value={formData.category}
                     onChange={handleInputChange}
                     disabled={isViewMode}
-                    className="w-full border border-gray-300 rounded px-3 py-2 disabled:bg-gray-100"
+                    className="w-full bg-[#041916] border border-teal-800/60 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 disabled:opacity-60"
                   >
-                    <option value="">Select Category</option>
+                    <option value="" className="bg-[#072420] text-[#8faea7]">Select Category</option>
                     {itemCategories.map((category) => (
-                      <option key={category} value={category}>
+                      <option key={category} value={category} className="bg-[#072420] text-white">
                         {category}
                       </option>
                     ))}
@@ -245,7 +245,7 @@ const EditOrViewItem = ({
 
                 <div>
                   <label
-                    className="block mb-1 font-medium"
+                    className="block mb-1.5 text-xs font-semibold text-[#8faea7]"
                     htmlFor="editFoodType"
                   >
                     Food Type
@@ -256,11 +256,11 @@ const EditOrViewItem = ({
                     value={formData.foodType}
                     onChange={handleInputChange}
                     disabled={isViewMode}
-                    className="w-full border border-gray-300 rounded px-3 py-2 disabled:bg-gray-100"
+                    className="w-full bg-[#041916] border border-teal-800/60 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 disabled:opacity-60"
                   >
-                    <option value="">Select Food Type</option>
+                    <option value="" className="bg-[#072420] text-[#8faea7]">Select Food Type</option>
                     {foodTypes.map((type) => (
-                      <option key={type} value={type}>
+                      <option key={type} value={type} className="bg-[#072420] text-white">
                         {type}
                       </option>
                     ))}
@@ -269,7 +269,7 @@ const EditOrViewItem = ({
 
                 <div>
                   <label
-                    className="block mb-1 font-medium"
+                    className="block mb-1.5 text-xs font-semibold text-[#8faea7]"
                     htmlFor="editStatus"
                   >
                     Status
@@ -280,13 +280,13 @@ const EditOrViewItem = ({
                     value={formData.status}
                     onChange={handleInputChange}
                     disabled={isViewMode}
-                    className="w-full border border-gray-300 rounded px-3 py-2 disabled:bg-gray-100"
+                    className="w-full bg-[#041916] border border-teal-800/60 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 disabled:opacity-60"
                   >
                     {statusOptions.map((status) => (
                       <option
                         key={status}
                         value={status}
-                        className="capitalize"
+                        className="bg-[#072420] text-white capitalize"
                       >
                         {status}
                       </option>
@@ -298,7 +298,7 @@ const EditOrViewItem = ({
 
             <div className="md:col-span-3">
               <label
-                className="block mb-1 font-medium"
+                className="block mb-1.5 text-xs font-semibold text-[#8faea7]"
                 htmlFor="editItemDescription"
               >
                 Item Description
@@ -309,42 +309,45 @@ const EditOrViewItem = ({
                 value={formData.description}
                 onChange={handleInputChange}
                 disabled={isViewMode}
-                className="w-full border border-gray-300 rounded px-3 py-2 disabled:bg-gray-100"
-                rows={4}
+                className="w-full bg-[#041916] border border-teal-800/60 rounded-xl px-3.5 py-2 text-xs text-white placeholder-[#537770] focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 disabled:opacity-60"
+                rows={3}
               />
             </div>
 
             <div className="md:col-span-3">
-              <div className="flex gap-6 items-center">
-                <label className="inline-flex items-center gap-2">
+              <div className="flex flex-wrap gap-6 items-center">
+                <label className="inline-flex items-center gap-2 cursor-pointer text-xs font-medium text-white">
                   <input
                     type="checkbox"
                     name="isTopRated"
                     checked={formData.isTopRated}
                     onChange={handleInputChange}
                     disabled={isViewMode}
+                    className="accent-[#ea580c] w-4 h-4 rounded"
                   />
                   <span>Top Rated</span>
                 </label>
 
-                <label className="inline-flex items-center gap-2">
+                <label className="inline-flex items-center gap-2 cursor-pointer text-xs font-medium text-white">
                   <input
                     type="checkbox"
                     name="isRecommended"
                     checked={formData.isRecommended}
                     onChange={handleInputChange}
                     disabled={isViewMode}
+                    className="accent-[#ea580c] w-4 h-4 rounded"
                   />
                   <span>Recommended</span>
                 </label>
 
-                <label className="inline-flex items-center gap-2">
+                <label className="inline-flex items-center gap-2 cursor-pointer text-xs font-medium text-white">
                   <input
                     type="checkbox"
                     name="isNew"
                     checked={formData.isNew}
                     onChange={handleInputChange}
                     disabled={isViewMode}
+                    className="accent-[#ea580c] w-4 h-4 rounded"
                   />
                   <span>New</span>
                 </label>
@@ -353,9 +356,9 @@ const EditOrViewItem = ({
           </div>
         </main>
 
-        <footer className="flex justify-end border-t border-(--color-secondary) pt-3 mt-4 gap-2">
+        <footer className="flex justify-end border-t border-teal-900/60 pt-4 mt-6 gap-3">
           <button
-            className="bg-(--color-secondary) disabled:bg-(--color-secondary)/60 text-(--color-secondary-content) px-4 py-2 rounded"
+            className="bg-[#041916] border border-teal-800/60 text-[#8faea7] hover:text-white px-4 py-2 rounded-xl text-xs font-semibold transition cursor-pointer"
             onClick={onClose}
             disabled={isSubmitting}
           >
@@ -364,7 +367,7 @@ const EditOrViewItem = ({
 
           {!isViewMode && (
             <button
-              className="bg-(--color-primary) disabled:bg-(--color-primary)/60 text-(--color-primary-content) px-4 py-2 rounded"
+              className="bg-gradient-to-r from-[#f97316] to-[#ea580c] disabled:opacity-50 text-white px-5 py-2 rounded-xl text-xs font-bold transition shadow-md shadow-orange-950/40 hover:opacity-95 cursor-pointer"
               onClick={handleUpdateItem}
               disabled={isSubmitting}
             >

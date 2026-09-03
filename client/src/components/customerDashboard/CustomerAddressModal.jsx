@@ -137,27 +137,27 @@ const CustomerAddressModal = ({ isOpen, onClose, addressToEdit, onSaveSuccess })
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-      <div className="bg-(--color-base-100) rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-(--color-base-300) max-h-[90vh] overflow-y-auto">
-        <header className="flex justify-between items-center border-b pb-3">
-          <h3 className="text-lg font-bold text-(--color-base-content)">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
+      <div className="bg-[#072420] text-white rounded-2xl max-w-lg w-full p-5 sm:p-6 space-y-4 shadow-2xl border border-teal-800/60 max-h-[90vh] overflow-y-auto">
+        <header className="flex justify-between items-center border-b border-teal-900/60 pb-3">
+          <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
             {addressToEdit ? "Edit Address" : "Add New Delivery Address"}
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition"
+            className="text-[#8faea7] hover:text-white transition cursor-pointer"
           >
             <MdCancel className="text-2xl" />
           </button>
         </header>
 
         {/* GPS Location Auto-detect Widget */}
-        <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between gap-3">
+        <div className="p-3.5 bg-[#041916] border border-blue-500/30 rounded-xl flex items-center justify-between gap-3 text-blue-200 shadow-inner">
           <div>
-            <p className="text-xs font-bold text-blue-900 flex items-center gap-1">
-              <IoLocationOutline className="text-sm" /> Accurate GPS Pinpoint
+            <p className="text-xs font-bold text-blue-300 flex items-center gap-1.5">
+              <IoLocationOutline className="text-sm text-orange-400" /> Accurate GPS Pinpoint
             </p>
-            <p className="text-[11px] text-blue-700 mt-0.5">
+            <p className="text-[11px] text-[#8faea7] mt-0.5">
               {formData.geoLat && formData.geoLon
                 ? `GPS Linked: ${Number(formData.geoLat).toFixed(4)}, ${Number(formData.geoLon).toFixed(4)}`
                 : "Attach your current GPS location for precise delivery navigation"}
@@ -167,7 +167,7 @@ const CustomerAddressModal = ({ isOpen, onClose, addressToEdit, onSaveSuccess })
             type="button"
             onClick={handleUseCurrentLocation}
             disabled={isDetectingLocation}
-            className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shrink-0 transition flex items-center gap-1 disabled:opacity-50"
+            className="px-3 py-1.5 bg-blue-600/80 hover:bg-blue-600 text-white rounded-lg text-xs font-semibold shrink-0 transition flex items-center gap-1 disabled:opacity-50 cursor-pointer"
           >
             {isDetectingLocation ? "Detecting..." : formData.geoLat ? "Update GPS" : "Detect GPS"}
           </button>
@@ -176,10 +176,10 @@ const CustomerAddressModal = ({ isOpen, onClose, addressToEdit, onSaveSuccess })
         <form onSubmit={handleSubmit} className="space-y-3.5">
           {/* Address Type Selection */}
           <div>
-            <label className="block text-xs font-semibold text-(--color-neutral) mb-1.5">
+            <label className="block text-xs font-semibold text-[#8faea7] mb-1.5">
               Address Type
             </label>
-            <div className="flex gap-3">
+            <div className="flex gap-2.5">
               {[
                 { type: "home", label: "Home", icon: <IoHomeOutline /> },
                 { type: "work", label: "Work", icon: <IoBriefcaseOutline /> },
@@ -191,10 +191,10 @@ const CustomerAddressModal = ({ isOpen, onClose, addressToEdit, onSaveSuccess })
                   onClick={() =>
                     setFormData((prev) => ({ ...prev, addressType: item.type }))
                   }
-                  className={`flex-1 py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition ${
+                  className={`flex-1 py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer ${
                     formData.addressType === item.type
-                      ? "bg-(--color-primary) text-(--color-primary-content) border-(--color-primary)"
-                      : "bg-(--color-base-200) text-(--color-base-content) border-(--color-base-300) hover:border-(--color-primary)"
+                      ? "bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white border-transparent shadow-md shadow-orange-950/40"
+                      : "bg-[#041916] text-[#8faea7] border-teal-800/60 hover:text-white hover:bg-teal-900/30"
                   }`}
                 >
                   {item.icon} {item.label}
@@ -205,7 +205,7 @@ const CustomerAddressModal = ({ isOpen, onClose, addressToEdit, onSaveSuccess })
 
           {/* Full Name */}
           <div>
-            <label className="block text-xs font-semibold text-(--color-neutral) mb-1">
+            <label className="block text-xs font-semibold text-[#8faea7] mb-1">
               Contact / Receiver Name *
             </label>
             <input
@@ -214,10 +214,10 @@ const CustomerAddressModal = ({ isOpen, onClose, addressToEdit, onSaveSuccess })
               value={formData.name}
               onChange={handleInputChange}
               placeholder="e.g. John Doe"
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg text-(--color-neutral) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
+              className="w-full px-3.5 py-2 text-xs border border-teal-800/60 bg-[#041916] text-white placeholder-[#537770] rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors"
             />
             {errors.name && (
-              <span className="text-(--color-error) text-xs mt-1 block">
+              <span className="text-rose-400 text-xs mt-1 block">
                 {errors.name}
               </span>
             )}
@@ -225,7 +225,7 @@ const CustomerAddressModal = ({ isOpen, onClose, addressToEdit, onSaveSuccess })
 
           {/* Street Address */}
           <div>
-            <label className="block text-xs font-semibold text-(--color-neutral) mb-1">
+            <label className="block text-xs font-semibold text-[#8faea7] mb-1">
               Complete Street Address / Flat / Building *
             </label>
             <textarea
@@ -234,10 +234,10 @@ const CustomerAddressModal = ({ isOpen, onClose, addressToEdit, onSaveSuccess })
               value={formData.address}
               onChange={handleInputChange}
               placeholder="Flat/House No., Street, Landmark"
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg text-(--color-neutral) focus:outline-none focus:ring-1 focus:ring-(--color-primary) resize-none"
+              className="w-full px-3.5 py-2 text-xs border border-teal-800/60 bg-[#041916] text-white placeholder-[#537770] rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors resize-none"
             />
             {errors.address && (
-              <span className="text-(--color-error) text-xs mt-1 block">
+              <span className="text-rose-400 text-xs mt-1 block">
                 {errors.address}
               </span>
             )}
@@ -246,7 +246,7 @@ const CustomerAddressModal = ({ isOpen, onClose, addressToEdit, onSaveSuccess })
           {/* City & State */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-(--color-neutral) mb-1">
+              <label className="block text-xs font-semibold text-[#8faea7] mb-1">
                 City *
               </label>
               <input
@@ -255,17 +255,17 @@ const CustomerAddressModal = ({ isOpen, onClose, addressToEdit, onSaveSuccess })
                 value={formData.city}
                 onChange={handleInputChange}
                 placeholder="e.g. Bhopal"
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg text-(--color-neutral) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
+                className="w-full px-3.5 py-2 text-xs border border-teal-800/60 bg-[#041916] text-white placeholder-[#537770] rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors"
               />
               {errors.city && (
-                <span className="text-(--color-error) text-xs mt-1 block">
+                <span className="text-rose-400 text-xs mt-1 block">
                   {errors.city}
                 </span>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-(--color-neutral) mb-1">
+              <label className="block text-xs font-semibold text-[#8faea7] mb-1">
                 State *
               </label>
               <input
@@ -274,10 +274,10 @@ const CustomerAddressModal = ({ isOpen, onClose, addressToEdit, onSaveSuccess })
                 value={formData.state}
                 onChange={handleInputChange}
                 placeholder="e.g. Madhya Pradesh"
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg text-(--color-neutral) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
+                className="w-full px-3.5 py-2 text-xs border border-teal-800/60 bg-[#041916] text-white placeholder-[#537770] rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors"
               />
               {errors.state && (
-                <span className="text-(--color-error) text-xs mt-1 block">
+                <span className="text-rose-400 text-xs mt-1 block">
                   {errors.state}
                 </span>
               )}
@@ -287,7 +287,7 @@ const CustomerAddressModal = ({ isOpen, onClose, addressToEdit, onSaveSuccess })
           {/* PIN Code & Country */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-(--color-neutral) mb-1">
+              <label className="block text-xs font-semibold text-[#8faea7] mb-1">
                 PIN Code *
               </label>
               <input
@@ -296,17 +296,17 @@ const CustomerAddressModal = ({ isOpen, onClose, addressToEdit, onSaveSuccess })
                 value={formData.pinCode}
                 onChange={handleInputChange}
                 placeholder="e.g. 462001"
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg text-(--color-neutral) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
+                className="w-full px-3.5 py-2 text-xs border border-teal-800/60 bg-[#041916] text-white placeholder-[#537770] rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors"
               />
               {errors.pinCode && (
-                <span className="text-(--color-error) text-xs mt-1 block">
+                <span className="text-rose-400 text-xs mt-1 block">
                   {errors.pinCode}
                 </span>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-(--color-neutral) mb-1">
+              <label className="block text-xs font-semibold text-[#8faea7] mb-1">
                 Country *
               </label>
               <input
@@ -314,10 +314,10 @@ const CustomerAddressModal = ({ isOpen, onClose, addressToEdit, onSaveSuccess })
                 name="country"
                 value={formData.country}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg text-(--color-neutral) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
+                className="w-full px-3.5 py-2 text-xs border border-teal-800/60 bg-[#041916] text-white placeholder-[#537770] rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors"
               />
               {errors.country && (
-                <span className="text-(--color-error) text-xs mt-1 block">
+                <span className="text-rose-400 text-xs mt-1 block">
                   {errors.country}
                 </span>
               )}
@@ -326,24 +326,24 @@ const CustomerAddressModal = ({ isOpen, onClose, addressToEdit, onSaveSuccess })
 
           {/* Default Address Toggle */}
           <div className="pt-1">
-            <label className="flex items-center gap-2 cursor-pointer text-xs text-(--color-secondary)">
+            <label className="flex items-center gap-2 cursor-pointer text-xs text-[#8faea7]">
               <input
                 type="checkbox"
                 name="isDefault"
                 checked={formData.isDefault}
                 onChange={handleInputChange}
-                className="cursor-pointer accent-(--color-primary)"
+                className="cursor-pointer accent-[#f97316]"
               />
               <span>Set as my default delivery address</span>
             </label>
           </div>
 
           {/* Footer Actions */}
-          <div className="flex justify-end gap-2 pt-3 border-t">
+          <div className="flex justify-end gap-2.5 pt-3 border-t border-teal-900/60">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-200 transition"
+              className="px-4 py-2 text-xs font-semibold rounded-xl bg-[#041916] text-[#8faea7] hover:text-white border border-teal-800/60 hover:bg-teal-900/30 transition cursor-pointer"
               disabled={loading}
             >
               Cancel
@@ -351,7 +351,7 @@ const CustomerAddressModal = ({ isOpen, onClose, addressToEdit, onSaveSuccess })
             <button
               type="submit"
               disabled={loading}
-              className="flex items-center gap-1.5 px-5 py-2 text-xs font-semibold rounded-xl bg-(--color-primary) text-(--color-primary-content) hover:opacity-90 transition disabled:opacity-50"
+              className="flex items-center gap-1.5 px-5 py-2 text-xs font-bold rounded-xl bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white hover:opacity-95 transition shadow-md shadow-orange-950/40 disabled:opacity-50 cursor-pointer"
             >
               {loading && <LuLoaderCircle className="animate-spin text-sm" />}
               {addressToEdit ? "Update Address" : "Save Address"}

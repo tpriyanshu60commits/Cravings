@@ -116,14 +116,14 @@ const RiderKYCModal = () => {
   };
 
   return (
-    <div className="overflow-y-auto h-full p-6 space-y-6">
+    <div className="overflow-y-auto h-full p-4 sm:p-6 space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#072420] p-4 sm:p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40">
         <div>
-          <h1 className="text-2xl font-bold text-(--color-base-content) flex items-center gap-2">
-            <MdVerifiedUser className="text-(--color-primary)" /> KYC Verification & Documents
+          <h1 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2 tracking-tight">
+            <MdVerifiedUser className="text-[#f97316]" /> KYC Verification & Documents
           </h1>
-          <p className="text-xs text-(--color-secondary) mt-1">
+          <p className="text-xs text-[#8faea7] mt-0.5">
             Upload your mandatory identity, vehicle, and driving documents for partner compliance.
           </p>
         </div>
@@ -132,19 +132,21 @@ const RiderKYCModal = () => {
           <button
             onClick={handleUploadAll}
             disabled={Object.keys(selectedFiles).length === 0 || isUploading}
-            className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-xl text-xs font-bold shadow transition flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white px-5 py-2.5 sm:py-2 rounded-xl text-xs font-bold shadow-md shadow-orange-950/40 hover:opacity-95 transition flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
             {isUploading && <RiLoader4Fill className="animate-spin" />}
-            {isUploading
-              ? "Uploading..."
-              : `Submit Documents (${Object.keys(selectedFiles).length})`}
+            <span>
+              {isUploading
+                ? "Uploading..."
+                : `Submit Documents (${Object.keys(selectedFiles).length})`}
+            </span>
           </button>
         </div>
       </div>
 
       {isLoading ? (
         <div className="py-20 flex justify-center">
-          <RiLoader4Fill className="animate-spin text-3xl text-(--color-primary)" />
+          <RiLoader4Fill className="animate-spin text-3xl text-[#f97316]" />
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -157,23 +159,23 @@ const RiderKYCModal = () => {
             return (
               <div
                 key={doc.key}
-                className="bg-(--color-base-100) rounded-2xl border border-(--color-secondary)/30 p-5 shadow-sm space-y-3"
+                className="bg-[#072420] rounded-2xl border border-teal-800/40 p-5 shadow-xl shadow-black/40 space-y-3"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <h3 className="text-sm font-bold text-(--color-base-content)">
+                    <h3 className="text-sm font-bold text-white">
                       {doc.label}
                     </h3>
-                    <p className="text-xs text-(--color-secondary) mt-0.5">
+                    <p className="text-xs text-[#8faea7] mt-0.5">
                       {doc.description}
                     </p>
                   </div>
                   {isUploaded ? (
-                    <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-800 shrink-0">
+                    <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shrink-0">
                       <MdCheckCircle size={12} /> Uploaded
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 shrink-0">
+                    <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 shrink-0">
                       Pending
                     </span>
                   )}
@@ -181,7 +183,7 @@ const RiderKYCModal = () => {
 
                 {/* Preview Thumbnail */}
                 {previewUrl ? (
-                  <div className="relative rounded-xl overflow-hidden border border-(--color-secondary)/40 h-40 bg-(--color-base-200)">
+                  <div className="relative rounded-xl overflow-hidden border border-teal-800/60 h-40 bg-[#041916]">
                     <img
                       src={previewUrl}
                       alt={doc.label}
@@ -191,18 +193,18 @@ const RiderKYCModal = () => {
                       href={previewUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="absolute bottom-2 right-2 bg-black/70 hover:bg-black text-white px-2.5 py-1 rounded-lg text-[10px] font-semibold flex items-center gap-1 shadow"
+                      className="absolute bottom-2 right-2 bg-black/80 hover:bg-black text-white px-2.5 py-1 rounded-lg text-[10px] font-semibold flex items-center gap-1 shadow-md border border-teal-800/60"
                     >
                       <MdVisibility size={14} /> Full View
                     </a>
                   </div>
                 ) : (
-                  <div className="h-32 rounded-xl border border-dashed border-(--color-secondary)/50 bg-(--color-base-200) flex flex-col items-center justify-center text-center p-3">
-                    <MdOutlineFileUpload className="text-2xl text-(--color-secondary) mb-1" />
-                    <p className="text-xs font-semibold text-(--color-base-content)">
+                  <div className="h-32 rounded-xl border border-dashed border-teal-800/60 bg-[#041916] flex flex-col items-center justify-center text-center p-3">
+                    <MdOutlineFileUpload className="text-2xl text-[#537770] mb-1" />
+                    <p className="text-xs font-semibold text-white">
                       No document uploaded
                     </p>
-                    <p className="text-[10px] text-(--color-secondary)">
+                    <p className="text-[10px] text-[#8faea7]">
                       Upload JPG, PNG or PDF under 5MB
                     </p>
                   </div>
@@ -212,10 +214,10 @@ const RiderKYCModal = () => {
                 <div className="flex items-center justify-between pt-1">
                   <label
                     htmlFor={`upload-${doc.key}`}
-                    className="inline-flex items-center gap-1.5 bg-(--color-primary) text-(--color-primary-content) px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer shadow hover:opacity-90 transition"
+                    className="inline-flex items-center gap-1.5 bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white px-3.5 py-1.5 rounded-xl text-xs font-bold cursor-pointer shadow-md shadow-orange-950/40 hover:opacity-95 transition"
                   >
                     <MdOutlineFileUpload size={16} />
-                    {isUploaded ? "Replace Document" : "Select File"}
+                    <span>{isUploaded ? "Replace Document" : "Select File"}</span>
                   </label>
                   <input
                     type="file"
@@ -228,7 +230,7 @@ const RiderKYCModal = () => {
                   />
 
                   {isSelected && (
-                    <span className="text-[11px] text-amber-600 font-bold">
+                    <span className="text-[11px] text-amber-400 font-bold">
                       Ready to upload
                     </span>
                   )}

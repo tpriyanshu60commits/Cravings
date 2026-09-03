@@ -88,15 +88,15 @@ const AdminOverview = ({ setActiveTab, setTabWithFilter }) => {
     (pendingApprovals.customers || 0);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-white">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-(--color-base-100) p-5 rounded-2xl border border-(--color-base-300) shadow-xs">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#072420] p-4 sm:p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40">
         <div>
-          <h1 className="text-xl font-black text-(--color-base-content) flex items-center gap-2">
-            <MdDashboard className="text-(--color-primary)" size={24} />
+          <h1 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2 tracking-tight">
+            <MdDashboard className="text-[#f97316]" size={24} />
             Admin Overview & Analytics
           </h1>
-          <p className="text-xs text-(--color-secondary) mt-0.5">
+          <p className="text-xs text-[#8faea7] mt-0.5">
             Real-time platform metrics, revenue tracking, and ecosystem health
           </p>
         </div>
@@ -104,11 +104,11 @@ const AdminOverview = ({ setActiveTab, setTabWithFilter }) => {
         <button
           onClick={() => fetchStats(true)}
           disabled={isRefreshing}
-          className="px-4 py-2 rounded-xl border border-(--color-base-300) bg-(--color-base-200) hover:bg-(--color-base-300) text-(--color-base-content) transition flex items-center gap-2 text-xs font-semibold shrink-0"
+          className="px-4 py-2 rounded-xl border border-teal-800/60 bg-[#041916] hover:bg-teal-900/30 text-white transition flex items-center gap-2 text-xs font-semibold shrink-0 cursor-pointer"
         >
           <MdRefresh
             size={18}
-            className={isRefreshing ? "animate-spin text-(--color-primary)" : ""}
+            className={isRefreshing ? "animate-spin text-[#f97316]" : ""}
           />
           <span>{isRefreshing ? "Refreshing..." : "Refresh Stats"}</span>
         </button>
@@ -116,17 +116,17 @@ const AdminOverview = ({ setActiveTab, setTabWithFilter }) => {
 
       {/* Pending Action Alerts Banner (if any pending) */}
       {totalPending > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 sm:p-5 shadow-xs">
+        <div className="bg-[#041916] border border-amber-500/40 rounded-2xl p-4 sm:p-5 shadow-xl shadow-amber-950/20">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-amber-500 text-white rounded-xl shadow-xs">
+              <div className="p-2.5 bg-amber-500/20 border border-amber-500/30 text-amber-400 rounded-xl shadow-xs">
                 <MdPendingActions size={22} />
               </div>
               <div>
-                <h3 className="text-xs font-bold text-amber-900 uppercase tracking-wider">
+                <h3 className="text-xs font-bold text-amber-300 uppercase tracking-wider">
                   Action Required ({totalPending} Pending Approvals)
                 </h3>
-                <p className="text-xs text-amber-700 mt-0.5">
+                <p className="text-xs text-[#8faea7] mt-0.5">
                   Accounts and partners awaiting administrative verification and review.
                 </p>
               </div>
@@ -136,7 +136,7 @@ const AdminOverview = ({ setActiveTab, setTabWithFilter }) => {
               {pendingApprovals.restaurants > 0 && (
                 <button
                   onClick={() => navigateTab("restaurants", "inactive")}
-                  className="px-3 py-1.5 bg-amber-200 hover:bg-amber-300 text-amber-900 rounded-lg text-xs font-semibold transition flex items-center gap-1.5"
+                  className="px-3.5 py-1.5 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer"
                 >
                   <span>{pendingApprovals.restaurants} Restaurants</span>
                   <MdArrowForward size={14} />
@@ -145,7 +145,7 @@ const AdminOverview = ({ setActiveTab, setTabWithFilter }) => {
               {pendingApprovals.riders > 0 && (
                 <button
                   onClick={() => navigateTab("riders", "pending")}
-                  className="px-3 py-1.5 bg-amber-200 hover:bg-amber-300 text-amber-900 rounded-lg text-xs font-semibold transition flex items-center gap-1.5"
+                  className="px-3.5 py-1.5 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer"
                 >
                   <span>{pendingApprovals.riders} Riders</span>
                   <MdArrowForward size={14} />
@@ -154,7 +154,7 @@ const AdminOverview = ({ setActiveTab, setTabWithFilter }) => {
               {pendingApprovals.customers > 0 && (
                 <button
                   onClick={() => navigateTab("customers", "pending")}
-                  className="px-3 py-1.5 bg-amber-200 hover:bg-amber-300 text-amber-900 rounded-lg text-xs font-semibold transition flex items-center gap-1.5"
+                  className="px-3.5 py-1.5 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer"
                 >
                   <span>{pendingApprovals.customers} Customers</span>
                   <MdArrowForward size={14} />
@@ -168,37 +168,37 @@ const AdminOverview = ({ setActiveTab, setTabWithFilter }) => {
       {/* Primary KPI Grid: Revenue & Orders */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Revenue */}
-        <div className="bg-(--color-base-100) p-5 rounded-2xl border border-(--color-base-300) shadow-xs space-y-2">
-          <div className="flex justify-between items-center text-(--color-secondary)">
+        <div className="bg-[#072420] p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 space-y-2 hover:border-emerald-500/40 transition">
+          <div className="flex justify-between items-center text-[#8faea7]">
             <span className="text-xs font-bold uppercase tracking-wider">Total Revenue</span>
-            <div className="p-2 rounded-xl bg-emerald-100 text-emerald-700">
+            <div className="p-2 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
               <FaCoins size={18} />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black text-(--color-base-content)">
+            <span className="text-2xl font-black text-white">
               ₹{Number(revenue.totalRevenue || 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
             </span>
           </div>
-          <p className="text-[11px] text-(--color-secondary)">
+          <p className="text-[11px] text-[#8faea7]">
             From completed platform transactions
           </p>
         </div>
 
         {/* Today's Revenue */}
-        <div className="bg-(--color-base-100) p-5 rounded-2xl border border-(--color-base-300) shadow-xs space-y-2">
-          <div className="flex justify-between items-center text-(--color-secondary)">
+        <div className="bg-[#072420] p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 space-y-2 hover:border-indigo-500/40 transition">
+          <div className="flex justify-between items-center text-[#8faea7]">
             <span className="text-xs font-bold uppercase tracking-wider">Today's Revenue</span>
-            <div className="p-2 rounded-xl bg-indigo-100 text-indigo-700">
+            <div className="p-2 rounded-xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-400">
               <MdTrendingUp size={20} />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black text-(--color-base-content)">
+            <span className="text-2xl font-black text-white">
               ₹{Number(revenue.todayRevenue || 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
             </span>
           </div>
-          <p className="text-[11px] text-(--color-secondary)">
+          <p className="text-[11px] text-[#8faea7]">
             Earned today (since midnight)
           </p>
         </div>
@@ -206,20 +206,20 @@ const AdminOverview = ({ setActiveTab, setTabWithFilter }) => {
         {/* Total Orders */}
         <div
           onClick={() => navigateTab("orders", "all")}
-          className="bg-(--color-base-100) p-5 rounded-2xl border border-(--color-base-300) shadow-xs space-y-2 cursor-pointer hover:border-(--color-primary)/50 transition"
+          className="bg-[#072420] p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 space-y-2 cursor-pointer hover:border-blue-500/40 transition"
         >
-          <div className="flex justify-between items-center text-(--color-secondary)">
+          <div className="flex justify-between items-center text-[#8faea7]">
             <span className="text-xs font-bold uppercase tracking-wider">Total Orders</span>
-            <div className="p-2 rounded-xl bg-blue-100 text-blue-700">
+            <div className="p-2 rounded-xl bg-blue-500/15 border border-blue-500/30 text-blue-400">
               <FaShoppingCart size={18} />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black text-(--color-base-content)">
+            <span className="text-2xl font-black text-white">
               {orders.total || 0}
             </span>
           </div>
-          <p className="text-[11px] text-(--color-secondary)">
+          <p className="text-[11px] text-[#8faea7]">
             Lifetime orders placed
           </p>
         </div>
@@ -227,20 +227,20 @@ const AdminOverview = ({ setActiveTab, setTabWithFilter }) => {
         {/* Active Deliveries */}
         <div
           onClick={() => navigateTab("orders", "preparing")}
-          className="bg-(--color-base-100) p-5 rounded-2xl border border-(--color-base-300) shadow-xs space-y-2 cursor-pointer hover:border-amber-400 transition"
+          className="bg-[#072420] p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 space-y-2 cursor-pointer hover:border-amber-500/40 transition"
         >
-          <div className="flex justify-between items-center text-(--color-secondary)">
+          <div className="flex justify-between items-center text-[#8faea7]">
             <span className="text-xs font-bold uppercase tracking-wider">Active In-Flight</span>
-            <div className="p-2 rounded-xl bg-amber-100 text-amber-700">
+            <div className="p-2 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400">
               <MdDeliveryDining size={22} />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black text-amber-600">
+            <span className="text-2xl font-black text-amber-400">
               {orders.activeDeliveries || 0}
             </span>
           </div>
-          <p className="text-[11px] text-(--color-secondary)">
+          <p className="text-[11px] text-[#8faea7]">
             Accepted, preparing or out for delivery
           </p>
         </div>
@@ -249,199 +249,199 @@ const AdminOverview = ({ setActiveTab, setTabWithFilter }) => {
       {/* Ecosystem Breakdown Sections: Customers, Restaurants, Riders */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Card 1: Customer Ecosystem */}
-        <div className="bg-(--color-base-100) p-5 rounded-2xl border border-(--color-base-300) shadow-xs space-y-4">
+        <div className="bg-[#072420] p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 space-y-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2.5">
-              <div className="p-2 bg-purple-100 text-purple-700 rounded-xl">
+              <div className="p-2 bg-purple-500/15 border border-purple-500/30 text-purple-400 rounded-xl">
                 <FaUsers size={18} />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-(--color-base-content)">Customers</h3>
-                <p className="text-[11px] text-(--color-secondary)">Registered customer accounts</p>
+                <h3 className="text-sm font-bold text-white">Customers</h3>
+                <p className="text-[11px] text-[#8faea7]">Registered customer accounts</p>
               </div>
             </div>
             <button
               onClick={() => navigateTab("customers", "all")}
-              className="text-xs font-semibold text-(--color-primary) hover:underline flex items-center gap-1"
+              className="text-xs font-bold text-[#f97316] hover:underline flex items-center gap-1 cursor-pointer"
             >
               Manage <MdArrowForward size={14} />
             </button>
           </div>
 
-          <div className="space-y-2.5 border-t border-(--color-base-300) pt-3">
+          <div className="space-y-2 border-t border-teal-900/40 pt-3">
             <div
               onClick={() => navigateTab("customers", "all")}
-              className="flex justify-between text-xs items-center cursor-pointer hover:bg-(--color-base-200)/40 p-1.5 rounded-lg transition"
+              className="flex justify-between text-xs items-center cursor-pointer hover:bg-teal-900/30 p-2 rounded-xl transition"
             >
-              <span className="text-(--color-secondary)">Total Accounts</span>
-              <span className="font-bold text-(--color-base-content)">{customers.total}</span>
+              <span className="text-[#8faea7]">Total Accounts</span>
+              <span className="font-bold text-white">{customers.total}</span>
             </div>
             <div
               onClick={() => navigateTab("customers", "verified")}
-              className="flex justify-between text-xs items-center cursor-pointer hover:bg-emerald-50/60 p-1.5 rounded-lg transition"
+              className="flex justify-between text-xs items-center cursor-pointer hover:bg-emerald-500/10 p-2 rounded-xl transition"
             >
-              <span className="flex items-center gap-1.5 text-emerald-700 font-medium">
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Verified Active
+              <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
+                <span className="w-2 h-2 rounded-full bg-emerald-400"></span> Verified Active
               </span>
-              <span className="font-bold text-emerald-700">{customers.verified}</span>
+              <span className="font-bold text-emerald-400">{customers.verified}</span>
             </div>
             <div
               onClick={() => navigateTab("customers", "pending")}
-              className="flex justify-between text-xs items-center cursor-pointer hover:bg-amber-50/60 p-1.5 rounded-lg transition"
+              className="flex justify-between text-xs items-center cursor-pointer hover:bg-amber-500/10 p-2 rounded-xl transition"
             >
-              <span className="flex items-center gap-1.5 text-amber-700 font-medium">
-                <span className="w-2 h-2 rounded-full bg-amber-500"></span> Pending
+              <span className="flex items-center gap-1.5 text-amber-400 font-medium">
+                <span className="w-2 h-2 rounded-full bg-amber-400"></span> Pending
               </span>
-              <span className="font-bold text-amber-700">{customers.pending}</span>
+              <span className="font-bold text-amber-400">{customers.pending}</span>
             </div>
             <div
               onClick={() => navigateTab("customers", "suspended")}
-              className="flex justify-between text-xs items-center cursor-pointer hover:bg-rose-50/60 p-1.5 rounded-lg transition"
+              className="flex justify-between text-xs items-center cursor-pointer hover:bg-rose-500/10 p-2 rounded-xl transition"
             >
-              <span className="flex items-center gap-1.5 text-red-700 font-medium">
-                <span className="w-2 h-2 rounded-full bg-red-500"></span> Suspended
+              <span className="flex items-center gap-1.5 text-rose-400 font-medium">
+                <span className="w-2 h-2 rounded-full bg-rose-400"></span> Suspended
               </span>
-              <span className="font-bold text-red-700">{customers.suspended}</span>
+              <span className="font-bold text-rose-400">{customers.suspended}</span>
             </div>
           </div>
         </div>
 
         {/* Card 2: Restaurant Partners */}
-        <div className="bg-(--color-base-100) p-5 rounded-2xl border border-(--color-base-300) shadow-xs space-y-4">
+        <div className="bg-[#072420] p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 space-y-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2.5">
-              <div className="p-2 bg-orange-100 text-orange-700 rounded-xl">
+              <div className="p-2 bg-orange-500/15 border border-orange-500/30 text-orange-400 rounded-xl">
                 <MdRestaurant size={18} />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-(--color-base-content)">Restaurants</h3>
-                <p className="text-[11px] text-(--color-secondary)">Kitchen partners & listings</p>
+                <h3 className="text-sm font-bold text-white">Restaurants</h3>
+                <p className="text-[11px] text-[#8faea7]">Kitchen partners & listings</p>
               </div>
             </div>
             <button
               onClick={() => navigateTab("restaurants", "all")}
-              className="text-xs font-semibold text-(--color-primary) hover:underline flex items-center gap-1"
+              className="text-xs font-bold text-[#f97316] hover:underline flex items-center gap-1 cursor-pointer"
             >
               Manage <MdArrowForward size={14} />
             </button>
           </div>
 
-          <div className="space-y-2.5 border-t border-(--color-base-300) pt-3">
+          <div className="space-y-2 border-t border-teal-900/40 pt-3">
             <div
               onClick={() => navigateTab("restaurants", "all")}
-              className="flex justify-between text-xs items-center cursor-pointer hover:bg-(--color-base-200)/40 p-1.5 rounded-lg transition"
+              className="flex justify-between text-xs items-center cursor-pointer hover:bg-teal-900/30 p-2 rounded-xl transition"
             >
-              <span className="text-(--color-secondary)">Total Restaurants</span>
-              <span className="font-bold text-(--color-base-content)">{restaurants.total}</span>
+              <span className="text-[#8faea7]">Total Restaurants</span>
+              <span className="font-bold text-white">{restaurants.total}</span>
             </div>
             <div
               onClick={() => navigateTab("restaurants", "active")}
-              className="flex justify-between text-xs items-center cursor-pointer hover:bg-emerald-50/60 p-1.5 rounded-lg transition"
+              className="flex justify-between text-xs items-center cursor-pointer hover:bg-emerald-500/10 p-2 rounded-xl transition"
             >
-              <span className="flex items-center gap-1.5 text-emerald-700 font-medium">
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Active Verified
+              <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
+                <span className="w-2 h-2 rounded-full bg-emerald-400"></span> Active Verified
               </span>
-              <span className="font-bold text-emerald-700">{restaurants.active}</span>
+              <span className="font-bold text-emerald-400">{restaurants.active}</span>
             </div>
             <div
               onClick={() => navigateTab("restaurants", "inactive")}
-              className="flex justify-between text-xs items-center cursor-pointer hover:bg-amber-50/60 p-1.5 rounded-lg transition"
+              className="flex justify-between text-xs items-center cursor-pointer hover:bg-amber-500/10 p-2 rounded-xl transition"
             >
-              <span className="flex items-center gap-1.5 text-amber-700 font-medium">
-                <span className="w-2 h-2 rounded-full bg-amber-500"></span> Pending Approval
+              <span className="flex items-center gap-1.5 text-amber-400 font-medium">
+                <span className="w-2 h-2 rounded-full bg-amber-400"></span> Pending Approval
               </span>
-              <span className="font-bold text-amber-700">{restaurants.pendingApproval}</span>
+              <span className="font-bold text-amber-400">{restaurants.pendingApproval}</span>
             </div>
             <div
               onClick={() => navigateTab("restaurants", "blocked")}
-              className="flex justify-between text-xs items-center cursor-pointer hover:bg-rose-50/60 p-1.5 rounded-lg transition"
+              className="flex justify-between text-xs items-center cursor-pointer hover:bg-rose-500/10 p-2 rounded-xl transition"
             >
-              <span className="flex items-center gap-1.5 text-rose-700 font-medium">
-                <span className="w-2 h-2 rounded-full bg-rose-500"></span> Blocked
+              <span className="flex items-center gap-1.5 text-rose-400 font-medium">
+                <span className="w-2 h-2 rounded-full bg-rose-400"></span> Blocked
               </span>
-              <span className="font-bold text-rose-700">{restaurants.blocked}</span>
+              <span className="font-bold text-rose-400">{restaurants.blocked}</span>
             </div>
           </div>
         </div>
 
         {/* Card 3: Delivery Fleet (Riders) */}
-        <div className="bg-(--color-base-100) p-5 rounded-2xl border border-(--color-base-300) shadow-xs space-y-4">
+        <div className="bg-[#072420] p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 space-y-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2.5">
-              <div className="p-2 bg-teal-100 text-teal-700 rounded-xl">
+              <div className="p-2 bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 rounded-xl">
                 <FaMotorcycle size={18} />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-(--color-base-content)">Delivery Fleet</h3>
-                <p className="text-[11px] text-(--color-secondary)">Delivery riders & couriers</p>
+                <h3 className="text-sm font-bold text-white">Delivery Fleet</h3>
+                <p className="text-[11px] text-[#8faea7]">Delivery riders & couriers</p>
               </div>
             </div>
             <button
               onClick={() => navigateTab("riders", "all")}
-              className="text-xs font-semibold text-(--color-primary) hover:underline flex items-center gap-1"
+              className="text-xs font-bold text-[#f97316] hover:underline flex items-center gap-1 cursor-pointer"
             >
               Manage <MdArrowForward size={14} />
             </button>
           </div>
 
-          <div className="space-y-2.5 border-t border-(--color-base-300) pt-3">
+          <div className="space-y-2 border-t border-teal-900/40 pt-3">
             <div
               onClick={() => navigateTab("riders", "all")}
-              className="flex justify-between text-xs items-center cursor-pointer hover:bg-(--color-base-200)/40 p-1.5 rounded-lg transition"
+              className="flex justify-between text-xs items-center cursor-pointer hover:bg-teal-900/30 p-2 rounded-xl transition"
             >
-              <span className="text-(--color-secondary)">Total Riders</span>
-              <span className="font-bold text-(--color-base-content)">{riders.total}</span>
+              <span className="text-[#8faea7]">Total Riders</span>
+              <span className="font-bold text-white">{riders.total}</span>
             </div>
             <div
               onClick={() => navigateTab("riders", "active")}
-              className="flex justify-between text-xs items-center cursor-pointer hover:bg-emerald-50/60 p-1.5 rounded-lg transition"
+              className="flex justify-between text-xs items-center cursor-pointer hover:bg-emerald-500/10 p-2 rounded-xl transition"
             >
-              <span className="flex items-center gap-1.5 text-emerald-700 font-medium">
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Active Approved
+              <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
+                <span className="w-2 h-2 rounded-full bg-emerald-400"></span> Active Approved
               </span>
-              <span className="font-bold text-emerald-700">{riders.active}</span>
+              <span className="font-bold text-emerald-400">{riders.active}</span>
             </div>
             <div
               onClick={() => navigateTab("riders", "all")}
-              className="flex justify-between text-xs items-center cursor-pointer hover:bg-cyan-50/60 p-1.5 rounded-lg transition"
+              className="flex justify-between text-xs items-center cursor-pointer hover:bg-cyan-500/10 p-2 rounded-xl transition"
             >
-              <span className="flex items-center gap-1.5 text-cyan-700 font-medium">
-                <span className="w-2 h-2 rounded-full bg-cyan-500"></span> Online & Available
+              <span className="flex items-center gap-1.5 text-cyan-400 font-medium">
+                <span className="w-2 h-2 rounded-full bg-cyan-400"></span> Online & Available
               </span>
-              <span className="font-bold text-cyan-700">{riders.available}</span>
+              <span className="font-bold text-cyan-400">{riders.available}</span>
             </div>
             <div
               onClick={() => navigateTab("riders", "pending")}
-              className="flex justify-between text-xs items-center cursor-pointer hover:bg-amber-50/60 p-1.5 rounded-lg transition"
+              className="flex justify-between text-xs items-center cursor-pointer hover:bg-amber-500/10 p-2 rounded-xl transition"
             >
-              <span className="flex items-center gap-1.5 text-amber-700 font-medium">
-                <span className="w-2 h-2 rounded-full bg-amber-500"></span> Pending Verification
+              <span className="flex items-center gap-1.5 text-amber-400 font-medium">
+                <span className="w-2 h-2 rounded-full bg-amber-400"></span> Pending Verification
               </span>
-              <span className="font-bold text-amber-700">{riders.pendingApproval}</span>
+              <span className="font-bold text-amber-400">{riders.pendingApproval}</span>
             </div>
             <div
               onClick={() => navigateTab("riders", "blocked")}
-              className="flex justify-between text-xs items-center cursor-pointer hover:bg-rose-50/60 p-1.5 rounded-lg transition"
+              className="flex justify-between text-xs items-center cursor-pointer hover:bg-rose-500/10 p-2 rounded-xl transition"
             >
-              <span className="flex items-center gap-1.5 text-rose-700 font-medium">
-                <span className="w-2 h-2 rounded-full bg-rose-500"></span> Blocked
+              <span className="flex items-center gap-1.5 text-rose-400 font-medium">
+                <span className="w-2 h-2 rounded-full bg-rose-400"></span> Blocked
               </span>
-              <span className="font-bold text-rose-700">{riders.blocked}</span>
+              <span className="font-bold text-rose-400">{riders.blocked}</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Order Status Distribution Bar */}
-      <div className="bg-(--color-base-100) p-5 rounded-2xl border border-(--color-base-300) shadow-xs space-y-3">
+      <div className="bg-[#072420] p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 space-y-3">
         <div className="flex justify-between items-center">
-          <h3 className="text-sm font-bold text-(--color-base-content) flex items-center gap-2">
-            <MdOutlineReceiptLong className="text-(--color-primary)" size={18} />
+          <h3 className="text-sm font-bold text-white flex items-center gap-2">
+            <MdOutlineReceiptLong className="text-[#f97316]" size={18} />
             Orders Breakdown & Fulfillment
           </h3>
           <button
             onClick={() => navigateTab("orders", "all")}
-            className="text-xs font-semibold text-(--color-primary) hover:underline flex items-center gap-1"
+            className="text-xs font-bold text-[#f97316] hover:underline flex items-center gap-1 cursor-pointer"
           >
             All Orders <MdArrowForward size={14} />
           </button>
@@ -450,31 +450,31 @@ const AdminOverview = ({ setActiveTab, setTabWithFilter }) => {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
           <div
             onClick={() => navigateTab("orders", "all")}
-            className="bg-(--color-base-200) p-3 rounded-xl cursor-pointer hover:bg-(--color-base-300) transition"
+            className="bg-[#041916] border border-teal-800/60 p-3.5 rounded-xl cursor-pointer hover:bg-teal-900/30 transition"
           >
-            <p className="text-[11px] text-(--color-secondary) font-medium">Total Orders</p>
-            <p className="text-lg font-bold text-(--color-base-content) mt-0.5">{orders.total}</p>
+            <p className="text-[11px] text-[#8faea7] font-medium">Total Orders</p>
+            <p className="text-lg font-bold text-white mt-0.5">{orders.total}</p>
           </div>
           <div
             onClick={() => navigateTab("orders", "preparing")}
-            className="bg-amber-50 border border-amber-200 p-3 rounded-xl cursor-pointer hover:bg-amber-100 transition"
+            className="bg-[#041916] border border-amber-500/40 p-3.5 rounded-xl cursor-pointer hover:bg-amber-950/20 transition"
           >
-            <p className="text-[11px] text-amber-800 font-medium">Active In-Flight</p>
-            <p className="text-lg font-bold text-amber-900 mt-0.5">{orders.activeDeliveries}</p>
+            <p className="text-[11px] text-amber-400 font-medium">Active In-Flight</p>
+            <p className="text-lg font-bold text-amber-300 mt-0.5">{orders.activeDeliveries}</p>
           </div>
           <div
             onClick={() => navigateTab("orders", "delivered")}
-            className="bg-green-50 border border-green-200 p-3 rounded-xl cursor-pointer hover:bg-green-100 transition"
+            className="bg-[#041916] border border-emerald-500/40 p-3.5 rounded-xl cursor-pointer hover:bg-emerald-950/20 transition"
           >
-            <p className="text-[11px] text-green-800 font-medium">Successfully Delivered</p>
-            <p className="text-lg font-bold text-green-900 mt-0.5">{orders.delivered}</p>
+            <p className="text-[11px] text-emerald-400 font-medium">Successfully Delivered</p>
+            <p className="text-lg font-bold text-emerald-300 mt-0.5">{orders.delivered}</p>
           </div>
           <div
             onClick={() => navigateTab("orders", "cancelled")}
-            className="bg-rose-50 border border-rose-200 p-3 rounded-xl cursor-pointer hover:bg-rose-100 transition"
+            className="bg-[#041916] border border-rose-500/40 p-3.5 rounded-xl cursor-pointer hover:bg-rose-950/20 transition"
           >
-            <p className="text-[11px] text-rose-800 font-medium">Cancelled / Failed</p>
-            <p className="text-lg font-bold text-rose-900 mt-0.5">{orders.cancelled}</p>
+            <p className="text-[11px] text-rose-400 font-medium">Cancelled / Failed</p>
+            <p className="text-lg font-bold text-rose-300 mt-0.5">{orders.cancelled}</p>
           </div>
         </div>
       </div>

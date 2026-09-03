@@ -65,23 +65,21 @@ const RestaurantBankingDocument = () => {
 
   return (
     <>
-      <div className="bg-(--color-base-100) rounded-lg p-3">
-        {/* Header */}
-        <div className="flex justify-between items-center border-b border-(--color-secondary) pb-2 mb-2">
+      <div className="bg-[#072420] rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 p-5 space-y-4">
+        <div className="flex justify-between items-center border-b border-teal-900/60 pb-3">
           <div className="flex items-center gap-3">
-            <h3 className="w-full text-sm font-semibold text-(--color-primary)">
-              Banking & Documents
+            <h3 className="w-full text-sm font-bold text-white tracking-tight">
+              Banking & Legal Compliance Documents
             </h3>
           </div>
-
           {!editingBankingDocument ? (
             <div className="flex gap-3">
               <button
                 type="button"
                 onClick={() => setEditingBankingDocument(true)}
-                className="flex items-center gap-2 bg-(--color-primary) text-(--color-primary-content) px-2 py-0.5 rounded text-xs"
+                className="flex items-center gap-1.5 bg-[#041916] border border-teal-800/60 text-[#8faea7] hover:text-white hover:border-orange-500/60 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer"
               >
-                <MdEdit /> Edit
+                <MdEdit size={14} className="text-orange-400" /> Edit Documents
               </button>
             </div>
           ) : (
@@ -89,7 +87,7 @@ const RestaurantBankingDocument = () => {
               <button
                 type="button"
                 onClick={handleSaveBankingDocument}
-                className="flex items-center gap-2 bg-(--color-primary) text-(--color-primary-content) px-2 py-0.5 rounded text-xs"
+                className="flex items-center gap-1.5 bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-md shadow-orange-950/40 hover:opacity-95 transition cursor-pointer"
                 disabled={isLoading}
               >
                 {isLoading ? "Saving..." : "Save Changes"}
@@ -98,7 +96,7 @@ const RestaurantBankingDocument = () => {
               <button
                 type="button"
                 onClick={handleCancelBankingDocument}
-                className="flex items-center gap-2 bg-(--color-secondary) text-(--color-secondary-content) px-2 py-0.5 rounded text-xs"
+                className="flex items-center gap-1.5 bg-[#041916] border border-teal-800/60 text-[#8faea7] hover:text-white px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer"
                 disabled={isLoading}
               >
                 Cancel
@@ -108,10 +106,10 @@ const RestaurantBankingDocument = () => {
         </div>
 
         {/* Form */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 justify-center items-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Bank Name */}
           <div className="w-full">
-            <label className="text-xs font-semibold">Bank Name</label>
+            <label className="text-xs font-semibold text-[#8faea7] block mb-1">Bank Name</label>
 
             <input
               type="text"
@@ -123,18 +121,18 @@ const RestaurantBankingDocument = () => {
                   bankName: e.target.value,
                 })
               }
-              className={`w-full px-1.5 py-1 border border-(--color-secondary) ${
+              className={`w-full px-3 py-2 text-xs border border-teal-800/60 rounded-xl text-white ${
                 editingBankingDocument
-                  ? "bg-white"
-                  : "bg-(--color-base-100)"
-              } rounded`}
+                  ? "bg-[#041916] focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500"
+                  : "bg-[#041916]/50 opacity-80"
+              }`}
               disabled={!editingBankingDocument}
             />
           </div>
 
           {/* Account Number */}
           <div className="w-full">
-            <label className="text-xs font-semibold">Account Number</label>
+            <label className="text-xs font-semibold text-[#8faea7] block mb-1">Account Number</label>
 
             <input
               type="text"
@@ -146,18 +144,18 @@ const RestaurantBankingDocument = () => {
                   accountNumber: e.target.value,
                 })
               }
-              className={`w-full px-1.5 py-1 border border-(--color-secondary) ${
+              className={`w-full px-3 py-2 text-xs border border-teal-800/60 rounded-xl text-white ${
                 editingBankingDocument
-                  ? "bg-white"
-                  : "bg-(--color-base-100)"
-              } rounded`}
+                  ? "bg-[#041916] focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500"
+                  : "bg-[#041916]/50 opacity-80"
+              }`}
               disabled={!editingBankingDocument}
             />
           </div>
 
           {/* IFSC Code */}
           <div className="w-full">
-            <label className="text-xs font-semibold">IFSC Code</label>
+            <label className="text-xs font-semibold text-[#8faea7] block mb-1">IFSC Code</label>
 
             <input
               type="text"
@@ -169,19 +167,19 @@ const RestaurantBankingDocument = () => {
                   ifscCode: e.target.value,
                 })
               }
-              className={`w-full px-1.5 py-1 border border-(--color-secondary) ${
+              className={`w-full px-3 py-2 text-xs border border-teal-800/60 rounded-xl text-white ${
                 editingBankingDocument
-                  ? "bg-white"
-                  : "bg-(--color-base-100)"
-              } rounded`}
+                  ? "bg-[#041916] focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500"
+                  : "bg-[#041916]/50 opacity-80"
+              }`}
               disabled={!editingBankingDocument}
             />
           </div>
 
           {/* PAN Card */}
           <div className="w-full">
-            <label className="text-xs font-semibold">
-              Pan Card Number
+            <label className="text-xs font-semibold text-[#8faea7] block mb-1">
+              PAN Card Number
             </label>
 
             <input
@@ -194,18 +192,18 @@ const RestaurantBankingDocument = () => {
                   panCard: e.target.value,
                 })
               }
-              className={`w-full px-1.5 py-1 border border-(--color-secondary) ${
+              className={`w-full px-3 py-2 text-xs border border-teal-800/60 rounded-xl text-white ${
                 editingBankingDocument
-                  ? "bg-white"
-                  : "bg-(--color-base-100)"
-              } rounded`}
+                  ? "bg-[#041916] focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500"
+                  : "bg-[#041916]/50 opacity-80"
+              }`}
               disabled={!editingBankingDocument}
             />
           </div>
 
           {/* GST */}
           <div className="w-full">
-            <label className="text-xs font-semibold">GST Number</label>
+            <label className="text-xs font-semibold text-[#8faea7] block mb-1">GST Number</label>
 
             <input
               type="text"
@@ -217,18 +215,18 @@ const RestaurantBankingDocument = () => {
                   gstCertificate: e.target.value,
                 })
               }
-              className={`w-full px-1.5 py-1 border border-(--color-secondary) ${
+              className={`w-full px-3 py-2 text-xs border border-teal-800/60 rounded-xl text-white ${
                 editingBankingDocument
-                  ? "bg-white"
-                  : "bg-(--color-base-100)"
-              } rounded`}
+                  ? "bg-[#041916] focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500"
+                  : "bg-[#041916]/50 opacity-80"
+              }`}
               disabled={!editingBankingDocument}
             />
           </div>
 
           {/* FSSAI */}
           <div className="w-full">
-            <label className="text-xs font-semibold">FSSAI Code</label>
+            <label className="text-xs font-semibold text-[#8faea7] block mb-1">FSSAI License Code</label>
 
             <input
               type="text"
@@ -240,11 +238,11 @@ const RestaurantBankingDocument = () => {
                   fssaiCertificate: e.target.value,
                 })
               }
-              className={`w-full px-1.5 py-1 border border-(--color-secondary) ${
+              className={`w-full px-3 py-2 text-xs border border-teal-800/60 rounded-xl text-white ${
                 editingBankingDocument
-                  ? "bg-white"
-                  : "bg-(--color-base-100)"
-              } rounded`}
+                  ? "bg-[#041916] focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500"
+                  : "bg-[#041916]/50 opacity-80"
+              }`}
               disabled={!editingBankingDocument}
             />
           </div>

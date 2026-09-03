@@ -74,36 +74,39 @@ const CustomerSetting = () => {
 
   return (
     <>
-      <div className="overflow-y-auto h-full p-6 space-y-6">
-        <div className="bg-(--color-base-200) rounded-lg p-6">
-          <div className="flex justify-between items-center mb-4 ">
-            <h3 className="text-lg font-semibold">Profile Information</h3>
+      <div className="overflow-y-auto h-full p-4 sm:p-6 space-y-6 text-white max-h-[88vh]">
+        <div className="bg-[#072420] rounded-2xl p-5 sm:p-6 border border-teal-800/40 shadow-xl shadow-black/40">
+          <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6 pb-4 border-b border-teal-900/40">
+            <div>
+              <h3 className="text-lg font-bold text-white tracking-tight">Profile Information</h3>
+              <p className="text-xs text-[#8faea7] mt-0.5">Manage your personal information and security settings</p>
+            </div>
             {!editingProfile ? (
-              <div className="flex gap-3">
+              <div className="flex gap-2.5">
                 <button
-                  className="flex items-center gap-2 bg-(--color-primary) text-(--color-primary-content) px-3 py-1 rounded text-sm"
+                  className="bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-md shadow-orange-950/40 hover:opacity-95 cursor-pointer"
                   onClick={() => setEditingProfile(true)}
                 >
-                  Edit
+                  Edit Profile
                 </button>
                 <button
-                  className="flex items-center gap-2 bg-(--color-primary) text-(--color-primary-content) px-3 py-1 rounded text-sm"
+                  className="bg-[#041916] border border-teal-800/60 hover:bg-teal-900/30 text-white px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer"
                   onClick={() => setIsPasswordChangeModalOpen(true)}
                 >
-                  PasswordChange
+                  Change Password
                 </button>
               </div>
             ) : (
-              <div className="flex gap-3">
+              <div className="flex gap-2.5">
                 <button
-                  className="flex items-center gap-2 bg-(--color-secondary) text-(--color-secondary-content) px-3 py-1 rounded text-sm hover:bg-amber-700"
+                  className="bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-md shadow-orange-950/40 hover:opacity-95 disabled:opacity-50 cursor-pointer"
                   onClick={handelSaveProfile}
                   disabled={isloading}
                 >
-                  {isloading ? "Saving changes..." : "Save"}
+                  {isloading ? "Saving..." : "Save Changes"}
                 </button>
                 <button
-                  className="flex items-center gap-2 bg-(--color-secondary) text-(--color-secondary-content) px-3 py-1 rounded text-sm  hover:bg-amber-700"
+                  className="bg-[#041916] border border-teal-800/60 text-[#8faea7] hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition hover:bg-teal-900/30 disabled:opacity-50 cursor-pointer"
                   onClick={handleCancelProfile}
                   disabled={isloading}
                 >
@@ -112,24 +115,29 @@ const CustomerSetting = () => {
               </div>
             )}
           </div>
-          {/* camera and edit profile */}
+
+          {/* Camera and Edit Profile */}
           <div>
-            <div className="flex items-center gap-6 p-3">
-              <div className="relative">
-                <div className="w-36 h-36 ">
-                  <img
-                    src={profilePicPreview || user?.photo?.url}
-                    alt=""
-                    className="w-full h-full rounded-full object-cover border-2 border-(--color-primary)"
-                  />
+            <div className="flex flex-col md:flex-row items-center md:items-start gap-6 p-2">
+              <div className="relative shrink-0">
+                <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-orange-500/50 bg-[#041916] flex items-center justify-center text-3xl font-bold text-orange-400">
+                  {profilePicPreview || user?.photo?.url ? (
+                    <img
+                      src={profilePicPreview || user?.photo?.url}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span>{user?.fullName?.charAt(0)?.toUpperCase() || "C"}</span>
+                  )}
                 </div>
                 {editingProfile && (
                   <div
-                    className="absolute cursor-pointer right-3 bottom-3.5 border rounded-2xl p-1 bg-(--color-base-200)"
+                    className="absolute cursor-pointer right-1 bottom-1 border border-teal-700/60 rounded-full p-2 bg-[#041916] text-orange-400 hover:text-white hover:bg-teal-900/50 shadow-lg transition"
                     title="Change Photo"
                   >
                     <label htmlFor="profilePic" className="cursor-pointer">
-                      <MdLinkedCamera className="text-xl" />
+                      <MdLinkedCamera className="text-lg" />
                     </label>
                     <input
                       type="file"
@@ -141,55 +149,54 @@ const CustomerSetting = () => {
                   </div>
                 )}
               </div>
-              {/* editing names */}
-              <div className=" space-y-4 w-full">
-                <div className="grid grid-cols-1 gap-3 justify-center items-center">
+
+              {/* Editing Fields */}
+              <div className="space-y-4 w-full flex-1">
+                <div className="grid grid-cols-1 gap-4">
                   {/* fullName */}
-                  <div className="flex gap-2 items-center mt-3">
+                  <div>
                     <label
-                      htmlFor=""
-                      className="block text-sm font-semibold mb-2"
+                      className="block text-xs font-semibold text-[#8faea7] mb-1.5"
                     >
-                      fullName
+                      Full Name
                     </label>
                     <input
                       type="text"
                       onChange={handleInputData}
-                      className={`w-full px-3 py-2 border ${editingProfile ? "border-(--color-secondary)" : "border-gray-300"} rounded col-span-4`}
+                      className="w-full px-3.5 py-2 text-xs border border-teal-800/60 bg-[#041916] text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                       name="fullName"
                       value={formData.fullName}
                       disabled={!editingProfile}
                     />
                   </div>
+
                   {/* email */}
-                  <div className="flex gap-2 items-center mt-3">
+                  <div>
                     <label
-                      htmlFor=""
-                      className="block text-sm font-semibold mb-2"
+                      className="block text-xs font-semibold text-[#8faea7] mb-1.5"
                     >
-                      email
+                      Email Address (Locked)
                     </label>
                     <input
                       type="email"
-                      onChange={handleInputData}
-                      className={`w-full px-3 py-2 border ${editingProfile ? "border-(--color-secondary) text-(--color-secondary) disabled:bg-(--color-secondary)/50e cursor-not-allowed" : "border-gray-300"} rounded col-span-4`}
+                      className="w-full px-3.5 py-2 text-xs border border-teal-900/60 bg-[#041916]/60 text-[#8faea7] rounded-xl cursor-not-allowed"
                       name="email"
                       value={formData.email}
                       disabled
                     />
                   </div>
+
                   {/* phone */}
-                  <div className="flex gap-2 items-center mt-3">
+                  <div>
                     <label
-                      htmlFor=""
-                      className="block text-sm font-semibold mb-2"
+                      className="block text-xs font-semibold text-[#8faea7] mb-1.5"
                     >
-                      phone
+                      Phone Number
                     </label>
                     <input
                       type="number"
                       onChange={handleInputData}
-                      className={`w-full px-3 py-2 border ${editingProfile ? "border-(--color-secondary)" : "border-gray-300"} rounded col-span-4`}
+                      className="w-full px-3.5 py-2 text-xs border border-teal-800/60 bg-[#041916] text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                       name="phone"
                       value={formData.phone}
                       disabled={!editingProfile}
@@ -203,8 +210,9 @@ const CustomerSetting = () => {
       </div>
       {isPasswordChangeModalOpen && (
         <PasswordChangeModal
-        open={isPasswordChangeModalOpen}
-        onClose={()=>setIsPasswordChangeModalOpen(false)}/>
+          open={isPasswordChangeModalOpen}
+          onClose={() => setIsPasswordChangeModalOpen(false)}
+        />
       )}
     </>
   );

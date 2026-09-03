@@ -64,19 +64,19 @@ const PersonalInformation = () => {
   return (
     <>
       {/* User Profile Section */}
-      <div className="bg-(--color-base-100) rounded-lg p-3 flex items-center gap-3">
-        <div className="relative">
-          <div className="w-26 h-26">
+      <div className="bg-[#072420] rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 p-5 flex flex-col md:flex-row items-start md:items-center gap-6">
+        <div className="relative shrink-0">
+          <div className="w-24 h-24 rounded-2xl overflow-hidden border-2 border-orange-500/80 shadow-md">
             <img
-              src={profilePicPreview || user?.photo.url}
+              src={profilePicPreview || user?.photo?.url}
               alt="Profile"
-              className="w-full h-full rounded-xl object-cover border-2 border-(--color-primary)"
+              className="w-full h-full object-cover"
             />
           </div>
 
           {editingProfile && (
             <div
-              className="absolute cursor-pointer bottom-0.5 right-0.5 p-1.5 rounded-ee-xl w-fit bg-(--color-base-100)"
+              className="absolute cursor-pointer bottom-0 right-0 p-1.5 rounded-xl bg-black/80 text-orange-400 border border-teal-800/60 hover:text-white transition"
               title="Change Photo"
             >
               <label htmlFor="profilePic" className="cursor-pointer">
@@ -93,38 +93,38 @@ const PersonalInformation = () => {
             </div>
           )}
         </div>
-        <div className="w-full">
-          <div className="flex justify-between items-center mb-4 border-b border-(--color-secondary) pb-2">
-            <h3 className="text-sm font-semibold text-(--color-primary)">
-              Profile Information
+        <div className="w-full space-y-4">
+          <div className="flex flex-wrap justify-between items-center border-b border-teal-900/60 pb-3 gap-2">
+            <h3 className="text-sm font-bold text-white tracking-tight">
+              Owner Profile & Account Information
             </h3>
             {!editingProfile ? (
-              <div className="flex gap-3">
+              <div className="flex gap-2">
                 <button
                   onClick={() => setEditingProfile(true)}
-                  className="flex items-center gap-2 bg-(--color-primary) text-(--color-primary-content) px-2 py-0.5 rounded text-xs"
+                  className="flex items-center gap-1.5 bg-[#041916] border border-teal-800/60 text-[#8faea7] hover:text-white hover:border-orange-500/60 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer"
                 >
-                  <MdEdit /> Edit
+                  <MdEdit size={14} className="text-orange-400" /> Edit Profile
                 </button>
                 <button
                   onClick={() => setIsPasswordChangeModalOpen(true)}
-                  className="flex items-center gap-2 border border-(--color-primary) text-(--color-primary) px-2 py-0.5 rounded text-xs hover:bg-(--color-primary) hover:text-(--color-primary-content)"
+                  className="flex items-center gap-1.5 bg-[#041916] border border-teal-800/60 text-orange-400 hover:text-orange-300 hover:border-orange-500/60 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer"
                 >
-                  <MdOutlineLockReset /> Change Password
+                  <MdOutlineLockReset size={14} /> Change Password
                 </button>
               </div>
             ) : (
               <div className="flex gap-2 justify-end">
                 <button
                   onClick={handleSaveProfile}
-                  className="flex items-center gap-2 bg-(--color-primary) text-(--color-primary-content) px-2 py-0.5 rounded text-xs"
+                  className="flex items-center gap-1.5 bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-md shadow-orange-950/40 hover:opacity-95 transition cursor-pointer"
                   disabled={isLoading}
                 >
                   {isLoading ? "Saving..." : "Save Changes"}
                 </button>
                 <button
                   onClick={handleCancelProfile}
-                  className="flex items-center gap-2 bg-(--color-secondary) text-(--color-secondary-content) px-2 py-0.5 rounded text-xs"
+                  className="flex items-center gap-1.5 bg-[#041916] border border-teal-800/60 text-[#8faea7] hover:text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer"
                   disabled={isLoading}
                 >
                   Cancel
@@ -133,45 +133,49 @@ const PersonalInformation = () => {
             )}
           </div>
 
-          <div className="flex items-center gap-6">
-            <div className="space-y-4 w-full">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="w-full ">
-                  <label className="text-xs font-semibold">Full Name</label>
-                  <input
-                    type="text"
-                    name="fullName"
-                    value={profileFormData.fullName}
-                    onChange={handleProfileChange}
-                    className={`w-full px-1.5 py-1 border border-(--color-secondary) ${editingProfile ? "bg-white" : "bg-(--color-base-100)"} rounded`}
-                    disabled={!editingProfile}
-                  />
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="w-full">
+              <label className="text-xs font-semibold text-[#8faea7] block mb-1">Full Name</label>
+              <input
+                type="text"
+                name="fullName"
+                value={profileFormData.fullName}
+                onChange={handleProfileChange}
+                className={`w-full px-3 py-2 text-xs border border-teal-800/60 rounded-xl text-white ${
+                  editingProfile
+                    ? "bg-[#041916] focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500"
+                    : "bg-[#041916]/50 opacity-80"
+                }`}
+                disabled={!editingProfile}
+              />
+            </div>
 
-                <div className="w-full">
-                  <label className="text-xs font-semibold">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={profileFormData.email}
-                    onChange={handleProfileChange}
-                    className={`w-full px-1.5 py-1 border border-(--color-secondary) disabled:bg-(--color-base-100) cursor-not-allowed  rounded`}
-                    disabled
-                  />
-                </div>
+            <div className="w-full">
+              <label className="text-xs font-semibold text-[#8faea7] block mb-1">Email (Primary)</label>
+              <input
+                type="email"
+                name="email"
+                value={profileFormData.email}
+                onChange={handleProfileChange}
+                className="w-full px-3 py-2 text-xs border border-teal-800/60 rounded-xl text-white bg-[#041916]/50 opacity-60 cursor-not-allowed"
+                disabled
+              />
+            </div>
 
-                <div className="w-full">
-                  <label className="text-xs font-semibold">Phone</label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={profileFormData.phone}
-                    onChange={handleProfileChange}
-                    className={`w-full px-1.5 py-1 border border-(--color-secondary) ${editingProfile ? "bg-white" : "bg-(--color-base-100)"} rounded`}
-                    disabled={!editingProfile}
-                  />
-                </div>
-              </div>
+            <div className="w-full">
+              <label className="text-xs font-semibold text-[#8faea7] block mb-1">Phone Number</label>
+              <input
+                type="tel"
+                name="phone"
+                value={profileFormData.phone}
+                onChange={handleProfileChange}
+                className={`w-full px-3 py-2 text-xs border border-teal-800/60 rounded-xl text-white ${
+                  editingProfile
+                    ? "bg-[#041916] focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500"
+                    : "bg-[#041916]/50 opacity-80"
+                }`}
+                disabled={!editingProfile}
+              />
             </div>
           </div>
         </div>

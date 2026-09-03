@@ -17,16 +17,16 @@ const AdminDashboard = () => {
 
   if (!isLogin || role !== "admin") {
     return (
-      <div className="min-h-screen bg-(--color-base-200) flex flex-col items-center justify-center p-4">
-        <div className="bg-(--color-base-100) p-8 rounded-2xl border border-(--color-base-300) shadow-lg text-center max-w-md space-y-4">
-          <h1 className="text-xl font-bold text-(--color-base-content)">
+      <div className="min-h-screen bg-[#061d19] flex flex-col items-center justify-center p-4">
+        <div className="bg-[#072420] p-8 rounded-2xl border border-teal-800/50 shadow-2xl text-center max-w-md space-y-4">
+          <h1 className="text-xl font-bold text-white">
             Access Denied
           </h1>
-          <p className="text-xs text-(--color-secondary)">
+          <p className="text-xs text-[#8faea7]">
             Please log in as an Admin to access this dashboard.
           </p>
           <button
-            className="px-5 py-2.5 bg-(--color-primary) text-(--color-primary-content) text-xs font-semibold rounded-xl hover:opacity-90 transition"
+            className="px-5 py-2.5 bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white text-xs font-bold rounded-xl shadow-md shadow-orange-950/40 hover:opacity-95 transition cursor-pointer"
             onClick={() => navigate("/login")}
           >
             Go to Login
@@ -51,9 +51,9 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-(--color-base-200) flex">
+    <div className="min-h-screen bg-[#061d19] text-white flex">
       {/* Desktop Sidebar */}
-      <aside className="w-64 shrink-0 bg-(--color-base-100) border-r border-(--color-base-300) p-4 hidden md:block">
+      <aside className="w-64 shrink-0 bg-[#072420]/95 backdrop-blur-md border-r border-teal-900/40 p-4 hidden md:block">
         <AdminSidebar
           activeTab={activeTab}
           setActiveTab={(tab) => handleTabChange(tab, "all")}
@@ -61,17 +61,17 @@ const AdminDashboard = () => {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 min-w-0 bg-(--color-base-200) p-3 md:p-6 overflow-y-auto">
+      <main className="flex-1 min-w-0 bg-[#061d19] p-3 md:p-6 overflow-y-auto">
         {/* Mobile Tab Navigation */}
-        <div className="md:hidden flex overflow-x-auto gap-2 p-3 bg-(--color-base-100) border-b border-(--color-base-300) rounded-xl mb-4 scrollbar-thin">
+        <div className="md:hidden flex overflow-x-auto gap-2 p-2 bg-[#072420] border border-teal-800/40 rounded-2xl mb-4 scrollbar-none">
           {mobileTabs.map((tab) => (
             <button
               key={tab.value}
               onClick={() => handleTabChange(tab.value, "all")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition ${
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
                 activeTab === tab.value
-                  ? "bg-(--color-primary) text-(--color-primary-content)"
-                  : "bg-(--color-base-200) text-(--color-base-content)"
+                  ? "bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white shadow-sm shadow-orange-950/40"
+                  : "bg-[#041916] text-[#8faea7] hover:text-white border border-teal-800/40"
               }`}
             >
               {tab.name}

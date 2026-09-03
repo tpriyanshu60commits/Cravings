@@ -5,17 +5,12 @@ import { IoReceiptOutline, IoSettingsOutline, IoPersonOutline } from "react-icon
 const CustomerSidebar = ({ activeTab, setActiveTab }) => {
   const { user } = useAuth();
 
-  const mainTabs = [
-    { name: "Overview", value: "overview", icon: <MdDashboard /> },
-    { name: "My Orders", value: "orders", icon: <IoReceiptOutline /> },
-    { name: "Address Book", value: "address-book", icon: <MdOutlineLocationOn /> },
+  const sidebarTabs = [
+    { name: "Overview", value: "overview", icon: <MdDashboard size={18} /> },
+    { name: "My Orders", value: "orders", icon: <IoReceiptOutline size={18} /> },
+    { name: "Address Book", value: "address-book", icon: <MdOutlineLocationOn size={18} /> },
+    { name: "Settings", value: "settings", icon: <IoSettingsOutline size={18} /> },
   ];
-
-  const settingsTab = {
-    name: "Settings",
-    value: "settings",
-    icon: <IoSettingsOutline />,
-  };
 
   const renderTab = (tab) => {
     const isActive = activeTab === tab.value;
@@ -23,42 +18,40 @@ const CustomerSidebar = ({ activeTab, setActiveTab }) => {
       <li
         key={tab.value}
         onClick={() => setActiveTab(tab.value)}
-        className={`cursor-pointer px-3.5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-3 transition ${
+        className={`cursor-pointer px-4 py-3 rounded-2xl flex items-center gap-3 text-xs font-semibold transition-all duration-200 ${
           isActive
-            ? "bg-(--color-primary) text-(--color-primary-content) shadow-xs"
-            : "text-(--color-base-content) hover:bg-(--color-base-200)"
+            ? "bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white shadow-md shadow-orange-950/40"
+            : "text-[#8faea7] hover:text-white hover:bg-teal-900/30"
         }`}
       >
-        <span className="text-base">{tab.icon}</span>
+        <span className={isActive ? "text-white" : "text-[#ea580c]"}>
+          {tab.icon}
+        </span>
         <span>{tab.name}</span>
       </li>
     );
   };
 
   return (
-    <div className="h-full flex flex-col justify-between">
-      <div className="space-y-6">
-        {/* User Mini Profile Card */}
-        <div className="p-3 bg-(--color-base-200) rounded-2xl flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-(--color-primary)/10 text-(--color-primary) flex items-center justify-center font-bold text-sm shrink-0">
-            {user?.fullName?.charAt(0)?.toUpperCase() || <IoPersonOutline />}
-          </div>
-          <div className="min-w-0 flex-1">
-            <h4 className="text-xs font-bold text-(--color-base-content) truncate">
-              {user?.fullName || "Customer"}
-            </h4>
-            <p className="text-[10px] text-(--color-secondary) truncate">
-              {user?.email || "customer@cravings.com"}
-            </p>
-          </div>
+    <div className="h-full flex flex-col select-none space-y-6">
+      {/* User Mini Profile Card */}
+      <div className="p-3 bg-[#041916] rounded-2xl border border-teal-800/60 flex items-center gap-3 shadow-inner">
+        <div className="w-10 h-10 rounded-xl bg-orange-500/15 border border-orange-500/30 text-orange-400 flex items-center justify-center font-bold text-sm shrink-0">
+          {user?.fullName?.charAt(0)?.toUpperCase() || <IoPersonOutline />}
         </div>
-
-        {/* Navigation list */}
-        <ul className="space-y-1.5">{mainTabs.map((tab) => renderTab(tab))}</ul>
+        <div className="min-w-0 flex-1">
+          <h4 className="text-xs font-bold text-white truncate">
+            {user?.fullName || "Customer"}
+          </h4>
+          <p className="text-[10px] text-[#8faea7] truncate">
+            {user?.email || "customer@cravings.com"}
+          </p>
+        </div>
       </div>
 
-      <ul className="space-y-1.5 border-t border-(--color-base-300) pt-3">
-        {renderTab(settingsTab)}
+      {/* Navigation list */}
+      <ul className="space-y-1.5">
+        {sidebarTabs.map((tab) => renderTab(tab))}
       </ul>
     </div>
   );

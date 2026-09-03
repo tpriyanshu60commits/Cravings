@@ -83,41 +83,45 @@ const RestaurantSettings = () => {
 
   return (
     <>
-      <div className=" h-full flex flex-col">
+      <div className="h-full flex flex-col space-y-4">
         {isLoadingRestaurant ? (
           <Loader height="100%" width="100%" />
         ) : (
           <>
-            <div className="border-b border-(--color-secondary)/50 flex justify-between mb-2 w-full">
-              <div className="flex gap-3">
+            <div className="bg-[#072420] border border-teal-800/40 p-3 rounded-2xl flex flex-wrap justify-between items-center gap-3 shadow-xl shadow-black/40">
+              <div className="flex gap-2">
                 {Tabs.map((tab, idx) => (
-                  <div
+                  <button
                     key={idx}
-                    className={`p-2 uppercase cursor-pointer ${activeTab === tab.id ? "text-(--color-primary) border-b-3 border-(--color-primary)" : ""}`}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition cursor-pointer ${
+                      activeTab === tab.id
+                        ? "bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white shadow-md shadow-orange-950/40"
+                        : "text-[#8faea7] hover:text-white hover:bg-teal-900/30"
+                    }`}
                     onClick={() => setActiveTab(tab.id)}
                   >
                     {tab.label}
-                  </div>
+                  </button>
                 ))}
               </div>
-              <div className="flex items-center gap-3">
-                <label className="w-22 text-xs font-semibold">
+              <div className="flex items-center gap-2.5 bg-[#041916] border border-teal-800/60 px-3.5 py-2 rounded-xl">
+                <label className="text-xs font-semibold text-white select-none">
                   Currently Open
                 </label>
                 {isLoadingRestaurantOpen || isLoadingRestaurant ? (
-                  <RiLoader4Fill className="animate-spin" />
+                  <RiLoader4Fill className="animate-spin text-[#ea580c]" />
                 ) : (
                   <input
                     type="checkbox"
                     name="isOpen"
                     checked={isRestaurantOpen}
                     onChange={handleRestaurantOpen}
-                    className=" w-4 h-4 accent-(--color-primary)"
+                    className="w-4 h-4 accent-[#ea580c] cursor-pointer rounded"
                   />
                 )}
               </div>
             </div>
-            <div className="h-full rounded-lg bg-(--color-base-200) p-2">
+            <div className="h-full rounded-2xl bg-transparent space-y-4">
               {activeTab === "information" && <Information />}
               {activeTab === "coreDetails" && <CoreDetails />}
               {activeTab === "photos" && <RestaurantPhotos />}

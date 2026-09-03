@@ -15,17 +15,17 @@ import {
 import { FaShoppingCart, FaMotorcycle } from "react-icons/fa";
 
 const statusBadges = {
-  pending: { label: "Pending", bg: "bg-amber-100 text-amber-800 border-amber-300" },
-  accepted: { label: "Accepted", bg: "bg-blue-100 text-blue-800 border-blue-300" },
-  preparing: { label: "Preparing", bg: "bg-purple-100 text-purple-800 border-purple-300" },
-  ready: { label: "Food Ready", bg: "bg-indigo-100 text-indigo-800 border-indigo-300" },
-  pickedUp: { label: "Picked Up", bg: "bg-cyan-100 text-cyan-800 border-cyan-300" },
-  outForDelivery: { label: "Out for Delivery", bg: "bg-teal-100 text-teal-800 border-teal-300" },
-  delivered: { label: "Delivered", bg: "bg-green-100 text-green-800 border-green-300" },
-  cancelled: { label: "Cancelled", bg: "bg-red-100 text-red-800 border-red-300" },
-  failed: { label: "Failed", bg: "bg-rose-100 text-rose-800 border-rose-300" },
-  rejected: { label: "Rejected", bg: "bg-rose-100 text-rose-800 border-rose-300" },
-  undeliverable: { label: "Undeliverable", bg: "bg-orange-100 text-orange-800 border-orange-300" },
+  pending: { label: "Pending", bg: "bg-amber-500/15 text-amber-300 border-amber-500/30" },
+  accepted: { label: "Accepted", bg: "bg-blue-500/15 text-blue-300 border-blue-500/30" },
+  preparing: { label: "Preparing", bg: "bg-purple-500/15 text-purple-300 border-purple-500/30" },
+  ready: { label: "Food Ready", bg: "bg-indigo-500/15 text-indigo-300 border-indigo-500/30" },
+  pickedUp: { label: "Picked Up", bg: "bg-cyan-500/15 text-cyan-300 border-cyan-500/30" },
+  outForDelivery: { label: "Out for Delivery", bg: "bg-teal-500/15 text-teal-300 border-teal-500/30" },
+  delivered: { label: "Delivered", bg: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30" },
+  cancelled: { label: "Cancelled", bg: "bg-rose-500/15 text-rose-300 border-rose-500/30" },
+  failed: { label: "Failed", bg: "bg-rose-500/15 text-rose-300 border-rose-500/30" },
+  rejected: { label: "Rejected", bg: "bg-rose-500/15 text-rose-300 border-rose-500/30" },
+  undeliverable: { label: "Undeliverable", bg: "bg-orange-500/15 text-orange-300 border-orange-500/30" },
 };
 
 const AdminOrders = ({ initialFilter = "all" }) => {
@@ -190,15 +190,15 @@ const AdminOrders = ({ initialFilter = "all" }) => {
   if (isLoading) return <Loader height="70vh" width="100%" />;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-white">
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-(--color-base-100) p-5 rounded-2xl border border-(--color-base-300) shadow-xs">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-[#072420] p-4 sm:p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40">
         <div>
-          <h1 className="text-xl font-bold text-(--color-base-content) flex items-center gap-2">
-            <FaShoppingCart className="text-(--color-primary)" size={22} />
+          <h1 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2 tracking-tight">
+            <FaShoppingCart className="text-[#f97316]" size={22} />
             Platform Orders & Dispatch
           </h1>
-          <p className="text-xs text-(--color-secondary) mt-0.5">
+          <p className="text-xs text-[#8faea7] mt-0.5">
             Real-time platform-wide order monitor, manual courier dispatch, and status controls
           </p>
         </div>
@@ -208,19 +208,19 @@ const AdminOrders = ({ initialFilter = "all" }) => {
           <div className="relative flex-1 md:w-64">
             <MdSearch
               size={18}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-secondary)"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-[#537770]"
             />
             <input
               type="text"
               placeholder="Search by Order ID, customer, restaurant..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 text-xs bg-(--color-base-200) border border-(--color-base-300) rounded-xl focus:outline-none focus:ring-2 focus:ring-(--color-primary) text-(--color-base-content)"
+              className="w-full pl-9 pr-3 py-2 text-xs bg-[#041916] border border-teal-800/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 text-white placeholder-[#537770] transition-colors"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#8faea7] hover:text-white cursor-pointer"
               >
                 <MdClose size={14} />
               </button>
@@ -231,12 +231,12 @@ const AdminOrders = ({ initialFilter = "all" }) => {
           <button
             onClick={() => fetchOrders(true)}
             disabled={isRefreshing}
-            className="p-2.5 rounded-xl border border-(--color-base-300) bg-(--color-base-200) hover:bg-(--color-base-300) text-(--color-base-content) transition flex items-center gap-1.5 text-xs font-semibold shrink-0"
+            className="p-2.5 rounded-xl border border-teal-800/60 bg-[#041916] hover:bg-teal-900/30 text-white transition flex items-center gap-1.5 text-xs font-semibold shrink-0 cursor-pointer"
             title="Refresh Orders"
           >
             <MdRefresh
               size={18}
-              className={isRefreshing ? "animate-spin text-(--color-primary)" : ""}
+              className={isRefreshing ? "animate-spin text-[#f97316]" : ""}
             />
             <span className="hidden sm:inline">Refresh</span>
           </button>
@@ -244,27 +244,27 @@ const AdminOrders = ({ initialFilter = "all" }) => {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex overflow-x-auto gap-2 pb-1 scrollbar-thin">
+      <div className="flex overflow-x-auto gap-2 pb-1 scrollbar-none">
         {filterTabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setSelectedStatusTab(tab.key)}
-            className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition flex items-center gap-2 border ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition flex items-center gap-2 cursor-pointer ${
               selectedStatusTab === tab.key
-                ? "bg-(--color-primary) text-(--color-primary-content) border-(--color-primary) shadow-xs"
+                ? "bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white shadow-md shadow-orange-950/40"
                 : tab.highlight
-                ? "bg-amber-100 text-amber-900 border-amber-300 hover:bg-amber-200"
-                : "bg-(--color-base-100) text-(--color-base-content) border-(--color-base-300) hover:bg-(--color-base-200)"
+                ? "bg-amber-500/15 text-amber-300 border border-amber-500/30 hover:bg-amber-500/25"
+                : "bg-[#041916] text-[#8faea7] hover:text-white border border-teal-800/60 hover:bg-teal-900/30"
             }`}
           >
             <span>{tab.label}</span>
             <span
               className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
                 selectedStatusTab === tab.key
-                  ? "bg-white/20 text-(--color-primary-content)"
+                  ? "bg-white/20 text-white"
                   : tab.highlight
                   ? "bg-amber-500 text-white"
-                  : "bg-(--color-base-300) text-(--color-base-content)"
+                  : "bg-teal-900/60 text-white"
               }`}
             >
               {tab.count}
@@ -275,39 +275,135 @@ const AdminOrders = ({ initialFilter = "all" }) => {
 
       {/* Orders Table */}
       {filteredOrders.length === 0 ? (
-        <div className="bg-(--color-base-100) rounded-2xl border border-(--color-base-300) p-12 text-center space-y-3">
-          <div className="w-16 h-16 rounded-full bg-(--color-base-200) flex items-center justify-center mx-auto text-(--color-secondary)">
+        <div className="bg-[#072420] rounded-2xl border border-dashed border-teal-800/60 p-12 text-center space-y-3 shadow-xl shadow-black/40">
+          <div className="w-16 h-16 rounded-full bg-orange-500/15 border border-orange-500/30 text-orange-400 flex items-center justify-center mx-auto">
             <MdOutlineReceiptLong size={32} />
           </div>
-          <h3 className="text-sm font-bold text-(--color-base-content)">
+          <h3 className="text-sm font-bold text-white">
             No orders found
           </h3>
-          <p className="text-xs text-(--color-secondary) max-w-sm mx-auto">
+          <p className="text-xs text-[#8faea7] max-w-sm mx-auto">
             {searchQuery
               ? `No orders matching "${searchQuery}".`
               : `There are currently no orders in the selected "${selectedStatusTab}" status.`}
           </p>
         </div>
       ) : (
-        <div className="bg-(--color-base-100) rounded-2xl border border-(--color-base-300) shadow-xs overflow-hidden">
-          <div className="overflow-x-auto">
+        <div className="bg-[#072420] rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 overflow-hidden">
+          {/* Mobile Card View */}
+          <div className="md:hidden p-4 space-y-3">
+            {filteredOrders.map((order) => {
+              const badge = statusBadges[order.orderStatus] || {
+                label: order.orderStatus,
+                bg: "bg-teal-900/30 text-[#8faea7] border border-teal-800/40",
+              };
+              const customer = order.customerId?.customerId;
+              const restaurant = order.restaurantId;
+              const rider = order.riderId?.riderId;
+
+              return (
+                <div
+                  key={order._id}
+                  className="bg-[#041916] p-4 rounded-xl border border-teal-800/60 space-y-3"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <div>
+                      <p className="font-mono font-bold text-xs text-white">
+                        #{order._id.slice(-6).toUpperCase()}
+                      </p>
+                      <p className="text-[10px] text-[#8faea7] flex items-center gap-1 mt-0.5">
+                        <MdAccessTime size={11} />
+                        {order.createdAt
+                          ? new Date(order.createdAt).toLocaleString("en-IN", {
+                              dateStyle: "short",
+                              timeStyle: "short",
+                            })
+                          : "N/A"}
+                      </p>
+                    </div>
+                    <span
+                      className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold border ${badge.bg}`}
+                    >
+                      {badge.label}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-teal-900/40">
+                    <div>
+                      <p className="text-[10px] text-[#8faea7]">Restaurant</p>
+                      <p className="font-bold text-white truncate flex items-center gap-1">
+                        <MdStore size={12} className="text-[#f97316] shrink-0" />
+                        {restaurant?.restaurantName || "Restaurant"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-[#8faea7]">Customer</p>
+                      <p className="font-semibold text-white truncate">
+                        {order.deliveryAddress?.name || customer?.fullName || "Customer"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-[#8faea7]">Assigned Courier</p>
+                      {rider ? (
+                        <p className="text-xs text-emerald-300 font-semibold truncate flex items-center gap-1">
+                          <FaMotorcycle size={11} /> {rider.fullName}
+                        </p>
+                      ) : (
+                        <p className="text-[11px] text-amber-400 italic">Unassigned</p>
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-[#8faea7]">Amount</p>
+                      <p className="font-bold text-white">
+                        ₹{order.billDetails?.finalAmount?.toFixed(2) || "0.00"}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Action */}
+                  <div className="flex items-center justify-between pt-2 border-t border-teal-900/40">
+                    <span
+                      className={`text-[9px] px-2 py-0.5 rounded-full font-semibold ${
+                        order.paymentDetails?.paymentStatus === "completed"
+                          ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"
+                          : "bg-amber-500/15 text-amber-300 border border-amber-500/30"
+                      }`}
+                    >
+                      {(order.paymentDetails?.paymentMethod || "online").toUpperCase()} •{" "}
+                      {order.paymentDetails?.paymentStatus || "pending"}
+                    </span>
+                    <button
+                      onClick={() => handleOpenDetail(order._id)}
+                      className="px-3 py-1.5 rounded-xl border border-teal-800/60 bg-[#072420] hover:bg-teal-900/30 text-white font-semibold text-xs transition flex items-center gap-1 cursor-pointer"
+                    >
+                      <MdVisibility size={14} className="text-[#f97316]" />
+                      <span>Inspect</span>
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-(--color-base-200) text-(--color-secondary) font-bold uppercase text-[10px] tracking-wider border-b border-(--color-base-300)">
+              <thead className="bg-[#041916] text-[#8faea7] font-bold uppercase text-[10px] tracking-wider border-b border-teal-900/60">
                 <tr>
-                  <th className="py-3 px-4">Order ID & Date</th>
-                  <th className="py-3 px-4">Restaurant</th>
-                  <th className="py-3 px-4">Customer</th>
-                  <th className="py-3 px-4">Assigned Courier</th>
-                  <th className="py-3 px-4">Amount & Payment</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4 text-right">Actions</th>
+                  <th className="py-3.5 px-4">Order ID & Date</th>
+                  <th className="py-3.5 px-4">Restaurant</th>
+                  <th className="py-3.5 px-4">Customer</th>
+                  <th className="py-3.5 px-4">Assigned Courier</th>
+                  <th className="py-3.5 px-4">Amount & Payment</th>
+                  <th className="py-3.5 px-4">Status</th>
+                  <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-(--color-base-300)/60 text-(--color-base-content)">
+              <tbody className="divide-y divide-teal-900/40 text-white">
                 {filteredOrders.map((order) => {
                   const badge = statusBadges[order.orderStatus] || {
                     label: order.orderStatus,
-                    bg: "bg-gray-100 text-gray-700 border-gray-300",
+                    bg: "bg-teal-900/30 text-[#8faea7] border border-teal-800/40",
                   };
                   const customer = order.customerId?.customerId;
                   const restaurant = order.restaurantId;
@@ -316,14 +412,14 @@ const AdminOrders = ({ initialFilter = "all" }) => {
                   return (
                     <tr
                       key={order._id}
-                      className="hover:bg-(--color-base-200)/40 transition"
+                      className="hover:bg-teal-900/20 transition"
                     >
                       {/* Order ID & Date */}
                       <td className="py-3.5 px-4">
-                        <p className="font-mono font-bold text-xs text-(--color-base-content)">
+                        <p className="font-mono font-bold text-xs text-white">
                           #{order._id.slice(-6).toUpperCase()}
                         </p>
-                        <p className="text-[10px] text-(--color-secondary) flex items-center gap-1 mt-0.5">
+                        <p className="text-[10px] text-[#8faea7] flex items-center gap-1 mt-0.5">
                           <MdAccessTime size={11} />
                           {order.createdAt
                             ? new Date(order.createdAt).toLocaleString("en-IN", {
@@ -336,21 +432,21 @@ const AdminOrders = ({ initialFilter = "all" }) => {
 
                       {/* Restaurant */}
                       <td className="py-3.5 px-4">
-                        <p className="font-bold text-xs text-(--color-base-content flex items-center gap-1">
-                          <MdStore size={13} className="text-(--color-primary)" />
+                        <p className="font-bold text-xs text-white flex items-center gap-1">
+                          <MdStore size={13} className="text-[#f97316]" />
                           {restaurant?.restaurantName || "Restaurant Partner"}
                         </p>
-                        <p className="text-[10px] text-(--color-secondary)">
+                        <p className="text-[10px] text-[#8faea7]">
                           {order.orderItems?.length || 0} items ordered
                         </p>
                       </td>
 
                       {/* Customer */}
                       <td className="py-3.5 px-4">
-                        <p className="font-bold text-xs text-(--color-base-content)">
+                        <p className="font-bold text-xs text-white">
                           {order.deliveryAddress?.name || customer?.fullName || "Customer"}
                         </p>
-                        <p className="text-[10px] text-(--color-secondary)">
+                        <p className="text-[10px] text-[#8faea7]">
                           {order.deliveryAddress?.phone || customer?.phone || "No phone"}
                         </p>
                       </td>
@@ -358,12 +454,12 @@ const AdminOrders = ({ initialFilter = "all" }) => {
                       {/* Assigned Rider */}
                       <td className="py-3.5 px-4">
                         {rider ? (
-                          <div className="flex items-center gap-1.5 text-xs text-emerald-800 font-semibold">
-                            <FaMotorcycle size={13} className="text-emerald-600" />
+                          <div className="flex items-center gap-1.5 text-xs text-emerald-300 font-semibold">
+                            <FaMotorcycle size={13} className="text-emerald-400" />
                             <span>{rider.fullName || "Assigned"}</span>
                           </div>
                         ) : (
-                          <span className="text-[11px] text-amber-700 italic">
+                          <span className="text-[11px] text-amber-400 italic">
                             Unassigned
                           </span>
                         )}
@@ -371,14 +467,14 @@ const AdminOrders = ({ initialFilter = "all" }) => {
 
                       {/* Amount & Payment */}
                       <td className="py-3.5 px-4">
-                        <p className="font-bold text-xs text-(--color-base-content)">
+                        <p className="font-bold text-xs text-white">
                           ₹{order.billDetails?.finalAmount?.toFixed(2) || "0.00"}
                         </p>
                         <span
                           className={`text-[9px] px-1.5 py-0.2 rounded-full font-semibold ${
                             order.paymentDetails?.paymentStatus === "completed"
-                              ? "bg-emerald-100 text-emerald-800"
-                              : "bg-amber-100 text-amber-800"
+                              ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"
+                              : "bg-amber-500/15 text-amber-300 border border-amber-500/30"
                           }`}
                         >
                           {(order.paymentDetails?.paymentMethod || "online").toUpperCase()} •{" "}
@@ -399,10 +495,10 @@ const AdminOrders = ({ initialFilter = "all" }) => {
                       <td className="py-3.5 px-4 text-right">
                         <button
                           onClick={() => handleOpenDetail(order._id)}
-                          className="px-2.5 py-1.5 rounded-lg border border-(--color-base-300) hover:bg-(--color-base-200) text-(--color-base-content) font-semibold text-xs transition flex items-center gap-1 ml-auto"
+                          className="px-2.5 py-1.5 rounded-xl border border-teal-800/60 bg-[#041916] hover:bg-teal-900/30 text-white font-semibold text-xs transition flex items-center gap-1 ml-auto cursor-pointer"
                           title="View Order Details & Dispatch"
                         >
-                          <MdVisibility size={14} className="text-(--color-primary)" />
+                          <MdVisibility size={14} className="text-[#f97316]" />
                           <span>Inspect</span>
                         </button>
                       </td>

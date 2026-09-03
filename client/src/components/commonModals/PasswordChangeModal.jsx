@@ -55,20 +55,20 @@ const PasswordChangeModal = ({ open, onClose }) => {
   if (!open) return null;
   return (
     <>
-      <div className="fixed inset-0 z-999 bg-black/60 backdrop-blur-xs flex justify-center items-center">
-        <div className="bg-white w-xl rounded shadow max-h-[80vh] overflow-y-auto relative p-4">
-          <header className="flex justify-between p-4 border-b border-(--color-secondary)">
-            <div className="font-bold text-xl text-(--color-primary)">
-              Change Password
+      <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex justify-center items-center p-4">
+        <div className="bg-[#072420] border border-teal-800/60 w-full max-w-lg rounded-2xl shadow-2xl shadow-black/80 max-h-[85vh] overflow-y-auto relative p-6 text-white">
+          <header className="flex justify-between items-center pb-3 border-b border-teal-900/60">
+            <div className="font-bold text-lg text-white tracking-tight">
+              Change Account Password
             </div>  
-            <button className="text-2xl" onClick={handleCloseModal}>
-              <MdCancel className=" hover:text-red-700 text-2xl" />
+            <button className="text-[#8faea7] hover:text-white transition cursor-pointer text-2xl" onClick={handleCloseModal}>
+              <MdCancel />
             </button>
           </header>
           {/* oldpassword */}
-          <div className="flex flex-col gap-2 mt-3">
-            <label htmlFor="oldpassword" className="font-semibold">
-              OldPassword
+          <div className="flex flex-col gap-1.5 mt-4">
+            <label htmlFor="oldpassword" className="text-xs font-semibold text-[#8faea7]">
+              Current Password
             </label>
             <input
               type="password"
@@ -76,14 +76,15 @@ const PasswordChangeModal = ({ open, onClose }) => {
               onChange={handleChange}
               name="oldPassword"
               value={formData.oldPassword}
-              className="border border-(--color-secondary) rounded px-3 py-2 disabled:bg-(--color-secondary) disabled:text-(--color-secondary-content)"
+              placeholder="Enter current password"
+              className="w-full bg-[#041916] border border-teal-800/60 rounded-xl px-3.5 py-2 text-xs text-white placeholder-[#537770] focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 disabled:opacity-50"
               disabled={loading}
             />
           </div>
           {/* newPassword */}
-          <div className="flex flex-col gap-2 mt-3">
-            <label htmlFor="newPassword" className="font-semibold">
-              New password
+          <div className="flex flex-col gap-1.5 mt-3.5">
+            <label htmlFor="newPassword" className="text-xs font-semibold text-[#8faea7]">
+              New Password
             </label>
             <input
               type="password"
@@ -91,14 +92,15 @@ const PasswordChangeModal = ({ open, onClose }) => {
               onChange={handleChange}
               name="newPassword"
               value={formData.newPassword}
-              className="border border-(--color-secondary) rounded px-3 py-2 disabled:bg-(--color-secondary) disabled:text-(--color-secondary-content)"
+              placeholder="Enter at least 6 characters"
+              className="w-full bg-[#041916] border border-teal-800/60 rounded-xl px-3.5 py-2 text-xs text-white placeholder-[#537770] focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 disabled:opacity-50"
               disabled={loading}
             />
           </div>
           {/* ConfirmPassword */}
-          <div className="flex flex-col gap-2 mt-3">
-            <label htmlFor="confirmPassword" className="font-semibold">
-              Confirm Password
+          <div className="flex flex-col gap-1.5 mt-3.5">
+            <label htmlFor="confirmPassword" className="text-xs font-semibold text-[#8faea7]">
+              Confirm New Password
             </label>
             <input
               type="password"
@@ -106,20 +108,21 @@ const PasswordChangeModal = ({ open, onClose }) => {
               onChange={handleChange}
               name="confirmPassword"
               value={formData.confirmPassword}
-              className="border border-(--color-secondary) rounded px-3 py-2 disabled:bg-(--color-secondary) disabled:text-(--color-secondary-content)"
+              placeholder="Re-enter new password"
+              className="w-full bg-[#041916] border border-teal-800/60 rounded-xl px-3.5 py-2 text-xs text-white placeholder-[#537770] focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 disabled:opacity-50"
               disabled={loading}
             />
           </div>
-          <footer className="w-full p-4 border-t-4 mt-3 border-(--color-secondary) flex justify-end gap-3">
+          <footer className="w-full pt-4 mt-6 border-t border-teal-900/60 flex justify-end gap-3">
             <button
-              className="flex items-center gap-2 bg-(--color-secondary) text-(--color-secondary-content) px-3 py-1 rounded text-sm"
+              className="bg-[#041916] border border-teal-800/60 text-[#8faea7] hover:text-white px-4 py-2 rounded-xl text-xs font-semibold transition cursor-pointer"
               onClick={handleCloseModal}
               disabled={loading}
             >
               Cancel
             </button>
             <button
-              className="flex items-center gap-2 bg-(--color-primary) text-(--color-primary-content) px-3 py-1 rounded text-sm"
+              className="flex items-center gap-2 bg-gradient-to-r from-[#f97316] to-[#ea580c] disabled:opacity-50 text-white px-5 py-2 rounded-xl text-xs font-bold transition shadow-md shadow-orange-950/40 hover:opacity-95 cursor-pointer"
               onClick={handlePasswordChange}
               disabled={loading}
             >
@@ -128,7 +131,7 @@ const PasswordChangeModal = ({ open, onClose }) => {
                   <LuLoaderCircle className="animate-spin" /> Changing...
                 </>
               ) : (
-                "change"
+                "Update Password"
               )}
             </button>
           </footer>

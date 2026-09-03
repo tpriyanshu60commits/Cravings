@@ -206,23 +206,23 @@ const RestaurantPhotos = () => {
   };
 
   return (
-    <div className="p-2">
+    <div className="p-1 space-y-4">
       <div className="grid grid-cols-1 xl:grid-cols-[360px_1fr] gap-4 items-start">
         {/* Cover Photo Box */}
-        <div className="bg-(--color-base-100) rounded-xl border border-(--color-secondary)/40 shadow-sm p-4 h-full">
-          <div className="flex items-center justify-between border-b border-(--color-secondary) pb-2 mb-3">
+        <div className="bg-[#072420] rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 p-5 h-full space-y-4">
+          <div className="flex items-center justify-between border-b border-teal-900/60 pb-3">
             <div>
-              <h3 className="text-sm font-semibold text-(--color-primary)">
+              <h3 className="text-sm font-bold text-white tracking-tight">
                 Cover Image
               </h3>
-              <p className="text-xs text-(--color-secondary)">
+              <p className="text-xs text-[#8faea7]">
                 Upload one hero image under 1MB.
               </p>
             </div>
             <button
               onClick={handleSaveCoverPhoto}
               disabled={!coverImage || isSavingCover}
-              className="flex items-center gap-1.5 bg-(--color-primary) text-(--color-primary-content) px-3 py-1.5 rounded-md text-xs shadow-sm hover:opacity-95 transition disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex items-center gap-1.5 bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-md shadow-orange-950/40 hover:opacity-95 transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
               {isSavingCover ? <RiLoader4Fill className="animate-spin" /> : null}
               {isSavingCover ? "Saving..." : "Save Cover Photo"}
@@ -230,12 +230,12 @@ const RestaurantPhotos = () => {
           </div>
 
           <div className="space-y-3">
-            <div className="rounded-xl border border-dashed border-(--color-secondary) bg-(--color-base-100) p-3">
+            <div className="rounded-2xl border border-dashed border-teal-800/80 bg-[#041916] p-4 text-center">
               <label
                 htmlFor="coverImage"
-                className="inline-flex items-center gap-2 bg-(--color-primary) text-(--color-primary-content) px-3 py-1.5 rounded-md text-xs cursor-pointer shadow-sm hover:opacity-95 transition"
+                className="inline-flex items-center gap-2 bg-[#072420] border border-teal-800/60 text-white px-3.5 py-2 rounded-xl text-xs font-semibold cursor-pointer shadow-sm hover:border-orange-500/60 transition"
               >
-                <MdOutlineAddAPhoto className="text-sm" />
+                <MdOutlineAddAPhoto className="text-sm text-orange-400" />
                 Upload Cover Image
               </label>
               <input
@@ -245,62 +245,62 @@ const RestaurantPhotos = () => {
                 onChange={handleCoverImageChange}
                 className="hidden"
               />
-              <p className="mt-2 text-xs text-(--color-secondary)">
+              <p className="mt-2 text-xs text-[#8faea7]">
                 Best for banner-style photos. JPG, PNG, AVIF, WEBP all work.
               </p>
               {errors.cover && (
-                <p className="text-xs text-(--color-error) mt-2">
+                <p className="text-xs text-rose-400 mt-2 font-medium">
                   {errors.cover}
                 </p>
               )}
             </div>
 
             {coverImage && coverPreview ? (
-              <div className="overflow-hidden rounded-xl border border-(--color-secondary) bg-white shadow-sm">
+              <div className="overflow-hidden rounded-2xl border border-teal-800/60 bg-[#041916] shadow-md">
                 <div className="relative">
                   <img
                     src={coverPreview}
                     alt="Cover Preview"
-                    className="w-full h-56 object-cover"
+                    className="w-full h-52 object-cover"
                   />
-                  <div className="absolute inset-0 bg-linear-to-t from-black/35 via-transparent to-transparent" />
-                  <span className="absolute top-2 left-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-yellow-400 text-yellow-900">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <span className="absolute top-2 left-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500 text-black">
                     New — Not Saved
                   </span>
                 </div>
-                <div className="flex items-center justify-between gap-2 px-3 py-2 text-xs">
+                <div className="flex items-center justify-between gap-2 px-3 py-2 text-xs text-white">
                   <p className="truncate font-medium">{coverImage.name}</p>
-                  <span className="shrink-0 rounded-full bg-(--color-secondary)/20 px-2 py-1 text-[11px]">
+                  <span className="shrink-0 rounded-full bg-teal-900/60 text-[#8faea7] px-2 py-0.5 text-[11px]">
                     {(coverImage.size / 1024).toFixed(1)} KB
                   </span>
                 </div>
               </div>
             ) : restaurantData?.coverImage?.url ? (
-              <div className="overflow-hidden rounded-xl border border-(--color-secondary) bg-white shadow-sm">
+              <div className="overflow-hidden rounded-2xl border border-teal-800/60 bg-[#041916] shadow-md">
                 <div className="relative">
                   <img
                     src={restaurantData.coverImage.url}
                     alt="Current Cover"
-                    className="w-full h-56 object-cover"
+                    className="w-full h-52 object-cover"
                   />
-                  <div className="absolute inset-0 bg-linear-to-t from-black/35 via-transparent to-transparent" />
-                  <span className="absolute top-2 left-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-green-400 text-green-900">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <span className="absolute top-2 left-2 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500 text-black">
                     Current
                   </span>
                 </div>
-                <p className="px-3 py-2 text-xs text-(--color-secondary)">
+                <p className="px-3 py-2 text-xs text-[#8faea7]">
                   Upload a new image above to replace this cover.
                 </p>
               </div>
             ) : (
-              <div className="rounded-xl border border-dashed border-(--color-secondary) bg-linear-to-br from-white to-(--color-base-100) px-4 py-8 text-center">
-                <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-(--color-primary)/10 text-(--color-primary)">
-                  <MdOutlineAddAPhoto className="text-2xl" />
+              <div className="rounded-2xl border border-dashed border-teal-800/60 bg-[#041916] px-4 py-8 text-center">
+                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-500/15 text-orange-400 border border-orange-500/30">
+                  <MdOutlineAddAPhoto className="text-xl" />
                 </div>
-                <p className="text-sm font-semibold text-(--color-primary)">
+                <p className="text-sm font-bold text-white">
                   No cover selected
                 </p>
-                <p className="mt-1 text-xs text-(--color-secondary)">
+                <p className="mt-1 text-xs text-[#8faea7]">
                   Add a clean hero image to make this restaurant stand out.
                 </p>
               </div>
@@ -309,23 +309,23 @@ const RestaurantPhotos = () => {
         </div>
 
         {/* Gallery Images Box */}
-        <div className="bg-(--color-base-100) rounded-xl border border-(--color-secondary)/40 shadow-sm p-4 h-full space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-(--color-secondary) pb-3">
+        <div className="bg-[#072420] rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 p-5 h-full space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-teal-900/60 pb-3">
             <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-sm font-semibold text-(--color-primary)">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="text-sm font-bold text-white tracking-tight">
                   Restaurant Gallery Images
                 </h3>
-                <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-(--color-primary)/10 text-(--color-primary) font-bold">
+                <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-orange-500/15 text-orange-400 border border-orange-500/30 font-bold">
                   {existingGalleryImages.length}/{MAX_GALLERY_IMAGES} Saved
                 </span>
                 {galleryImages.length > 0 && (
-                  <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-semibold">
+                  <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-semibold">
                     +{galleryImages.length} Queued
                   </span>
                 )}
               </div>
-              <p className="text-xs text-(--color-secondary) mt-0.5">
+              <p className="text-xs text-[#8faea7] mt-0.5">
                 Upload up to {MAX_GALLERY_IMAGES} images total. New uploads are appended to your gallery.
               </p>
             </div>
@@ -333,13 +333,13 @@ const RestaurantPhotos = () => {
             <div className="shrink-0 flex items-center gap-2">
               <label
                 htmlFor="galleryImages"
-                className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-xs shadow-sm transition ${
+                className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-sm transition ${
                   remainingSlots <= 0
-                    ? "bg-(--color-secondary) text-(--color-secondary-content) cursor-not-allowed opacity-50"
-                    : "bg-(--color-primary) text-(--color-primary-content) cursor-pointer hover:opacity-95"
+                    ? "bg-[#041916] text-[#8faea7] cursor-not-allowed opacity-50 border border-teal-800/40"
+                    : "bg-[#041916] border border-teal-800/60 text-white cursor-pointer hover:border-orange-500/60"
                 }`}
               >
-                <MdOutlineAddAPhoto className="text-sm" />
+                <MdOutlineAddAPhoto className="text-sm text-orange-400" />
                 Select New Images
               </label>
               <input
@@ -354,7 +354,7 @@ const RestaurantPhotos = () => {
               <button
                 onClick={handleSaveRestaurantImages}
                 disabled={galleryImages.length === 0 || isSavingGallery}
-                className="inline-flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-md text-xs shadow-sm transition disabled:opacity-40 disabled:cursor-not-allowed font-semibold"
+                className="inline-flex items-center gap-1.5 bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white px-3.5 py-1.5 rounded-xl text-xs shadow-md shadow-orange-950/40 transition disabled:opacity-40 disabled:cursor-not-allowed font-bold cursor-pointer"
               >
                 {isSavingGallery && <RiLoader4Fill className="animate-spin" />}
                 {isSavingGallery ? "Uploading..." : `Upload (${galleryImages.length})`}
@@ -363,22 +363,22 @@ const RestaurantPhotos = () => {
           </div>
 
           {errors.gallery && (
-            <div className="rounded-lg border border-(--color-error)/30 bg-(--color-error)/5 px-3 py-2">
-              <p className="text-xs text-(--color-error)">{errors.gallery}</p>
+            <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-3.5 py-2">
+              <p className="text-xs text-rose-400">{errors.gallery}</p>
             </div>
           )}
 
           {/* Section: Pending/Queued Uploads */}
           {galleryPreviews.length > 0 && (
-            <div className="space-y-2 bg-amber-500/5 p-3 rounded-xl border border-amber-300">
+            <div className="space-y-2 bg-[#041916] p-4 rounded-2xl border border-amber-500/30">
               <div className="flex justify-between items-center">
-                <p className="text-xs font-bold text-amber-800">
+                <p className="text-xs font-bold text-amber-300">
                   New Images Ready to Upload ({galleryPreviews.length})
                 </p>
                 <button
                   type="button"
                   onClick={() => setGalleryImages([])}
-                  className="text-[11px] text-red-600 hover:underline"
+                  className="text-[11px] text-rose-400 hover:text-rose-300 cursor-pointer"
                 >
                   Clear Queue
                 </button>
@@ -387,7 +387,7 @@ const RestaurantPhotos = () => {
                 {galleryPreviews.map((imagePreview, index) => (
                   <div
                     key={imagePreview.key}
-                    className="group relative overflow-hidden rounded-xl border border-amber-300 bg-white shadow-sm"
+                    className="group relative overflow-hidden rounded-xl border border-amber-500/40 bg-[#072420] shadow-sm"
                   >
                     <img
                       src={imagePreview.url}
@@ -397,13 +397,13 @@ const RestaurantPhotos = () => {
                     <button
                       type="button"
                       onClick={() => removeQueuedImage(index)}
-                      className="absolute right-1.5 top-1.5 h-6 w-6 rounded-full bg-white/95 text-red-600 shadow flex items-center justify-center hover:bg-red-600 hover:text-white transition"
+                      className="absolute right-1.5 top-1.5 h-6 w-6 rounded-full bg-black/70 text-rose-400 shadow flex items-center justify-center hover:bg-rose-600 hover:text-white transition cursor-pointer"
                       title="Remove from queue"
                     >
                       <IoMdClose size={16} />
                     </button>
-                    <div className="px-2 py-1 bg-white/90">
-                      <p className="truncate text-[10px] font-medium text-(--color-base-content)">
+                    <div className="px-2 py-1 bg-[#072420]/90">
+                      <p className="truncate text-[10px] font-medium text-white">
                         {imagePreview.file.name}
                       </p>
                     </div>
@@ -415,19 +415,19 @@ const RestaurantPhotos = () => {
 
           {/* Section: Currently Saved Gallery Images with Individual Delete */}
           <div className="space-y-2">
-            <h4 className="text-xs font-bold text-(--color-base-content)">
+            <h4 className="text-xs font-bold text-white">
               Saved Images ({existingGalleryImages.length})
             </h4>
 
             {existingGalleryImages.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-(--color-secondary) bg-linear-to-br from-white to-(--color-base-100) px-4 py-10 text-center">
-                <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-(--color-primary)/10 text-(--color-primary)">
-                  <MdOutlineAddAPhoto className="text-2xl" />
+              <div className="rounded-2xl border border-dashed border-teal-800/60 bg-[#041916] px-4 py-10 text-center">
+                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-500/15 text-orange-400 border border-orange-500/30">
+                  <MdOutlineAddAPhoto className="text-xl" />
                 </div>
-                <p className="text-sm font-semibold text-(--color-primary)">
+                <p className="text-sm font-bold text-white">
                   No restaurant images saved yet
                 </p>
-                <p className="mt-1 text-xs text-(--color-secondary)">
+                <p className="mt-1 text-xs text-[#8faea7]">
                   Add up to 8 supporting photos to show the dining space, food, and kitchen.
                 </p>
               </div>
@@ -439,7 +439,7 @@ const RestaurantPhotos = () => {
                   return (
                     <div
                       key={idKey || index}
-                      className="group relative overflow-hidden rounded-xl border border-(--color-base-300) bg-white shadow-sm hover:shadow-md transition"
+                      className="group relative overflow-hidden rounded-xl border border-teal-800/60 bg-[#041916] shadow-sm hover:border-teal-600 transition"
                     >
                       <img
                         src={img.url}
@@ -452,7 +452,7 @@ const RestaurantPhotos = () => {
                         type="button"
                         onClick={() => handleDeleteExistingImage(img)}
                         disabled={isDeleting}
-                        className="absolute right-2 top-2 h-7 w-7 rounded-full bg-white/95 text-red-600 shadow-md flex items-center justify-center hover:bg-red-600 hover:text-white transition disabled:opacity-50"
+                        className="absolute right-2 top-2 h-7 w-7 rounded-full bg-black/75 text-rose-400 shadow-md flex items-center justify-center hover:bg-rose-600 hover:text-white transition disabled:opacity-50 cursor-pointer"
                         title="Delete this image"
                       >
                         {isDeleting ? (
@@ -462,9 +462,9 @@ const RestaurantPhotos = () => {
                         )}
                       </button>
 
-                      <div className="px-2 py-1.5 flex items-center justify-between text-[10px] text-(--color-secondary) bg-white">
+                      <div className="px-2 py-1.5 flex items-center justify-between text-[10px] text-[#8faea7] bg-[#041916]">
                         <span>Image #{index + 1}</span>
-                        <span className="text-green-600 font-semibold">Saved</span>
+                        <span className="text-emerald-400 font-semibold">Saved</span>
                       </div>
                     </div>
                   );

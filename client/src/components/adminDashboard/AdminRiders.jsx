@@ -18,10 +18,10 @@ import {
 import { RiLoader4Fill } from "react-icons/ri";
 
 const statusBadges = {
-  active: { label: "Active Approved", bg: "bg-emerald-100 text-emerald-800 border-emerald-300" },
-  pending: { label: "Pending Verification", bg: "bg-amber-100 text-amber-800 border-amber-300" },
-  inactive: { label: "Inactive", bg: "bg-gray-100 text-gray-800 border-gray-300" },
-  blocked: { label: "Blocked", bg: "bg-rose-100 text-rose-800 border-rose-300" },
+  active: { label: "Active Approved", bg: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30" },
+  pending: { label: "Pending Verification", bg: "bg-amber-500/15 text-amber-300 border-amber-500/30" },
+  inactive: { label: "Inactive", bg: "bg-teal-900/30 text-[#8faea7] border border-teal-800/40" },
+  blocked: { label: "Blocked", bg: "bg-rose-500/15 text-rose-300 border-rose-500/30" },
 };
 
 const DEFAULT_AVATAR = "https://placehold.co/150x150?text=Rider";
@@ -140,15 +140,15 @@ const AdminRiders = ({ initialFilter = "all" }) => {
   if (isLoading) return <Loader height="70vh" width="100%" />;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-white">
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-(--color-base-100) p-5 rounded-2xl border border-(--color-base-300) shadow-xs">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-[#072420] p-4 sm:p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40">
         <div>
-          <h1 className="text-xl font-bold text-(--color-base-content) flex items-center gap-2">
-            <MdDeliveryDining className="text-(--color-primary)" size={24} />
+          <h1 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2 tracking-tight">
+            <MdDeliveryDining className="text-[#f97316]" size={24} />
             Rider Fleet Management
           </h1>
-          <p className="text-xs text-(--color-secondary) mt-0.5">
+          <p className="text-xs text-[#8faea7] mt-0.5">
             Verify driver KYC documents, monitor active couriers, and manage delivery personnel
           </p>
         </div>
@@ -158,19 +158,19 @@ const AdminRiders = ({ initialFilter = "all" }) => {
           <div className="relative flex-1 md:w-64">
             <MdSearch
               size={18}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-secondary)"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-[#537770]"
             />
             <input
               type="text"
               placeholder="Search name, phone, vehicle..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 text-xs bg-(--color-base-200) border border-(--color-base-300) rounded-xl focus:outline-none focus:ring-2 focus:ring-(--color-primary) text-(--color-base-content)"
+              className="w-full pl-9 pr-3 py-2 text-xs bg-[#041916] border border-teal-800/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 text-white placeholder-[#537770] transition-colors"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#8faea7] hover:text-white cursor-pointer"
               >
                 <MdClose size={14} />
               </button>
@@ -181,12 +181,12 @@ const AdminRiders = ({ initialFilter = "all" }) => {
           <button
             onClick={() => fetchRiders(true)}
             disabled={isRefreshing}
-            className="p-2.5 rounded-xl border border-(--color-base-300) bg-(--color-base-200) hover:bg-(--color-base-300) text-(--color-base-content) transition flex items-center gap-1.5 text-xs font-semibold shrink-0"
+            className="p-2.5 rounded-xl border border-teal-800/60 bg-[#041916] hover:bg-teal-900/30 text-white transition flex items-center gap-1.5 text-xs font-semibold shrink-0 cursor-pointer"
             title="Refresh Riders"
           >
             <MdRefresh
               size={18}
-              className={isRefreshing ? "animate-spin text-(--color-primary)" : ""}
+              className={isRefreshing ? "animate-spin text-[#f97316]" : ""}
             />
             <span className="hidden sm:inline">Refresh</span>
           </button>
@@ -195,15 +195,15 @@ const AdminRiders = ({ initialFilter = "all" }) => {
 
       {/* Filter Tabs */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex overflow-x-auto gap-2 pb-1 scrollbar-thin">
+        <div className="flex overflow-x-auto gap-2 pb-1 scrollbar-none">
           {statusFilters.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setSelectedStatus(tab.key)}
-              className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition border ${
+              className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
                 selectedStatus === tab.key
-                  ? "bg-(--color-primary) text-(--color-primary-content) border-(--color-primary) shadow-xs"
-                  : "bg-(--color-base-100) text-(--color-base-content) border-(--color-base-300) hover:bg-(--color-base-200)"
+                  ? "bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white shadow-md shadow-orange-950/40"
+                  : "bg-[#041916] text-[#8faea7] hover:text-white border border-teal-800/60 hover:bg-teal-900/30"
               }`}
             >
               {tab.label}
@@ -212,33 +212,33 @@ const AdminRiders = ({ initialFilter = "all" }) => {
         </div>
 
         {/* Online / Offline Quick Toggle */}
-        <div className="flex items-center gap-1 bg-(--color-base-100) p-1 rounded-xl border border-(--color-base-300) text-xs font-semibold">
+        <div className="flex items-center gap-1 bg-[#041916] p-1 rounded-xl border border-teal-800/60 text-xs font-semibold">
           <button
             onClick={() => setSelectedAvailability("all")}
-            className={`px-2.5 py-1 rounded-lg transition ${
+            className={`px-2.5 py-1 rounded-lg transition cursor-pointer ${
               selectedAvailability === "all"
-                ? "bg-(--color-base-300) text-(--color-base-content)"
-                : "text-(--color-secondary) hover:text-(--color-base-content)"
+                ? "bg-[#072420] text-white border border-teal-800/60 shadow-xs"
+                : "text-[#8faea7] hover:text-white"
             }`}
           >
             All Availability
           </button>
           <button
             onClick={() => setSelectedAvailability("online")}
-            className={`px-2.5 py-1 rounded-lg transition ${
+            className={`px-2.5 py-1 rounded-lg transition cursor-pointer ${
               selectedAvailability === "online"
-                ? "bg-cyan-600 text-white shadow-xs"
-                : "text-cyan-800 hover:text-cyan-900"
+                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-xs"
+                : "text-[#8faea7] hover:text-cyan-300"
             }`}
           >
             Online Only
           </button>
           <button
             onClick={() => setSelectedAvailability("offline")}
-            className={`px-2.5 py-1 rounded-lg transition ${
+            className={`px-2.5 py-1 rounded-lg transition cursor-pointer ${
               selectedAvailability === "offline"
-                ? "bg-gray-600 text-white shadow-xs"
-                : "text-gray-600 hover:text-gray-800"
+                ? "bg-teal-900/40 text-gray-300 border border-teal-800/40 shadow-xs"
+                : "text-[#8faea7] hover:text-gray-300"
             }`}
           >
             Offline Only
@@ -248,40 +248,181 @@ const AdminRiders = ({ initialFilter = "all" }) => {
 
       {/* Riders Table */}
       {riders.length === 0 ? (
-        <div className="bg-(--color-base-100) rounded-2xl border border-(--color-base-300) p-12 text-center space-y-3">
-          <div className="w-16 h-16 rounded-full bg-(--color-base-200) flex items-center justify-center mx-auto text-(--color-secondary)">
+        <div className="bg-[#072420] rounded-2xl border border-dashed border-teal-800/60 p-12 text-center space-y-3 shadow-xl shadow-black/40">
+          <div className="w-16 h-16 rounded-full bg-orange-500/15 border border-orange-500/30 text-orange-400 flex items-center justify-center mx-auto">
             <MdDeliveryDining size={32} />
           </div>
-          <h3 className="text-sm font-bold text-(--color-base-content)">
+          <h3 className="text-sm font-bold text-white">
             No riders found
           </h3>
-          <p className="text-xs text-(--color-secondary) max-w-sm mx-auto">
+          <p className="text-xs text-[#8faea7] max-w-sm mx-auto">
             {searchQuery
               ? `No delivery couriers matching "${searchQuery}".`
               : "No riders match the selected filter."}
           </p>
         </div>
       ) : (
-        <div className="bg-(--color-base-100) rounded-2xl border border-(--color-base-300) shadow-xs overflow-hidden">
-          <div className="overflow-x-auto">
+        <div className="bg-[#072420] rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 overflow-hidden">
+          {/* Mobile Card View */}
+          <div className="md:hidden p-4 space-y-3">
+            {riders.map((rdr) => {
+              const user = rdr.riderId;
+              const vehicle = rdr.vehicleDetails;
+              const statusInfo = statusBadges[rdr.status] || {
+                label: rdr.status || "Unknown",
+                bg: "bg-teal-900/30 text-[#8faea7] border border-teal-800/40",
+              };
+              const isActionLoading = actionLoadingId === rdr._id;
+
+              const getPhotoUrl = () => {
+                if (!user?.photo) return null;
+                if (typeof user.photo === "string") return user.photo;
+                if (typeof user.photo === "object" && user.photo.url) return user.photo.url;
+                return null;
+              };
+
+              const photoUrl = getPhotoUrl();
+
+              return (
+                <div
+                  key={rdr._id}
+                  className="bg-[#041916] p-4 rounded-xl border border-teal-800/60 space-y-3"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5">
+                      {photoUrl ? (
+                        <img
+                          src={photoUrl}
+                          alt={user?.fullName || "Rider"}
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = DEFAULT_AVATAR;
+                          }}
+                          className="w-10 h-10 rounded-full object-cover border border-teal-800/60"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-orange-500/15 border border-orange-500/30 text-orange-400 flex items-center justify-center font-bold text-xs">
+                          {user?.fullName?.charAt(0) || "R"}
+                        </div>
+                      )}
+                      <div>
+                        <p className="font-bold text-xs text-white">
+                          {user?.fullName || "Rider"}
+                        </p>
+                        <p className="text-[10px] text-[#8faea7]">
+                          Rating: ★ {rdr.averageRating?.toFixed(1) || "5.0"}
+                        </p>
+                      </div>
+                    </div>
+                    <span
+                      className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold border ${statusInfo.bg}`}
+                    >
+                      {statusInfo.label}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-teal-900/40">
+                    <div>
+                      <p className="text-[10px] text-[#8faea7]">Phone</p>
+                      <p className="font-semibold text-white truncate">{user?.phone || "N/A"}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-[#8faea7]">Vehicle No.</p>
+                      <p className="text-white truncate font-mono">{vehicle?.vehicleNumber || "No Plate"}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-[#8faea7]">Vehicle Type</p>
+                      <p className="text-white capitalize">{vehicle?.vehicleType || "Bike"}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-[#8faea7]">Duty Status</p>
+                      <span
+                        className={`text-[10px] px-2 py-0.5 rounded-full font-semibold inline-block ${
+                          rdr.isAvailable
+                            ? "bg-cyan-500/15 text-cyan-300 border border-cyan-500/30"
+                            : "bg-teal-900/30 text-[#8faea7] border border-teal-800/40"
+                        }`}
+                      >
+                        {rdr.isAvailable ? "Online" : "Offline"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-teal-900/40">
+                    <button
+                      onClick={() => handleOpenDetail(rdr._id)}
+                      className="px-3 py-1.5 rounded-xl border border-teal-800/60 bg-[#072420] hover:bg-teal-900/30 text-white font-semibold text-xs transition flex items-center gap-1 cursor-pointer"
+                    >
+                      <MdVisibility size={14} className="text-[#f97316]" />
+                      <span>Details</span>
+                    </button>
+
+                    {rdr.status !== "active" ? (
+                      <button
+                        onClick={() => handleUpdateStatus(rdr._id, "active")}
+                        disabled={isActionLoading}
+                        className="px-3 py-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 font-semibold text-xs transition flex items-center gap-1 cursor-pointer"
+                      >
+                        {isActionLoading ? <RiLoader4Fill className="animate-spin" /> : <MdCheckCircle size={13} />}
+                        <span>Approve</span>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleUpdateStatus(rdr._id, "inactive")}
+                        disabled={isActionLoading}
+                        className="px-3 py-1.5 rounded-xl border border-amber-500/30 bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 font-semibold text-xs transition flex items-center gap-1 cursor-pointer"
+                      >
+                        {isActionLoading ? <RiLoader4Fill className="animate-spin" /> : <MdPauseCircle size={13} />}
+                        <span>Inactive</span>
+                      </button>
+                    )}
+
+                    {rdr.status !== "blocked" ? (
+                      <button
+                        onClick={() => handleUpdateStatus(rdr._id, "blocked")}
+                        disabled={isActionLoading}
+                        className="px-3 py-1.5 rounded-xl border border-rose-500/30 bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 font-semibold text-xs transition flex items-center gap-1 cursor-pointer"
+                      >
+                        {isActionLoading ? <RiLoader4Fill className="animate-spin" /> : <MdBlock size={13} />}
+                        <span>Block</span>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleUpdateStatus(rdr._id, "active")}
+                        disabled={isActionLoading}
+                        className="px-3 py-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 font-semibold text-xs transition flex items-center gap-1 cursor-pointer"
+                      >
+                        {isActionLoading ? <RiLoader4Fill className="animate-spin" /> : <MdCheckCircle size={13} />}
+                        <span>Unblock</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-(--color-base-200) text-(--color-secondary) font-bold uppercase text-[10px] tracking-wider border-b border-(--color-base-300)">
+              <thead className="bg-[#041916] text-[#8faea7] font-bold uppercase text-[10px] tracking-wider border-b border-teal-900/60">
                 <tr>
-                  <th className="py-3 px-4">Rider</th>
-                  <th className="py-3 px-4">Contact</th>
-                  <th className="py-3 px-4">Vehicle Details</th>
-                  <th className="py-3 px-4">Online Status</th>
-                  <th className="py-3 px-4">Account Status</th>
-                  <th className="py-3 px-4 text-right">Actions</th>
+                  <th className="py-3.5 px-4">Rider</th>
+                  <th className="py-3.5 px-4">Contact</th>
+                  <th className="py-3.5 px-4">Vehicle Details</th>
+                  <th className="py-3.5 px-4">Online Status</th>
+                  <th className="py-3.5 px-4">Account Status</th>
+                  <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-(--color-base-300)/60 text-(--color-base-content)">
+              <tbody className="divide-y divide-teal-900/40 text-white">
                 {riders.map((rdr) => {
                   const user = rdr.riderId;
                   const vehicle = rdr.vehicleDetails;
                   const statusInfo = statusBadges[rdr.status] || {
                     label: rdr.status || "Unknown",
-                    bg: "bg-gray-100 text-gray-800 border-gray-300",
+                    bg: "bg-teal-900/30 text-[#8faea7] border border-teal-800/40",
                   };
                   const isActionLoading = actionLoadingId === rdr._id;
 
@@ -297,7 +438,7 @@ const AdminRiders = ({ initialFilter = "all" }) => {
                   return (
                     <tr
                       key={rdr._id}
-                      className="hover:bg-(--color-base-200)/40 transition"
+                      className="hover:bg-teal-900/20 transition"
                     >
                       {/* Rider Photo & Name */}
                       <td className="py-3.5 px-4">
@@ -310,18 +451,18 @@ const AdminRiders = ({ initialFilter = "all" }) => {
                                 e.currentTarget.onerror = null;
                                 e.currentTarget.src = DEFAULT_AVATAR;
                               }}
-                              className="w-10 h-10 rounded-full object-cover border border-(--color-base-300)"
+                              className="w-10 h-10 rounded-full object-cover border border-teal-800/60"
                             />
                           ) : (
-                            <div className="w-10 h-10 rounded-full bg-(--color-primary)/10 text-(--color-primary) flex items-center justify-center font-bold text-xs">
+                            <div className="w-10 h-10 rounded-full bg-orange-500/15 border border-orange-500/30 text-orange-400 flex items-center justify-center font-bold text-xs">
                               {user?.fullName?.charAt(0) || "R"}
                             </div>
                           )}
                           <div>
-                            <p className="font-bold text-xs text-(--color-base-content)">
+                            <p className="font-bold text-xs text-white">
                               {user?.fullName || "Rider"}
                             </p>
-                            <p className="text-[10px] text-(--color-secondary)">
+                            <p className="text-[10px] text-[#8faea7]">
                               Rating: ★ {rdr.averageRating?.toFixed(1) || "5.0"}
                             </p>
                           </div>
@@ -331,11 +472,11 @@ const AdminRiders = ({ initialFilter = "all" }) => {
                       {/* Contact */}
                       <td className="py-3.5 px-4">
                         <div className="space-y-0.5">
-                          <p className="flex items-center gap-1.5 text-xs text-(--color-base-content)">
-                            <MdPhone className="text-(--color-secondary)" size={12} />
+                          <p className="flex items-center gap-1.5 text-xs text-white">
+                            <MdPhone className="text-[#8faea7]" size={12} />
                             {user?.phone || "N/A"}
                           </p>
-                          <p className="flex items-center gap-1.5 text-[11px] text-(--color-secondary)">
+                          <p className="flex items-center gap-1.5 text-[11px] text-[#8faea7]">
                             <MdEmail size={11} /> {user?.email || "N/A"}
                           </p>
                         </div>
@@ -343,10 +484,10 @@ const AdminRiders = ({ initialFilter = "all" }) => {
 
                       {/* Vehicle Details */}
                       <td className="py-3.5 px-4">
-                        <p className="font-semibold text-xs text-(--color-base-content)">
+                        <p className="font-semibold text-xs text-white">
                           {vehicle?.vehicleNumber || "No Plate Number"}
                         </p>
-                        <p className="text-[10px] text-(--color-secondary)">
+                        <p className="text-[10px] text-[#8faea7]">
                           {vehicle?.vehicleType || "Bike"} • {vehicle?.vehicleModel || "Standard"}
                         </p>
                       </td>
@@ -354,10 +495,10 @@ const AdminRiders = ({ initialFilter = "all" }) => {
                       {/* Online Status */}
                       <td className="py-3.5 px-4">
                         <span
-                          className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${
+                          className={`text-[10px] px-2.5 py-0.5 rounded-full font-semibold ${
                             rdr.isAvailable
-                              ? "bg-cyan-100 text-cyan-800"
-                              : "bg-gray-200 text-gray-700"
+                              ? "bg-cyan-500/15 text-cyan-300 border border-cyan-500/30"
+                              : "bg-teal-900/30 text-[#8faea7] border border-teal-800/40"
                           }`}
                         >
                           {rdr.isAvailable ? "Online" : "Offline"}
@@ -378,10 +519,10 @@ const AdminRiders = ({ initialFilter = "all" }) => {
                         <div className="flex items-center justify-end gap-1.5 flex-wrap">
                           <button
                             onClick={() => handleOpenDetail(rdr._id)}
-                            className="px-2.5 py-1.5 rounded-lg border border-(--color-base-300) hover:bg-(--color-base-200) text-(--color-base-content) font-medium text-xs transition flex items-center gap-1"
+                            className="px-2.5 py-1.5 rounded-xl border border-teal-800/60 bg-[#041916] hover:bg-teal-900/30 text-white font-medium text-xs transition flex items-center gap-1 cursor-pointer"
                             title="View KYC & Details"
                           >
-                            <MdVisibility size={14} className="text-(--color-primary)" />
+                            <MdVisibility size={14} className="text-[#f97316]" />
                             <span>Details</span>
                           </button>
 
@@ -389,7 +530,7 @@ const AdminRiders = ({ initialFilter = "all" }) => {
                             <button
                               onClick={() => handleUpdateStatus(rdr._id, "active")}
                               disabled={isActionLoading}
-                              className="px-2.5 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-medium text-xs transition flex items-center gap-1"
+                              className="px-2.5 py-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 font-medium text-xs transition flex items-center gap-1 cursor-pointer"
                               title="Approve Rider"
                             >
                               {isActionLoading ? (
@@ -403,7 +544,7 @@ const AdminRiders = ({ initialFilter = "all" }) => {
                             <button
                               onClick={() => handleUpdateStatus(rdr._id, "inactive")}
                               disabled={isActionLoading}
-                              className="px-2.5 py-1.5 rounded-lg border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-700 font-medium text-xs transition flex items-center gap-1"
+                              className="px-2.5 py-1.5 rounded-xl border border-amber-500/30 bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 font-medium text-xs transition flex items-center gap-1 cursor-pointer"
                               title="Mark Inactive"
                             >
                               {isActionLoading ? (
@@ -419,7 +560,7 @@ const AdminRiders = ({ initialFilter = "all" }) => {
                             <button
                               onClick={() => handleUpdateStatus(rdr._id, "blocked")}
                               disabled={isActionLoading}
-                              className="px-2.5 py-1.5 rounded-lg border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 font-medium text-xs transition flex items-center gap-1"
+                              className="px-2.5 py-1.5 rounded-xl border border-rose-500/30 bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 font-medium text-xs transition flex items-center gap-1 cursor-pointer"
                               title="Block Rider"
                             >
                               {isActionLoading ? (
@@ -433,7 +574,7 @@ const AdminRiders = ({ initialFilter = "all" }) => {
                             <button
                               onClick={() => handleUpdateStatus(rdr._id, "active")}
                               disabled={isActionLoading}
-                              className="px-2.5 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-medium text-xs transition flex items-center gap-1"
+                              className="px-2.5 py-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 font-medium text-xs transition flex items-center gap-1 cursor-pointer"
                               title="Unblock Rider"
                             >
                               {isActionLoading ? (

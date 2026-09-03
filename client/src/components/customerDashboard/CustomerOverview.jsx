@@ -56,16 +56,17 @@ const CustomerOverview = ({ setActiveTab }) => {
   );
 
   return (
-    <div className="p-6 space-y-6 max-h-[88vh] overflow-y-auto">
+    <div className="p-4 sm:p-6 space-y-6 max-h-[88vh] overflow-y-auto">
       {/* Welcome Banner */}
-      <div className="bg-linear-to-r from-orange-500 to-amber-500 text-white p-6 rounded-3xl shadow-sm space-y-2">
-        <span className="text-xs font-bold uppercase tracking-wider bg-white/20 px-3 py-1 rounded-full">
+      <div className="bg-gradient-to-br from-[#072420] to-[#041916] text-white p-6 rounded-3xl border border-teal-800/40 shadow-xl shadow-black/40 space-y-2 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
+        <span className="text-[10px] font-bold uppercase tracking-wider bg-orange-500/20 text-orange-400 border border-orange-500/30 px-3 py-1 rounded-full inline-block">
           Customer Portal
         </span>
-        <h1 className="text-2xl sm:text-3xl font-extrabold">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white">
           Welcome back, {user?.fullName || "Foodie"}!
         </h1>
-        <p className="text-xs sm:text-sm text-white/90 max-w-xl">
+        <p className="text-xs sm:text-sm text-[#8faea7] max-w-xl leading-relaxed">
           Track your live food deliveries, manage delivery addresses, and browse your favorite restaurants.
         </p>
       </div>
@@ -74,16 +75,16 @@ const CustomerOverview = ({ setActiveTab }) => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div
           onClick={() => setActiveTab && setActiveTab("orders")}
-          className="bg-(--color-base-100) p-5 rounded-2xl border border-(--color-base-300) shadow-xs hover:border-(--color-primary) transition cursor-pointer flex items-center gap-4"
+          className="bg-[#072420] p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 hover:border-orange-500/50 transition cursor-pointer flex items-center gap-4 group"
         >
-          <div className="w-12 h-12 rounded-2xl bg-orange-50 text-(--color-primary) flex items-center justify-center text-2xl">
+          <div className="w-12 h-12 rounded-2xl bg-orange-500/15 border border-orange-500/30 text-orange-400 flex items-center justify-center text-2xl group-hover:scale-105 transition-transform">
             <IoReceiptOutline />
           </div>
           <div>
-            <p className="text-2xl font-black text-(--color-base-content)">
+            <p className="text-2xl font-black text-white">
               {orders.length}
             </p>
-            <p className="text-xs text-(--color-secondary) font-medium">
+            <p className="text-xs text-[#8faea7] font-medium">
               Total Orders
             </p>
           </div>
@@ -91,16 +92,16 @@ const CustomerOverview = ({ setActiveTab }) => {
 
         <div
           onClick={() => setActiveTab && setActiveTab("orders")}
-          className="bg-(--color-base-100) p-5 rounded-2xl border border-(--color-base-300) shadow-xs hover:border-(--color-primary) transition cursor-pointer flex items-center gap-4"
+          className="bg-[#072420] p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 hover:border-blue-500/50 transition cursor-pointer flex items-center gap-4 group"
         >
-          <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl">
+          <div className="w-12 h-12 rounded-2xl bg-blue-500/15 border border-blue-500/30 text-blue-400 flex items-center justify-center text-2xl group-hover:scale-105 transition-transform">
             <FaMotorcycle />
           </div>
           <div>
-            <p className="text-2xl font-black text-(--color-base-content)">
+            <p className="text-2xl font-black text-white">
               {activeOrders.length}
             </p>
-            <p className="text-xs text-(--color-secondary) font-medium">
+            <p className="text-xs text-[#8faea7] font-medium">
               Active Orders
             </p>
           </div>
@@ -108,16 +109,16 @@ const CustomerOverview = ({ setActiveTab }) => {
 
         <div
           onClick={() => setActiveTab && setActiveTab("address-book")}
-          className="bg-(--color-base-100) p-5 rounded-2xl border border-(--color-base-300) shadow-xs hover:border-(--color-primary) transition cursor-pointer flex items-center gap-4"
+          className="bg-[#072420] p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 hover:border-emerald-500/50 transition cursor-pointer flex items-center gap-4 group"
         >
-          <div className="w-12 h-12 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center text-2xl">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center text-2xl group-hover:scale-105 transition-transform">
             <IoLocationOutline />
           </div>
           <div>
-            <p className="text-2xl font-black text-(--color-base-content)">
+            <p className="text-2xl font-black text-white">
               {addresses.length}
             </p>
-            <p className="text-xs text-(--color-secondary) font-medium">
+            <p className="text-xs text-[#8faea7] font-medium">
               Saved Addresses
             </p>
           </div>
@@ -126,29 +127,29 @@ const CustomerOverview = ({ setActiveTab }) => {
 
       {/* Active Orders Highlight */}
       {activeOrders.length > 0 && (
-        <div className="bg-orange-50 border border-orange-200 p-5 rounded-2xl space-y-3">
+        <div className="bg-[#041916] border border-orange-500/40 p-5 rounded-2xl space-y-3 shadow-xl shadow-orange-950/20">
           <div className="flex justify-between items-center">
-            <h3 className="text-sm font-bold text-orange-900 flex items-center gap-2">
-              <IoTimeOutline className="text-lg text-(--color-primary)" />
+            <h3 className="text-sm font-bold text-orange-400 flex items-center gap-2">
+              <IoTimeOutline className="text-lg text-[#f97316]" />
               Live In-Progress Order
             </h3>
-            <span className="text-[11px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-(--color-primary) text-(--color-primary-content)">
+            <span className="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30">
               {activeOrders[0].orderStatus}
             </span>
           </div>
 
-          <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+          <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 pt-1">
             <div>
-              <p className="text-xs font-bold text-orange-950">
+              <p className="text-xs font-bold text-white">
                 {activeOrders[0].restaurantId?.restaurantName || "Restaurant Order"}
               </p>
-              <p className="text-[11px] text-orange-800">
+              <p className="text-[11px] text-[#8faea7] mt-0.5">
                 {activeOrders[0].orderItems?.map((it) => `${it.quantity}x ${it.itemName}`).join(", ")}
               </p>
             </div>
             <button
               onClick={() => navigate(`/order-tracking/${activeOrders[0]._id}`)}
-              className="px-4 py-2 bg-(--color-primary) text-(--color-primary-content) text-xs font-bold rounded-xl hover:opacity-90 transition self-start sm:self-auto shadow-xs"
+              className="px-4 py-2 bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white text-xs font-bold rounded-xl hover:opacity-95 transition self-start sm:self-auto shadow-md shadow-orange-950/40 cursor-pointer"
             >
               Track Live Order →
             </button>
@@ -157,15 +158,15 @@ const CustomerOverview = ({ setActiveTab }) => {
       )}
 
       {/* Recent Orders Section */}
-      <div className="bg-(--color-base-100) p-6 rounded-2xl border border-(--color-base-300) shadow-xs space-y-4">
+      <div className="bg-[#072420] p-5 sm:p-6 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 space-y-4">
         <div className="flex justify-between items-center">
-          <h3 className="text-base font-bold text-(--color-base-content)">
+          <h3 className="text-sm sm:text-base font-bold text-white">
             Recent Orders
           </h3>
           {orders.length > 0 && (
             <button
               onClick={() => setActiveTab && setActiveTab("orders")}
-              className="text-xs font-semibold text-(--color-primary) hover:underline"
+              className="text-xs font-semibold text-[#f97316] hover:text-orange-300 transition cursor-pointer"
             >
               View All ({orders.length}) →
             </button>
@@ -174,13 +175,13 @@ const CustomerOverview = ({ setActiveTab }) => {
 
         {orders.length === 0 ? (
           <div className="text-center py-10 space-y-2">
-            <IoFastFoodOutline className="text-4xl text-gray-300 mx-auto" />
-            <p className="text-xs text-(--color-secondary)">
+            <IoFastFoodOutline className="text-4xl text-[#8faea7]/40 mx-auto" />
+            <p className="text-xs text-[#8faea7]">
               You have not placed any orders yet.
             </p>
             <Link
               to="/order-now"
-              className="inline-block px-4 py-2 bg-(--color-primary) text-(--color-primary-content) text-xs font-semibold rounded-xl hover:opacity-90 transition"
+              className="inline-block px-4 py-2 bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white text-xs font-semibold rounded-xl hover:opacity-95 transition shadow-md shadow-orange-950/40"
             >
               Order Food Now
             </Link>
@@ -191,14 +192,14 @@ const CustomerOverview = ({ setActiveTab }) => {
               <div
                 key={order._id}
                 onClick={() => navigate(`/order-tracking/${order._id}`)}
-                className="flex items-center justify-between p-3.5 rounded-xl border border-(--color-base-300) hover:border-gray-400 hover:bg-(--color-base-200)/50 transition cursor-pointer"
+                className="flex items-center justify-between p-3.5 rounded-xl bg-[#041916] border border-teal-900/60 hover:border-teal-800/80 hover:bg-teal-900/20 transition cursor-pointer"
               >
                 <div className="space-y-1">
-                  <p className="text-xs font-bold text-(--color-base-content) flex items-center gap-1.5">
-                    <IoStorefrontOutline className="text-(--color-primary)" />
+                  <p className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <IoStorefrontOutline className="text-[#f97316]" />
                     {order.restaurantId?.restaurantName || "Restaurant"}
                   </p>
-                  <p className="text-[11px] text-(--color-secondary)">
+                  <p className="text-[11px] text-[#8faea7]">
                     {new Date(order.createdAt).toLocaleDateString("en-IN", {
                       day: "numeric",
                       month: "short",
@@ -207,10 +208,10 @@ const CustomerOverview = ({ setActiveTab }) => {
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gray-100 text-gray-800">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
                     {order.orderStatus}
                   </span>
-                  <IoChevronForward className="text-xs text-gray-400" />
+                  <IoChevronForward className="text-xs text-[#8faea7]" />
                 </div>
               </div>
             ))}

@@ -8,28 +8,28 @@ const modalConfig = {
     heading: "Confirm Deletion",
     description: "This will remove the item from your active menu.",
     confirmLabel: "Delete Item",
-    confirmClass: "bg-red-600 hover:bg-red-700 text-white",
+    confirmClass: "bg-rose-600 hover:bg-rose-700 text-white",
   },
   topRated: {
     heading: "Change Top Rated",
     description: "Toggle this item's top-rated badge.",
     confirmLabel: "Confirm",
     confirmClass:
-      "bg-(--color-primary) hover:opacity-90 text-(--color-primary-content)",
+      "bg-gradient-to-r from-[#f97316] to-[#ea580c] hover:opacity-90 text-white shadow-md shadow-orange-950/40",
   },
   recommended: {
     heading: "Change Recommendation",
     description: "Toggle this item's recommended badge.",
     confirmLabel: "Confirm",
     confirmClass:
-      "bg-(--color-primary) hover:opacity-90 text-(--color-primary-content)",
+      "bg-gradient-to-r from-[#f97316] to-[#ea580c] hover:opacity-90 text-white shadow-md shadow-orange-950/40",
   },
   new: {
     heading: "Change New Badge",
     description: "Toggle this item's new badge.",
     confirmLabel: "Confirm",
     confirmClass:
-      "bg-(--color-primary) hover:opacity-90 text-(--color-primary-content)",
+      "bg-gradient-to-r from-[#f97316] to-[#ea580c] hover:opacity-90 text-white shadow-md shadow-orange-950/40",
   },
 };
 
@@ -46,7 +46,7 @@ const ConfirmModal = ({
     description: "Please confirm this action.",
     confirmLabel: "Confirm",
     confirmClass:
-      "bg-(--color-primary) hover:opacity-90 text-(--color-primary-content)",
+      "bg-gradient-to-r from-[#f97316] to-[#ea580c] hover:opacity-90 text-white shadow-md shadow-orange-950/40",
   };
 
   const handleConfirm = async () => {
@@ -100,38 +100,38 @@ const ConfirmModal = ({
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-        <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-          <div className=" text-2xl flex justify-between items-center mb-4 border-b border-(--color-secondary) pb-2">
-            <h1 className="text-(--color-primary)">Are you sure?</h1>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
+        <div className="bg-[#072420] border border-teal-800/60 p-6 rounded-2xl shadow-2xl shadow-black/80 w-full max-w-md text-white">
+          <div className="flex justify-between items-center mb-4 border-b border-teal-900/60 pb-3">
+            <h1 className="text-base font-bold text-white tracking-tight">Confirm Action</h1>
 
             <button
-              className="text-red-300 hover:text-red-500"
+              className="text-[#8faea7] hover:text-white transition cursor-pointer"
               onClick={onClose}
               disabled={isSubmitting}
             >
-              <IoMdCloseCircleOutline size={24} />
+              <IoMdCloseCircleOutline size={22} />
             </button>
           </div>
           <div className="space-y-2">
-            <h2 className="text-lg font-semibold text-(--color-primary)">
+            <h2 className="text-sm font-bold text-[#ea580c]">
               {currentConfig.heading}
             </h2>
-            <p className="text-sm text-gray-600">{currentConfig.description}</p>
-            <p className="text-sm">
-              Item: <span className="font-semibold">{selectedItem?.itemName}</span>
+            <p className="text-xs text-[#8faea7]">{currentConfig.description}</p>
+            <p className="text-xs text-[#d8eae6] bg-[#041916] p-2.5 rounded-xl border border-teal-800/40 mt-2">
+              Item: <span className="font-semibold text-white">{selectedItem?.itemName}</span>
             </p>
           </div>
-          <div className="mt-6 flex justify-end gap-2 border-t border-(--color-secondary) pt-3">
+          <div className="mt-6 flex justify-end gap-2.5 border-t border-teal-900/60 pt-4">
             <button
-              className="bg-(--color-secondary) disabled:bg-(--color-secondary)/60 text-(--color-secondary-content) px-4 py-2 rounded"
+              className="bg-[#041916] border border-teal-800/60 text-[#8faea7] hover:text-white px-4 py-2 rounded-xl text-xs font-semibold transition cursor-pointer"
               onClick={onClose}
               disabled={isSubmitting}
             >
               Cancel
             </button>
             <button
-              className={`px-4 py-2 rounded disabled:opacity-60 ${currentConfig.confirmClass}`}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition disabled:opacity-60 cursor-pointer ${currentConfig.confirmClass}`}
               onClick={handleConfirm}
               disabled={isSubmitting}
             >
@@ -139,8 +139,10 @@ const ConfirmModal = ({
             </button>
           </div>
         </div>
-      </div>    </>
+      </div>
+    </>
   );
 };
 
 export default ConfirmModal;
+

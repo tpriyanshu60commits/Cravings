@@ -125,16 +125,16 @@ const OrderTrackingPage = () => {
 
   if (!order) {
     return (
-      <div className="min-h-screen bg-(--color-base-200) flex flex-col items-center justify-center p-4">
-        <div className="text-center space-y-3 bg-(--color-base-100) p-8 rounded-2xl border border-(--color-base-300) max-w-md">
-          <MdErrorOutline className="text-5xl text-red-500 mx-auto" />
-          <h2 className="text-lg font-bold text-(--color-base-content)">Order Not Found</h2>
-          <p className="text-xs text-(--color-secondary)">
+      <div className="min-h-screen bg-[#061d19] flex flex-col items-center justify-center p-4">
+        <div className="text-center space-y-3 bg-[#072420] p-8 rounded-2xl border border-teal-800/40 shadow-2xl max-w-md">
+          <MdErrorOutline className="text-5xl text-rose-500 mx-auto" />
+          <h2 className="text-lg font-bold text-white">Order Not Found</h2>
+          <p className="text-xs text-[#8faea7]">
             We couldn't retrieve tracking details for this order ID.
           </p>
           <button
             onClick={() => navigate("/customer-dashboard")}
-            className="px-4 py-2 bg-(--color-primary) text-(--color-primary-content) text-xs font-semibold rounded-xl hover:opacity-90 transition"
+            className="px-5 py-2.5 bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white text-xs font-bold rounded-xl hover:opacity-95 transition shadow-md shadow-orange-950/40 cursor-pointer"
           >
             Go to My Orders
           </button>
@@ -149,23 +149,23 @@ const OrderTrackingPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-(--color-base-200) py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#061d19] text-white py-6 sm:py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Top Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-(--color-base-100) p-5 rounded-2xl border border-(--color-base-300) shadow-xs">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#072420] p-4 sm:p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40">
           <div className="flex items-center gap-3">
             <button
               onClick={() => navigate("/customer-dashboard")}
-              className="p-2 rounded-full hover:bg-(--color-base-200) text-(--color-base-content) transition"
+              className="p-2 rounded-xl bg-[#041916] border border-teal-800/60 hover:bg-teal-900/30 text-[#8faea7] hover:text-white transition cursor-pointer"
             >
               <IoArrowBack className="text-xl" />
             </button>
             <div>
-              <h1 className="text-xl font-bold text-(--color-base-content) flex items-center gap-2">
+              <h1 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
                 Order Tracking
               </h1>
-              <p className="text-xs text-(--color-secondary)">
-                Order ID: <span className="font-mono font-semibold text-(--color-base-content)">{order._id}</span> • Placed on{" "}
+              <p className="text-xs text-[#8faea7] mt-0.5">
+                Order ID: <span className="font-mono font-semibold text-white">#{order._id}</span> • Placed on{" "}
                 {new Date(order.createdAt).toLocaleString()}
               </p>
             </div>
@@ -174,25 +174,25 @@ const OrderTrackingPage = () => {
           <button
             onClick={() => fetchOrderDetails(true)}
             disabled={isRefreshing}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-(--color-base-200) hover:bg-(--color-base-300) text-(--color-base-content) rounded-xl transition"
+            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold bg-[#041916] hover:bg-teal-900/30 text-white border border-teal-800/60 rounded-xl transition cursor-pointer"
           >
-            <IoRefreshOutline className={`text-sm ${isRefreshing ? "animate-spin" : ""}`} />
-            Refresh Status
+            <IoRefreshOutline className={`text-sm ${isRefreshing ? "animate-spin text-orange-400" : ""}`} />
+            <span>Refresh Status</span>
           </button>
         </div>
 
         {/* Dual Delivery Confirmation Card for Customer */}
         {order.orderStatus === "outForDelivery" && (
-          <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-6 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="bg-[#041916] border border-orange-500/40 rounded-2xl p-5 sm:p-6 shadow-xl shadow-orange-950/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-600 flex items-center justify-center text-2xl shrink-0">
+              <div className="w-12 h-12 rounded-xl bg-orange-500/20 border border-orange-500/30 text-orange-400 flex items-center justify-center text-2xl shrink-0">
                 <IoBicycleOutline />
               </div>
               <div>
-                <h3 className="text-base font-bold text-(--color-base-content)">
+                <h3 className="text-sm sm:text-base font-bold text-white">
                   Your Meal is Out for Delivery!
                 </h3>
-                <p className="text-xs text-(--color-secondary) mt-0.5">
+                <p className="text-xs text-[#8faea7] mt-0.5 leading-relaxed">
                   {order.deliveryConfirmation?.customerConfirmed
                     ? "✓ You confirmed order receipt. Waiting for rider to complete drop-off confirmation."
                     : order.deliveryConfirmation?.riderConfirmed
@@ -203,14 +203,14 @@ const OrderTrackingPage = () => {
             </div>
 
             {order.deliveryConfirmation?.customerConfirmed ? (
-              <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/20 text-green-700 px-4 py-2.5 rounded-xl text-xs font-bold shrink-0">
+              <div className="flex items-center gap-2 bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 px-4 py-2.5 rounded-xl text-xs font-bold shrink-0">
                 <IoCheckmarkCircle className="text-base" /> Order Receipt Confirmed
               </div>
             ) : (
               <button
                 onClick={handleConfirmReceived}
                 disabled={isConfirming}
-                className="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-2 shrink-0 disabled:opacity-50"
+                className="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-700 hover:opacity-95 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-2 shrink-0 disabled:opacity-50 cursor-pointer"
               >
                 {isConfirming ? (
                   <IoRefreshOutline className="animate-spin text-sm" />
@@ -224,15 +224,15 @@ const OrderTrackingPage = () => {
         )}
 
         {/* Status Stepper / Banner */}
-        <div className="bg-(--color-base-100) p-6 rounded-2xl border border-(--color-base-300) shadow-xs space-y-6">
+        <div className="bg-[#072420] p-5 sm:p-6 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 space-y-6">
           {isFailed ? (
-            <div className="p-4 rounded-xl bg-red-50 border border-red-200 flex items-center gap-3 text-red-800">
-              <MdErrorOutline className="text-2xl shrink-0" />
+            <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center gap-3 text-rose-300">
+              <MdErrorOutline className="text-2xl shrink-0 text-rose-400" />
               <div>
                 <h4 className="text-sm font-bold uppercase tracking-wider">
                   Order Status: {order.orderStatus}
                 </h4>
-                <p className="text-xs mt-0.5">
+                <p className="text-xs mt-0.5 text-rose-200">
                   This order could not be completed. Please contact support if you need assistance.
                 </p>
               </div>
@@ -240,16 +240,16 @@ const OrderTrackingPage = () => {
           ) : (
             <div>
               <div className="flex justify-between items-center mb-6">
-                <span className="text-xs font-bold uppercase tracking-wider text-(--color-secondary)">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#8faea7]">
                   Live Delivery Status
                 </span>
-                <span className="px-3 py-1 rounded-full text-xs font-extrabold capitalize bg-orange-100 text-orange-800">
+                <span className="px-3 py-1 rounded-full text-xs font-extrabold capitalize bg-orange-500/20 text-orange-400 border border-orange-500/30">
                   ● {order.orderStatus}
                 </span>
               </div>
 
               {/* Progress Steps */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2.5">
                 {ORDER_STEPS.map((step, idx) => {
                   const isDone = idx <= currentStep;
                   const isCurrent = idx === currentStep;
@@ -259,19 +259,19 @@ const OrderTrackingPage = () => {
                       key={step.key}
                       className={`flex flex-col items-center text-center p-3 rounded-xl transition ${
                         isCurrent
-                          ? "bg-orange-500/10 border border-orange-500/30 text-orange-600 font-bold"
+                          ? "bg-orange-500/15 border border-orange-500/40 text-orange-400 font-bold"
                           : isDone
-                          ? "text-green-600 font-medium"
-                          : "text-gray-400 opacity-50"
+                          ? "bg-[#041916] text-emerald-400 border border-emerald-500/20 font-medium"
+                          : "bg-[#041916]/50 text-[#8faea7]/50 border border-teal-900/30"
                       }`}
                     >
                       <div
                         className={`w-9 h-9 rounded-full flex items-center justify-center text-base mb-2 shadow-xs ${
                           isCurrent
-                            ? "bg-(--color-primary) text-white ring-4 ring-(--color-primary)/20"
+                            ? "bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white ring-4 ring-orange-500/20"
                             : isDone
-                            ? "bg-green-500 text-white"
-                            : "bg-gray-200 text-gray-500"
+                            ? "bg-emerald-600 text-white"
+                            : "bg-[#072420] text-[#8faea7] border border-teal-800/40"
                         }`}
                       >
                         {step.icon}
@@ -290,47 +290,47 @@ const OrderTrackingPage = () => {
           {/* Restaurant & Delivery Location */}
           <div className="space-y-4">
             {/* Restaurant Info */}
-            <div className="bg-(--color-base-100) p-5 rounded-2xl border border-(--color-base-300) shadow-xs space-y-2">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-(--color-secondary) flex items-center gap-1.5">
-                <IoStorefrontOutline /> Restaurant
+            <div className="bg-[#072420] p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 space-y-2">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[#8faea7] flex items-center gap-1.5">
+                <IoStorefrontOutline className="text-[#f97316]" /> Restaurant
               </h3>
-              <h4 className="text-sm font-bold text-(--color-base-content)">
+              <h4 className="text-sm font-bold text-white">
                 {order.restaurantId?.restaurantName || "Restaurant"}
               </h4>
-              <p className="text-xs text-(--color-secondary) leading-relaxed">
+              <p className="text-xs text-[#8faea7] leading-relaxed">
                 {order.restaurantId?.address}, {order.restaurantId?.city}
               </p>
               {order.restaurantId?.contactDetails?.phone && (
-                <p className="text-xs text-(--color-primary) font-semibold flex items-center gap-1 pt-1">
+                <p className="text-xs text-[#f97316] font-semibold flex items-center gap-1 pt-1">
                   <IoCallOutline /> {order.restaurantId.contactDetails.phone}
                 </p>
               )}
             </div>
 
             {/* Delivery Address */}
-            <div className="bg-(--color-base-100) p-5 rounded-2xl border border-(--color-base-300) shadow-xs space-y-2">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-(--color-secondary) flex items-center gap-1.5">
-                <IoLocationOutline /> Delivering To
+            <div className="bg-[#072420] p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 space-y-2">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[#8faea7] flex items-center gap-1.5">
+                <IoLocationOutline className="text-[#f97316]" /> Delivering To
               </h3>
-              <h4 className="text-sm font-bold text-(--color-base-content)">
+              <h4 className="text-sm font-bold text-white">
                 {order.deliveryAddress?.name}
               </h4>
-              <p className="text-xs text-(--color-secondary) leading-relaxed">
+              <p className="text-xs text-[#8faea7] leading-relaxed">
                 {order.deliveryAddress?.address}, {order.deliveryAddress?.city}, {order.deliveryAddress?.state} - {order.deliveryAddress?.pinCode}
               </p>
             </div>
 
             {/* Rider Details (if assigned) */}
             {order.riderId && (
-              <div className="bg-(--color-base-100) p-5 rounded-2xl border border-(--color-base-300) shadow-xs space-y-2">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-(--color-secondary) flex items-center gap-1.5">
-                  <IoBicycleOutline /> Delivery Partner
+              <div className="bg-[#072420] p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 space-y-2">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[#8faea7] flex items-center gap-1.5">
+                  <IoBicycleOutline className="text-blue-400" /> Delivery Partner
                 </h3>
-                <p className="text-xs text-(--color-base-content)">
-                  Vehicle: <span className="font-semibold">{order.riderId.vehicleDetails?.vehicleNumber || "Delivery Bike"}</span>
+                <p className="text-xs text-white">
+                  Vehicle: <span className="font-semibold text-orange-400">{order.riderId.vehicleDetails?.vehicleNumber || "Delivery Bike"}</span>
                 </p>
                 {order.riderId.averageRating > 0 && (
-                  <p className="text-xs text-yellow-600 font-bold">
+                  <p className="text-xs text-amber-400 font-bold">
                     ★ {order.riderId.averageRating.toFixed(1)} Rating
                   </p>
                 )}
@@ -339,23 +339,23 @@ const OrderTrackingPage = () => {
           </div>
 
           {/* Items & Bill Breakdown */}
-          <div className="bg-(--color-base-100) p-5 rounded-2xl border border-(--color-base-300) shadow-xs space-y-4">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-(--color-secondary)">
+          <div className="bg-[#072420] p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 space-y-4">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#8faea7]">
               Ordered Items ({order.orderItems?.length})
             </h3>
 
-            <div className="space-y-3 divide-y divide-(--color-base-300)">
+            <div className="space-y-3 divide-y divide-teal-900/40">
               {order.orderItems?.map((item, idx) => (
                 <div key={idx} className="flex justify-between items-center pt-2 text-xs">
                   <div className="flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-(--color-primary)/10 text-(--color-primary) font-bold text-[10px] flex items-center justify-center">
+                    <span className="w-5 h-5 rounded-full bg-orange-500/15 border border-orange-500/30 text-orange-400 font-bold text-[10px] flex items-center justify-center">
                       {item.quantity}x
                     </span>
-                    <span className="font-semibold text-(--color-base-content)">
+                    <span className="font-semibold text-white">
                       {item.itemName}
                     </span>
                   </div>
-                  <span className="font-bold text-(--color-base-content)">
+                  <span className="font-bold text-orange-400">
                     ₹{(item.itemPrice * item.quantity).toFixed(2)}
                   </span>
                 </div>
@@ -363,16 +363,16 @@ const OrderTrackingPage = () => {
             </div>
 
             {/* Bill Details */}
-            <div className="border-t border-(--color-base-300) pt-3 space-y-1.5 text-xs text-(--color-secondary)">
+            <div className="border-t border-teal-900/40 pt-3 space-y-1.5 text-xs text-[#8faea7]">
               <div className="flex justify-between">
                 <span>Items Subtotal</span>
-                <span className="font-semibold text-(--color-base-content)">
+                <span className="font-semibold text-white">
                   ₹{order.billDetails?.totalAmount?.toFixed(2)}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span>Platform & Convenience Fee</span>
-                <span>
+                <span className="text-white">
                   ₹{(
                     (order.billDetails?.platformFee || 0) +
                     (order.billDetails?.convenienceFee || 0)
@@ -381,15 +381,15 @@ const OrderTrackingPage = () => {
               </div>
               <div className="flex justify-between">
                 <span>Taxes (GST)</span>
-                <span>₹{order.billDetails?.taxAmount?.toFixed(2)}</span>
+                <span className="text-white">₹{order.billDetails?.taxAmount?.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Delivery Charge</span>
-                <span className="text-green-600 font-semibold">FREE</span>
+                <span className="text-emerald-400 font-semibold">FREE</span>
               </div>
-              <div className="border-t border-(--color-base-300) pt-2 flex justify-between font-extrabold text-sm text-(--color-base-content)">
+              <div className="border-t border-teal-900/40 pt-2 flex justify-between font-extrabold text-sm text-white">
                 <span>Total Paid</span>
-                <span className="text-(--color-primary)">
+                <span className="text-[#f97316]">
                   ₹{order.billDetails?.finalAmount?.toFixed(2)}
                 </span>
               </div>
@@ -397,7 +397,7 @@ const OrderTrackingPage = () => {
 
             {/* Payment Badge */}
             <div className="pt-2 text-center">
-              <span className="inline-block px-3 py-1 text-[11px] font-bold rounded-full bg-green-100 text-green-800">
+              <span className="inline-block px-3 py-1 text-[11px] font-bold rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
                 Payment: {order.paymentDetails?.paymentStatus?.toUpperCase()} (via {order.paymentDetails?.paymentMethod?.toUpperCase()})
               </span>
             </div>

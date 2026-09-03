@@ -97,24 +97,24 @@ const ForgotPasswordModal = ({ open = true, onClose = () => {} }) => {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 space-y-4">
-        <header className="flex justify-between items-center border-b pb-3">
-          <h2 className="font-bold text-lg text-(--color-primary)">
+    <div className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-[#072420] text-white border border-teal-800/60 w-full max-w-md rounded-2xl shadow-2xl shadow-black/80 p-6 space-y-4">
+        <header className="flex justify-between items-center border-b border-teal-900/60 pb-3">
+          <h2 className="font-bold text-lg text-white tracking-tight">
             Reset Password
           </h2>
           <button
             onClick={handleCloseModal}
-            className="text-gray-400 hover:text-gray-600 transition"
+            className="text-[#8faea7] hover:text-white transition cursor-pointer text-2xl"
           >
-            <MdCancel className="text-2xl" />
+            <MdCancel />
           </button>
         </header>
 
         <main className="space-y-3">
           {/* Step 1: Email */}
           <div>
-            <label className="block text-xs font-semibold text-(--color-neutral) mb-1">
+            <label className="block text-xs font-semibold text-[#8faea7] mb-1">
               Registered Email
             </label>
             <input
@@ -123,7 +123,7 @@ const ForgotPasswordModal = ({ open = true, onClose = () => {} }) => {
               name="email"
               placeholder="name@example.com"
               onChange={handleInputChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-(--color-neutral) focus:outline-none focus:ring-1 focus:ring-(--color-primary) disabled:bg-gray-100 disabled:text-gray-500"
+              className="w-full bg-[#041916] border border-teal-800/60 rounded-xl px-3.5 py-2 text-xs text-white placeholder-[#537770] focus:outline-none focus:ring-2 focus:ring-orange-500/50 disabled:bg-[#041916]/40 disabled:text-[#8faea7]"
               disabled={isLoading || isOtpSent}
             />
           </div>
@@ -131,7 +131,7 @@ const ForgotPasswordModal = ({ open = true, onClose = () => {} }) => {
           {/* Step 2: OTP */}
           {isOtpSent && (
             <div>
-              <label className="block text-xs font-semibold text-(--color-neutral) mb-1">
+              <label className="block text-xs font-semibold text-[#8faea7] mb-1">
                 6-Digit OTP Code
               </label>
               <input
@@ -141,7 +141,7 @@ const ForgotPasswordModal = ({ open = true, onClose = () => {} }) => {
                 name="otp"
                 placeholder="Enter 6-digit OTP"
                 onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-(--color-neutral) focus:outline-none focus:ring-1 focus:ring-(--color-primary) disabled:bg-gray-100 disabled:text-gray-500 font-mono tracking-wider"
+                className="w-full bg-[#041916] border border-teal-800/60 rounded-xl px-3.5 py-2 text-xs text-white placeholder-[#537770] focus:outline-none focus:ring-2 focus:ring-orange-500/50 disabled:bg-[#041916]/40 disabled:text-[#8faea7] font-mono tracking-wider"
                 disabled={isLoading || isOtpVerified}
               />
             </div>
@@ -151,7 +151,7 @@ const ForgotPasswordModal = ({ open = true, onClose = () => {} }) => {
           {isOtpSent && isOtpVerified && (
             <div className="space-y-3">
               <div>
-                <label className="block text-xs font-semibold text-(--color-neutral) mb-1">
+                <label className="block text-xs font-semibold text-[#8faea7] mb-1">
                   New Password
                 </label>
                 <input
@@ -159,13 +159,13 @@ const ForgotPasswordModal = ({ open = true, onClose = () => {} }) => {
                   name="newPassword"
                   placeholder="Min 6 characters"
                   value={formData.newPassword}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-(--color-neutral) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
+                  className="w-full bg-[#041916] border border-teal-800/60 rounded-xl px-3.5 py-2 text-xs text-white placeholder-[#537770] focus:outline-none focus:ring-2 focus:ring-orange-500/50"
                   onChange={handleInputChange}
                   disabled={isLoading}
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-(--color-neutral) mb-1">
+                <label className="block text-xs font-semibold text-[#8faea7] mb-1">
                   Confirm New Password
                 </label>
                 <input
@@ -173,7 +173,7 @@ const ForgotPasswordModal = ({ open = true, onClose = () => {} }) => {
                   value={formData.confirmNewPassword}
                   name="confirmNewPassword"
                   placeholder="Re-enter new password"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-(--color-neutral) focus:outline-none focus:ring-1 focus:ring-(--color-primary)"
+                  className="w-full bg-[#041916] border border-teal-800/60 rounded-xl px-3.5 py-2 text-xs text-white placeholder-[#537770] focus:outline-none focus:ring-2 focus:ring-orange-500/50"
                   onChange={handleInputChange}
                   disabled={isLoading}
                 />
@@ -182,16 +182,16 @@ const ForgotPasswordModal = ({ open = true, onClose = () => {} }) => {
           )}
         </main>
 
-        <footer className="flex justify-end gap-2 pt-2 border-t">
+        <footer className="flex justify-end gap-2 pt-3 border-t border-teal-900/60">
           <button
             onClick={handleCloseModal}
-            className="px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg text-xs font-semibold transition"
+            className="px-4 py-2 bg-[#041916] border border-teal-800/60 text-[#8faea7] hover:text-white rounded-xl text-xs font-semibold transition cursor-pointer"
             disabled={isLoading}
           >
             Cancel
           </button>
           <button
-            className="flex items-center gap-1.5 px-4 py-2 bg-(--color-primary) text-(--color-primary-content) rounded-lg text-xs font-semibold hover:opacity-90 transition disabled:opacity-50"
+            className="flex items-center gap-1.5 px-5 py-2 bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white rounded-xl text-xs font-bold shadow-md shadow-orange-950/40 hover:opacity-95 transition disabled:opacity-50 cursor-pointer"
             onClick={handleResetPassword}
             disabled={isLoading}
           >

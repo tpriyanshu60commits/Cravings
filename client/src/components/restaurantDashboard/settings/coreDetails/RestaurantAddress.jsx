@@ -89,43 +89,43 @@ const RestaurantAddress = () => {
 
   return (
     <>
-      <div className="bg-(--color-base-100) rounded-lg p-3">
-        <div className="flex justify-between items-center border-b border-(--color-secondary) pb-2 mb-2">
+      <div className="bg-[#072420] rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 p-5 space-y-4">
+        <div className="flex justify-between items-center border-b border-teal-900/60 pb-3">
           <div className="flex items-center gap-3">
-            <h3 className="w-full text-sm font-semibold text-(--color-primary)">
-              Address
+            <h3 className="w-full text-sm font-bold text-white tracking-tight">
+              Restaurant Address & Location
             </h3>
           </div>
           {!editingRestaurantAddress ? (
             <div className="flex gap-3">
               <button
                 onClick={() => setEditingRestaurantAddress(true)}
-                className="flex items-center gap-2 bg-(--color-primary) text-(--color-primary-content) px-2 py-0.5 rounded text-xs"
+                className="flex items-center gap-1.5 bg-[#041916] border border-teal-800/60 text-[#8faea7] hover:text-white hover:border-orange-500/60 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer"
               >
-                <MdEdit /> Edit
+                <MdEdit size={14} className="text-orange-400" /> Edit Address
               </button>
             </div>
           ) : (
-            <div className="flex gap-2 justify-end">
+            <div className="flex flex-wrap gap-2 justify-end">
               <button
                 onClick={handleGetLocation}
-                className="flex items-center gap-2 bg-(--color-primary) text-(--color-primary-content) px-2 py-0.5 rounded text-xs"
+                className="flex items-center gap-1.5 bg-[#041916] border border-teal-800/60 text-orange-400 hover:text-orange-300 hover:border-orange-500/60 px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer"
                 disabled={isFetchingLocation}
               >
                 {isFetchingLocation
-                  ? "Getting Current Location..."
-                  : "Get Current Location"}
+                  ? "Getting Location..."
+                  : "Detect Current GPS"}
               </button>
               <button
                 onClick={handleSaveRestaurantAddress}
-                className="flex items-center gap-2 bg-(--color-primary) text-(--color-primary-content) px-2 py-0.5 rounded text-xs"
+                className="flex items-center gap-1.5 bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-md shadow-orange-950/40 hover:opacity-95 transition cursor-pointer"
                 disabled={isLoading}
               >
                 {isLoading ? "Saving..." : "Save Changes"}
               </button>
               <button
                 onClick={handleCancelRestaurantAddress}
-                className="flex items-center gap-2 bg-(--color-secondary) text-(--color-secondary-content) px-2 py-0.5 rounded text-xs"
+                className="flex items-center gap-1.5 bg-[#041916] border border-teal-800/60 text-[#8faea7] hover:text-white px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer"
                 disabled={isLoading}
               >
                 Cancel
@@ -133,84 +133,104 @@ const RestaurantAddress = () => {
             </div>
           )}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 justify-center items-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="w-full">
-            <label className="text-xs font-semibold">Address</label>
+            <label className="text-xs font-semibold text-[#8faea7] block mb-1">Street Address</label>
             <input
               type="text"
               name="address"
               value={restaurantAddressFormData?.address || ""}
               onChange={handleRestaurantAddressChange}
-              className={`w-full px-1.5 py-1 border border-(--color-secondary) ${editingRestaurantAddress ? "bg-white" : "bg-(--color-base-100)"} rounded`}
+              className={`w-full px-3 py-2 text-xs border border-teal-800/60 rounded-xl text-white ${
+                editingRestaurantAddress
+                  ? "bg-[#041916] focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500"
+                  : "bg-[#041916]/50 opacity-80"
+              }`}
               disabled={!editingRestaurantAddress}
             />
           </div>
           <div className="w-full">
-            <label className="text-xs font-semibold">City</label>
+            <label className="text-xs font-semibold text-[#8faea7] block mb-1">City</label>
             <input
               type="text"
               name="city"
               value={restaurantAddressFormData?.city || ""}
               onChange={handleRestaurantAddressChange}
-              className={`w-full px-1.5 py-1 border border-(--color-secondary) ${editingRestaurantAddress ? "bg-white" : "bg-(--color-base-100)"} rounded`}
+              className={`w-full px-3 py-2 text-xs border border-teal-800/60 rounded-xl text-white ${
+                editingRestaurantAddress
+                  ? "bg-[#041916] focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500"
+                  : "bg-[#041916]/50 opacity-80"
+              }`}
               disabled={!editingRestaurantAddress}
             />
           </div>
           <div className="w-full">
-            <label className="text-xs font-semibold">State</label>
+            <label className="text-xs font-semibold text-[#8faea7] block mb-1">State</label>
             <input
               type="text"
               name="state"
               value={restaurantAddressFormData?.state || ""}
               onChange={handleRestaurantAddressChange}
-              className={`w-full px-1.5 py-1 border border-(--color-secondary) ${editingRestaurantAddress ? "bg-white" : "bg-(--color-base-100)"} rounded`}
+              className={`w-full px-3 py-2 text-xs border border-teal-800/60 rounded-xl text-white ${
+                editingRestaurantAddress
+                  ? "bg-[#041916] focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500"
+                  : "bg-[#041916]/50 opacity-80"
+              }`}
               disabled={!editingRestaurantAddress}
             />
           </div>
           <div className="w-full">
-            <label className="text-xs font-semibold">Pin Code</label>
+            <label className="text-xs font-semibold text-[#8faea7] block mb-1">Pin Code</label>
             <input
               type="text"
               name="pinCode"
               value={restaurantAddressFormData?.pinCode || ""}
               onChange={handleRestaurantAddressChange}
-              className={`w-full px-1.5 py-1 border border-(--color-secondary) ${editingRestaurantAddress ? "bg-white" : "bg-(--color-base-100)"} rounded`}
+              className={`w-full px-3 py-2 text-xs border border-teal-800/60 rounded-xl text-white ${
+                editingRestaurantAddress
+                  ? "bg-[#041916] focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500"
+                  : "bg-[#041916]/50 opacity-80"
+              }`}
               disabled={!editingRestaurantAddress}
             />
           </div>
           <div className="w-full">
-            <label className="text-xs font-semibold">Country</label>
+            <label className="text-xs font-semibold text-[#8faea7] block mb-1">Country</label>
             <input
               type="text"
               name="country"
               value={restaurantAddressFormData?.country || ""}
               onChange={handleRestaurantAddressChange}
-              className={`w-full px-1.5 py-1 border border-(--color-secondary) ${editingRestaurantAddress ? "bg-white" : "bg-(--color-base-100)"} rounded`}
+              className={`w-full px-3 py-2 text-xs border border-teal-800/60 rounded-xl text-white ${
+                editingRestaurantAddress
+                  ? "bg-[#041916] focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500"
+                  : "bg-[#041916]/50 opacity-80"
+              }`}
               disabled={!editingRestaurantAddress}
             />
           </div>
           <div className="w-full grid grid-cols-2 gap-2">
             <div className="w-full">
-              <label className="text-xs font-semibold">Latitude</label>
+              <label className="text-xs font-semibold text-[#8faea7] block mb-1">Latitude</label>
               <input
                 type="text"
                 name="geoLat"
                 value={restaurantAddressFormData?.geoLat || ""}
                 onChange={handleRestaurantAddressChange}
                 placeholder="e.g. 28.6139"
-                className={`w-full px-1.5 py-1 border border-(--color-secondary) ${editingRestaurantAddress ? "bg-white" : "bg-(--color-base-100)"} rounded`}
+                className="w-full px-3 py-2 text-xs border border-teal-800/60 rounded-xl text-white bg-[#041916]/50 opacity-70"
                 disabled
               />
             </div>
             <div className="w-full">
-              <label className="text-xs font-semibold">Longitude</label>
+              <label className="text-xs font-semibold text-[#8faea7] block mb-1">Longitude</label>
               <input
                 type="text"
                 name="geoLon"
                 value={restaurantAddressFormData?.geoLon || ""}
                 onChange={handleRestaurantAddressChange}
                 placeholder="e.g. 77.2090"
-                className={`w-full px-1.5 py-1 border border-(--color-secondary) ${editingRestaurantAddress ? "bg-white" : "bg-(--color-base-100)"} rounded`}
+                className="w-full px-3 py-2 text-xs border border-teal-800/60 rounded-xl text-white bg-[#041916]/50 opacity-70"
                 disabled
               />
             </div>

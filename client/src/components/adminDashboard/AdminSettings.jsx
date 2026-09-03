@@ -91,43 +91,43 @@ const AdminSetting = () => {
   const avatarSrc = profilePicPreview || user?.photo?.url || "https://placehold.co/400x400?text=Admin";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-white">
       {/* Top Header */}
-      <div className="bg-(--color-base-100) p-5 rounded-2xl border border-(--color-base-300) shadow-xs flex justify-between items-center">
+      <div className="bg-[#072420] p-4 sm:p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40 flex justify-between items-center">
         <div>
-          <h1 className="text-xl font-bold text-(--color-base-content) flex items-center gap-2">
-            <MdPerson className="text-(--color-primary)" size={24} />
+          <h1 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2 tracking-tight">
+            <MdPerson className="text-[#f97316]" size={24} />
             Admin Profile & Settings
           </h1>
-          <p className="text-xs text-(--color-secondary) mt-0.5">
+          <p className="text-xs text-[#8faea7] mt-0.5">
             Manage your administrator account credentials and personal information
           </p>
         </div>
       </div>
 
       {/* Profile Card */}
-      <div className="bg-(--color-base-100) rounded-2xl p-6 border border-(--color-base-300) shadow-xs space-y-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-(--color-base-300) pb-4">
+      <div className="bg-[#072420] rounded-2xl p-6 border border-teal-800/40 shadow-xl shadow-black/40 space-y-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-teal-900/40 pb-4">
           <div>
-            <h3 className="text-sm font-bold text-(--color-base-content) uppercase tracking-wider">
+            <h3 className="text-sm font-bold text-white uppercase tracking-wider">
               Profile Information
             </h3>
-            <p className="text-xs text-(--color-secondary)">
+            <p className="text-xs text-[#8faea7]">
               Update your photo, name, and contact details
             </p>
           </div>
 
           {!editingProfile ? (
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <button
                 onClick={() => setEditingProfile(true)}
-                className="flex items-center gap-1.5 bg-(--color-primary) text-(--color-primary-content) px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-xs hover:opacity-90 transition"
+                className="flex items-center gap-1.5 bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-md shadow-orange-950/40 hover:opacity-95 transition cursor-pointer"
               >
                 <MdEdit size={14} /> Edit Profile
               </button>
               <button
                 onClick={() => setIsPasswordChangeModalOpen(true)}
-                className="flex items-center gap-1.5 border border-(--color-primary) text-(--color-primary) px-3.5 py-1.5 rounded-xl text-xs font-semibold hover:bg-(--color-primary) hover:text-(--color-primary-content) transition"
+                className="flex items-center gap-1.5 border border-teal-800/60 bg-[#041916] text-[#8faea7] hover:text-white hover:bg-teal-900/30 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer"
               >
                 <MdOutlineLockReset size={16} /> Change Password
               </button>
@@ -137,7 +137,7 @@ const AdminSetting = () => {
               <button
                 onClick={handleSaveProfile}
                 disabled={isLoading}
-                className="flex items-center gap-1.5 bg-(--color-primary) text-(--color-primary-content) px-4 py-1.5 rounded-xl text-xs font-semibold shadow-xs hover:opacity-90 disabled:opacity-50 transition"
+                className="flex items-center gap-1.5 bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white px-4 py-1.5 rounded-xl text-xs font-semibold shadow-md shadow-orange-950/40 hover:opacity-95 disabled:opacity-50 transition cursor-pointer"
               >
                 {isLoading ? <RiLoader4Fill className="animate-spin" /> : null}
                 <span>{isLoading ? "Saving..." : "Save Changes"}</span>
@@ -145,7 +145,7 @@ const AdminSetting = () => {
               <button
                 onClick={handleCancelProfile}
                 disabled={isLoading}
-                className="flex items-center gap-1.5 bg-(--color-base-200) hover:bg-(--color-base-300) text-(--color-base-content) px-3.5 py-1.5 rounded-xl text-xs font-semibold transition"
+                className="flex items-center gap-1.5 bg-[#041916] hover:bg-teal-900/30 border border-teal-800/60 text-[#8faea7] hover:text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer"
               >
                 Cancel
               </button>
@@ -156,7 +156,7 @@ const AdminSetting = () => {
         <div className="flex flex-col md:flex-row items-start md:items-center gap-8 pt-2">
           {/* Avatar Area */}
           <div className="relative shrink-0 mx-auto md:mx-0">
-            <div className="w-28 h-28 rounded-full overflow-hidden border-2 border-(--color-primary) shadow-sm bg-(--color-base-200)">
+            <div className="w-28 h-28 rounded-full overflow-hidden border-2 border-[#f97316] shadow-sm bg-[#041916]">
               <img
                 src={avatarSrc}
                 alt="Profile"
@@ -166,7 +166,7 @@ const AdminSetting = () => {
 
             {editingProfile && (
               <div
-                className="absolute bottom-0 right-0 p-2 bg-(--color-primary) text-(--color-primary-content) rounded-full shadow-md cursor-pointer hover:scale-105 transition"
+                className="absolute bottom-0 right-0 p-2 bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white rounded-full shadow-md cursor-pointer hover:scale-105 transition"
                 title="Change Photo"
               >
                 <label htmlFor="profilePic" className="cursor-pointer">
@@ -187,13 +187,13 @@ const AdminSetting = () => {
           {/* Form Fields */}
           <div className="flex-1 w-full grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-(--color-secondary) mb-1">
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-[#8faea7] mb-1">
                 Full Name
               </label>
               <div className="relative">
                 <MdPerson
                   size={16}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-secondary)"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-[#537770]"
                 />
                 <input
                   type="text"
@@ -201,23 +201,23 @@ const AdminSetting = () => {
                   value={formData.fullName}
                   onChange={handleProfileChange}
                   disabled={!editingProfile}
-                  className={`w-full pl-9 pr-3 py-2 rounded-xl border text-xs ${
+                  className={`w-full pl-9 pr-3 py-2 rounded-xl border text-xs transition-colors ${
                     editingProfile
-                      ? "bg-(--color-base-100) border-(--color-primary) focus:ring-2 focus:ring-(--color-primary) text-(--color-base-content)"
-                      : "bg-(--color-base-200)/60 border-(--color-base-300) text-(--color-base-content)"
+                      ? "bg-[#041916] border-orange-500/80 focus:ring-2 focus:ring-orange-500/50 text-white"
+                      : "bg-[#041916]/60 border-teal-800/60 text-white"
                   }`}
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-(--color-secondary) mb-1">
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-[#8faea7] mb-1">
                 Phone Number
               </label>
               <div className="relative">
                 <MdPhone
                   size={16}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-secondary)"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-[#537770]"
                 />
                 <input
                   type="tel"
@@ -225,33 +225,33 @@ const AdminSetting = () => {
                   value={formData.phone}
                   onChange={handleProfileChange}
                   disabled={!editingProfile}
-                  className={`w-full pl-9 pr-3 py-2 rounded-xl border text-xs ${
+                  className={`w-full pl-9 pr-3 py-2 rounded-xl border text-xs transition-colors ${
                     editingProfile
-                      ? "bg-(--color-base-100) border-(--color-primary) focus:ring-2 focus:ring-(--color-primary) text-(--color-base-content)"
-                      : "bg-(--color-base-200)/60 border-(--color-base-300) text-(--color-base-content)"
+                      ? "bg-[#041916] border-orange-500/80 focus:ring-2 focus:ring-orange-500/50 text-white"
+                      : "bg-[#041916]/60 border-teal-800/60 text-white"
                   }`}
                 />
               </div>
             </div>
 
             <div className="sm:col-span-2">
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-(--color-secondary) mb-1">
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-[#8faea7] mb-1">
                 Email Address (Primary Identity)
               </label>
               <div className="relative">
                 <MdEmail
                   size={16}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-secondary)"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-[#537770]"
                 />
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   disabled
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border bg-(--color-base-200)/60 border-(--color-base-300) text-(--color-secondary) cursor-not-allowed text-xs"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border bg-[#041916]/40 border-teal-900/60 text-[#8faea7] cursor-not-allowed text-xs"
                 />
               </div>
-              <p className="text-[10px] text-(--color-secondary) mt-1">
+              <p className="text-[10px] text-[#8faea7] mt-1">
                 Email address cannot be modified as it is tied to account credentials.
               </p>
             </div>

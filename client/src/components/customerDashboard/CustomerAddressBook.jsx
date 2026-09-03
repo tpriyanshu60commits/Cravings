@@ -75,20 +75,21 @@ const CustomerAddressBook = () => {
   };
 
   return (
-    <div className="p-6 space-y-6 max-h-[88vh] overflow-y-auto">
+    <div className="p-4 sm:p-6 space-y-6 max-h-[88vh] overflow-y-auto">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-(--color-base-100) p-5 rounded-2xl border border-(--color-base-300) shadow-xs">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#072420] p-4 sm:p-5 rounded-2xl border border-teal-800/40 shadow-xl shadow-black/40">
         <div>
-          <h2 className="text-xl font-bold text-(--color-base-content)">Address Book</h2>
-          <p className="text-xs text-(--color-secondary) mt-0.5">
+          <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight">Address Book</h2>
+          <p className="text-xs text-[#8faea7] mt-0.5">
             Manage your delivery locations for faster checkout.
           </p>
         </div>
         <button
           onClick={handleOpenAddModal}
-          className="flex items-center gap-1.5 px-4 py-2 bg-(--color-primary) text-(--color-primary-content) text-xs font-semibold rounded-xl hover:opacity-90 transition shadow-xs"
+          className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white text-xs font-bold rounded-xl hover:opacity-95 transition shadow-md shadow-orange-950/40 cursor-pointer"
         >
-          <IoAdd className="text-base" /> Add New Address
+          <IoAdd className="text-base" />
+          <span>Add New Address</span>
         </button>
       </div>
 
@@ -96,17 +97,17 @@ const CustomerAddressBook = () => {
       {isLoading ? (
         <Loader height="300px" width="100%" />
       ) : addressList.length === 0 ? (
-        <div className="text-center py-16 bg-(--color-base-100) rounded-2xl border border-(--color-base-300) space-y-3">
-          <IoLocationOutline className="text-5xl mx-auto text-(--color-secondary) opacity-40" />
-          <p className="text-sm font-semibold text-(--color-base-content)">
+        <div className="text-center py-16 bg-[#072420] rounded-2xl border border-teal-800/40 space-y-3 shadow-xl shadow-black/40">
+          <IoLocationOutline className="text-5xl mx-auto text-[#8faea7] opacity-40" />
+          <p className="text-sm font-semibold text-white">
             No addresses saved yet
           </p>
-          <p className="text-xs text-(--color-secondary) max-w-sm mx-auto">
+          <p className="text-xs text-[#8faea7] max-w-sm mx-auto">
             Add your delivery addresses to enjoy seamless and speedy checkout when ordering meals.
           </p>
           <button
             onClick={handleOpenAddModal}
-            className="px-4 py-2 bg-(--color-primary) text-(--color-primary-content) text-xs font-semibold rounded-xl hover:opacity-90 transition"
+            className="px-5 py-2.5 bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white text-xs font-bold rounded-xl hover:opacity-95 transition shadow-md shadow-orange-950/40 cursor-pointer"
           >
             Add Your First Address
           </button>
@@ -116,48 +117,50 @@ const CustomerAddressBook = () => {
           {addressList.map((addr) => (
             <div
               key={addr._id}
-              className={`p-5 rounded-2xl bg-(--color-base-100) border transition shadow-xs relative flex flex-col justify-between ${
+              className={`p-5 rounded-2xl bg-[#072420] border transition shadow-xl shadow-black/40 relative flex flex-col justify-between ${
                 addr.isDefault
-                  ? "border-(--color-primary) ring-1 ring-(--color-primary)/20"
-                  : "border-(--color-base-300) hover:border-gray-400"
+                  ? "border-orange-500/60 ring-1 ring-orange-500/30"
+                  : "border-teal-800/40 hover:border-teal-700/60"
               }`}
             >
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-(--color-base-content)">
+                  <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-white">
                     {getAddressIcon(addr.addressType)}
                     {addr.addressType}
                   </span>
                   {addr.isDefault && (
-                    <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-800">
+                    <span className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
                       <IoCheckmarkCircle className="text-xs" /> Default Address
                     </span>
                   )}
                 </div>
 
                 <div>
-                  <h4 className="text-sm font-bold text-(--color-base-content)">
+                  <h4 className="text-sm font-bold text-white">
                     {addr.name}
                   </h4>
-                  <p className="text-xs text-(--color-secondary) mt-1 leading-relaxed">
+                  <p className="text-xs text-[#8faea7] mt-1 leading-relaxed">
                     {addr.address}, {addr.city}, {addr.state} - {addr.pinCode}, {addr.country}
                   </p>
                 </div>
               </div>
 
               {/* Card Actions */}
-              <div className="flex justify-end gap-2 pt-4 mt-3 border-t border-(--color-base-300)">
+              <div className="flex justify-end gap-2 pt-4 mt-3 border-t border-teal-900/40">
                 <button
                   onClick={() => handleOpenEditModal(addr)}
-                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-(--color-base-200) hover:bg-(--color-base-300) text-(--color-base-content) transition"
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#041916] hover:bg-teal-900/30 border border-teal-800/60 text-[#8faea7] hover:text-white transition cursor-pointer"
                 >
-                  <IoPencilOutline className="text-xs" /> Edit
+                  <IoPencilOutline className="text-xs text-orange-400" />
+                  <span>Edit</span>
                 </button>
                 <button
                   onClick={() => handleDeleteAddress(addr._id)}
-                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-red-600 hover:bg-red-50 transition"
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold bg-rose-500/10 border border-rose-500/30 text-rose-400 hover:bg-rose-500/20 transition cursor-pointer"
                 >
-                  <IoTrashOutline className="text-xs" /> Delete
+                  <IoTrashOutline className="text-xs" />
+                  <span>Delete</span>
                 </button>
               </div>
             </div>
